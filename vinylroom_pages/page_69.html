@@ -1,0 +1,1575 @@
+<!doctype html>
+<html dir="rtl" lang="he-IL">
+<head>
+	<meta name="google-site-verification" content="afAcexaWKVLR_1Hj9lsaJC5XW9Kyir5NSVKAJ28PbRM" />
+
+	<!-- Google tag (gtag.js) -->
+<script data-rocketlazyloadscript='https://www.googletagmanager.com/gtag/js?id=G-FEJTS83JFE' async ></script>
+<script data-rocketlazyloadscript='data:text/javascript;base64,CiAgd2luZG93LmRhdGFMYXllciA9IHdpbmRvdy5kYXRhTGF5ZXIgfHwgW107CiAgZnVuY3Rpb24gZ3RhZygpe2RhdGFMYXllci5wdXNoKGFyZ3VtZW50cyk7fQogIGd0YWcoJ2pzJywgbmV3IERhdGUoKSk7CgogIGd0YWcoJ2NvbmZpZycsICdHLUZFSlRTODNKRkUnKTsK' ></script>
+	
+	
+	<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="profile" href="https://gmpg.org/xfn/11">
+	<script>
+(function(w,d){
+  var cookieName = 'scb_consent';
+  var payments = /(tranzila|cardcom|pelecard|cgpay|apple-pay|paypal|stripe)/i;
+  var trackers = /(googletagmanager\.com|google-analytics\.com|doubleclick\.net|connect\.facebook\.net|clarity\.ms|bat\.bing\.com|hotjar|tiktok|snap|linkedin|plausible|umami)/i;
+
+  function hasConsent(){
+    try{
+      var m = d.cookie.match(new RegExp('(?:^| )'+cookieName+'=([^;]+)'));
+      if(!m) return false;
+      var c = JSON.parse(decodeURIComponent(m[1]));
+      return !!(c && (c.all||c.analytics||c.marketing));
+    }catch(e){return false;}
+  }
+  if (hasConsent()) return;
+
+  // Block GTM immediately and aggressively
+  w.dataLayer = [];
+  w.gtag = function(){};
+  w.gtag.q = [];
+  
+  // Block any existing GTM scripts
+  var existingScripts = d.querySelectorAll('script[src*="googletagmanager.com"]');
+  existingScripts.forEach(function(script) {
+    script.type = 'text/plain';
+    script.setAttribute('data-consent', 'analytics');
+    script.setAttribute('data-scb-blocked', 'true');
+    script.setAttribute('data-scb-src', script.src);
+    script.removeAttribute('src');
+  });
+
+  function isTracker(u){ if(!u) return false; u=String(u); if(payments.test(u)) return false; return trackers.test(u); }
+
+  w.dataLayer = Array.isArray(w.dataLayer)? w.dataLayer : [];
+  w.gtag = w.gtag || function(){ w.dataLayer.push(arguments); };
+  w.fbq = w.fbq || function(){ (w.fbq.q = w.fbq.q || []).push(arguments); };
+  w._fbq = w._fbq || w.fbq;
+
+  var _setAttr = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(n,v){
+    if(!hasConsent() && v && (this.tagName==='SCRIPT'||this.tagName==='IFRAME'||this.tagName==='IMG') && (n==='src'||n==='srcset') && isTracker(v)){
+      if(this.tagName==='SCRIPT'){
+        _setAttr.call(this,'type','text/plain');
+        _setAttr.call(this,'data-consent','analytics');
+      }
+      _setAttr.call(this,'data-scb-src', v);
+      return;
+    }
+    return _setAttr.call(this,n,v);
+  };
+
+  var _append = Node.prototype.appendChild, _insert = Node.prototype.insertBefore;
+  function neutralize(el){
+    if(!hasConsent() && el && el.tagName==='SCRIPT'){
+      var s = el.getAttribute('src');
+      if(isTracker(s)){
+        _setAttr.call(el,'type','text/plain');
+        _setAttr.call(el,'data-consent','analytics');
+        _setAttr.call(el,'data-scb-src', s);
+        el.removeAttribute('src');
+      }
+    } else if(!hasConsent() && el && el.tagName==='IFRAME'){
+      var i = el.getAttribute('src');
+      if(isTracker(i)){
+        el.style.display='none';
+        _setAttr.call(el,'data-consent','analytics');
+        _setAttr.call(el,'data-scb-src', i);
+        el.removeAttribute('src');
+      }
+    }
+    return el;
+  }
+  Node.prototype.appendChild = function(el){ return _append.call(this, neutralize(el)); };
+  Node.prototype.insertBefore = function(el,ref){ return _insert.call(this, neutralize(el), ref); };
+
+  var _fetch = w.fetch;
+  if(_fetch) w.fetch = function(i,init){ var u = typeof i==='string'? i : (i&&i.url); if(!hasConsent() && isTracker(u)) return Promise.resolve(new Response('',{status:204})); return _fetch.apply(this,arguments); };
+  var _open = XMLHttpRequest.prototype.open, _send = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.open = function(){ try{ this.__scb_block = (!hasConsent() && isTracker(arguments[1])); }catch(e){ this.__scb_block=false; } return _open.apply(this, arguments); };
+  XMLHttpRequest.prototype.send = function(b){ if(this.__scb_block){ try{ this.abort(); }catch(e){} return; } return _send.apply(this, arguments); };
+  var _sb = navigator.sendBeacon; if(_sb) navigator.sendBeacon = function(u,d){ if(!hasConsent() && isTracker(u)) return false; return _sb.call(this,u,d); };
+
+  new MutationObserver(function(list){
+    if(hasConsent()) return;
+    list.forEach(function(rec){
+      rec.addedNodes && rec.addedNodes.forEach(function(n){
+        if(n.nodeType!==1) return;
+        if(n.tagName==='SCRIPT'||n.tagName==='IFRAME') neutralize(n);
+        n.querySelectorAll && n.querySelectorAll('script[src],iframe[src]').forEach(neutralize);
+      });
+    });
+  }).observe(d.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['src','srcset','type']});
+
+})(window,document);
+</script>
+<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+	<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
+	
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<script data-cfasync="false" data-pagespeed-no-defer>
+	var gtm4wp_datalayer_name = "dataLayer";
+	var dataLayer = dataLayer || [];
+	const gtm4wp_use_sku_instead = false;
+	const gtm4wp_currency = 'ILS';
+	const gtm4wp_product_per_impression = 10;
+	const gtm4wp_clear_ecommerce = false;
+</script>
+<!-- End Google Tag Manager for WordPress by gtm4wp.com -->
+	<!-- This site is optimized with the Yoast SEO plugin v24.8.1 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>תקליטים לועזיים לרכישה אונליין | The Vinyl Room - חנות תקליטים</title><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open%20Sans&#038;display=swap" />
+	<meta name="description" content="אוהבים מוסיקה לועזית? ב The Vinyl Room תוכלו למצוא תקליטים לועזיים של מיטב הקלאסיקות האהובות לצד תקליטים לועזיים חדשים להאזנה. היכנסו לצפייה בקטלוג והזמנה" />
+	<link rel="canonical" href="https://thevinylroom.co.il/product-category/לועזי-2/page/69/" />
+	<link rel="prev" href="https://thevinylroom.co.il/product-category/%d7%9c%d7%95%d7%a2%d7%96%d7%99-2/page/68/" />
+	<link rel="next" href="https://thevinylroom.co.il/product-category/%d7%9c%d7%95%d7%a2%d7%96%d7%99-2/page/70/" />
+	<meta property="og:locale" content="he_IL" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="תקליטים לועזיים לרכישה אונליין | The Vinyl Room - חנות תקליטים" />
+	<meta property="og:description" content="אוהבים מוסיקה לועזית? ב The Vinyl Room תוכלו למצוא תקליטים לועזיים של מיטב הקלאסיקות האהובות לצד תקליטים לועזיים חדשים להאזנה. היכנסו לצפייה בקטלוג והזמנה" />
+	<meta property="og:url" content="https://thevinylroom.co.il/product-category/לועזי-2/" />
+	<meta property="og:site_name" content="The Vinyl Room" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://thevinylroom.co.il/product-category/%d7%9c%d7%95%d7%a2%d7%96%d7%99-2/","url":"https://thevinylroom.co.il/product-category/%d7%9c%d7%95%d7%a2%d7%96%d7%99-2/page/69/","name":"תקליטים לועזיים לרכישה אונליין | The Vinyl Room - חנות תקליטים","isPartOf":{"@id":"https://thevinylroom.co.il/#website"},"primaryImageOfPage":{"@id":"https://thevinylroom.co.il/product-category/%d7%9c%d7%95%d7%a2%d7%96%d7%99-2/page/69/#primaryimage"},"image":{"@id":"https://thevinylroom.co.il/product-category/%d7%9c%d7%95%d7%a2%d7%96%d7%99-2/page/69/#primaryimage"},"thumbnailUrl":"https://thevinylroom.co.il/wp-content/uploads/2024/09/war.webp","description":"אוהבים מוסיקה לועזית? ב The Vinyl Room תוכלו למצוא תקליטים לועזיים של מיטב הקלאסיקות האהובות לצד תקליטים לועזיים חדשים להאזנה. היכנסו לצפייה בקטלוג והזמנה","breadcrumb":{"@id":"https://thevinylroom.co.il/product-category/%d7%9c%d7%95%d7%a2%d7%96%d7%99-2/page/69/#breadcrumb"},"inLanguage":"he-IL"},{"@type":"ImageObject","inLanguage":"he-IL","@id":"https://thevinylroom.co.il/product-category/%d7%9c%d7%95%d7%a2%d7%96%d7%99-2/page/69/#primaryimage","url":"https://thevinylroom.co.il/wp-content/uploads/2024/09/war.webp","contentUrl":"https://thevinylroom.co.il/wp-content/uploads/2024/09/war.webp","width":600,"height":600},{"@type":"BreadcrumbList","@id":"https://thevinylroom.co.il/product-category/%d7%9c%d7%95%d7%a2%d7%96%d7%99-2/page/69/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"דף הבית","item":"https://thevinylroom.co.il/"},{"@type":"ListItem","position":2,"name":"תקליטים לועזיים"}]},{"@type":"WebSite","@id":"https://thevinylroom.co.il/#website","url":"https://thevinylroom.co.il/","name":"The Vinyl Room","description":"אתר תקליטים הגדול בישראל","publisher":{"@id":"https://thevinylroom.co.il/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://thevinylroom.co.il/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"he-IL"},{"@type":"Organization","@id":"https://thevinylroom.co.il/#organization","name":"The Vinyl Room","url":"https://thevinylroom.co.il/","logo":{"@type":"ImageObject","inLanguage":"he-IL","@id":"https://thevinylroom.co.il/#/schema/logo/image/","url":"https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1.jpg","contentUrl":"https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1.jpg","width":645,"height":449,"caption":"The Vinyl Room"},"image":{"@id":"https://thevinylroom.co.il/#/schema/logo/image/"},"sameAs":["https://www.facebook.com/thevinylroomhaifa","https://www.instagram.com/thevinylroomhaifa","https://www.youtube.com/channel/UCr-AheyYrZywcYYAm_tOnxg"]}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//cdn.enable.co.il' />
+<link href='https://fonts.gstatic.com' crossorigin rel='preconnect' />
+<link rel="alternate" type="application/rss+xml" title="The Vinyl Room &laquo; פיד‏" href="https://thevinylroom.co.il/feed/" />
+<link rel="alternate" type="application/rss+xml" title="The Vinyl Room &laquo; פיד תגובות‏" href="https://thevinylroom.co.il/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="The Vinyl Room &laquo; פיד קטגוריה תקליטים לועזיים" href="https://thevinylroom.co.il/product-category/%d7%9c%d7%95%d7%a2%d7%96%d7%99-2/feed/" />
+<style id='wp-emoji-styles-inline-css'>
+
+	img.wp-smiley, img.emoji {
+		display: inline !important;
+		border: none !important;
+		box-shadow: none !important;
+		height: 1em !important;
+		width: 1em !important;
+		margin: 0 0.07em !important;
+		vertical-align: -0.1em !important;
+		background: none !important;
+		padding: 0 !important;
+	}
+</style>
+<link rel='stylesheet' id='acoplw-style-css' href='https://thevinylroom.co.il/wp-content/plugins/aco-product-labels-for-woocommerce/includes/../assets/css/frontend.css?ver=1.5.12' media='all' />
+<link rel='stylesheet' id='betanet-epost-jqueryui-css' href='https://thevinylroom.co.il/wp-content/plugins/hfd-epost-integration/css/jquery-ui.min.css?ver=6.7.5' media='all' />
+<link rel='stylesheet' id='betanet-epost-style-css' href='https://thevinylroom.co.il/wp-content/plugins/hfd-epost-integration/css/style.css?ver=6.7.5' media='all' />
+<link rel='stylesheet' id='wcsob-css' href='https://thevinylroom.co.il/wp-content/plugins/sold-out-badge-for-woocommerce//style.css?ver=6.7.5' media='all' />
+<style id='wcsob-inline-css'>
+.wcsob_soldout { color: #0A0A0A;background: #FCFC2C;font-size: 14px;padding-top: 3px;padding-right: 8px;padding-bottom: 3px;padding-left: 8px;font-weight: bold;width: auto;height: auto;border-radius: 50px;z-index: 9999;text-align: center;position: absolute;top: 10px;right: auto;bottom: auto;left: 10px; }.single-product .wcsob_soldout { top: 10px;right: auto;bottom: auto;left: 10px; }
+</style>
+<link rel='stylesheet' id='woocommerce-layout-rtl-css' href='https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/css/woocommerce-layout-rtl.css?ver=9.7.3' media='all' />
+<link rel='stylesheet' id='woocommerce-smallscreen-rtl-css' href='https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/css/woocommerce-smallscreen-rtl.css?ver=9.7.3' media='only screen and (max-width: 768px)' />
+<link rel='stylesheet' id='woocommerce-general-rtl-css' href='https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/css/woocommerce-rtl.css?ver=9.7.3' media='all' />
+<style id='woocommerce-inline-inline-css'>
+.woocommerce form .form-row .required { visibility: visible; }
+</style>
+<link rel='stylesheet' id='brands-styles-css' href='https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/css/brands.css?ver=9.7.3' media='all' />
+<link rel='stylesheet' id='orbisius_ct_hello_elementor_child_theme_parent_style-css' href='https://thevinylroom.co.il/wp-content/themes/hello-elementor/style.css?ver=3.3.0' media='all' />
+<link rel='stylesheet' id='orbisius_ct_hello_elementor_child_theme_parent_style_child_style-css' href='https://thevinylroom.co.il/wp-content/themes/hello-elementor-child-theme/style.css?ver=2.3.0' media='all' />
+<link rel='stylesheet' id='hello-elementor-css' href='https://thevinylroom.co.il/wp-content/themes/hello-elementor/style.min.css?ver=3.3.0' media='all' />
+<link rel='stylesheet' id='hello-elementor-theme-style-css' href='https://thevinylroom.co.il/wp-content/themes/hello-elementor/theme.min.css?ver=3.3.0' media='all' />
+<link rel='stylesheet' id='hello-elementor-header-footer-css' href='https://thevinylroom.co.il/wp-content/themes/hello-elementor/header-footer.min.css?ver=3.3.0' media='all' />
+<link rel='stylesheet' id='wpdreams-asl-basic-css' href='https://thevinylroom.co.il/wp-content/plugins/ajax-search-lite/css/style.basic.css?ver=4.12.6' media='all' />
+<link rel='stylesheet' id='wpdreams-asl-instance-css' href='https://thevinylroom.co.il/wp-content/plugins/ajax-search-lite/css/style-underline.css?ver=4.12.6' media='all' />
+<link rel='stylesheet' id='elementor-frontend-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor/assets/css/frontend-rtl.min.css?ver=3.28.3' media='all' />
+<link rel='stylesheet' id='widget-heading-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor/assets/css/widget-heading-rtl.min.css?ver=3.28.3' media='all' />
+<link rel='stylesheet' id='widget-search-form-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor-pro/assets/css/widget-search-form-rtl.min.css?ver=3.27.7' media='all' />
+<link rel='stylesheet' id='elementor-icons-shared-0-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor/assets/lib/font-awesome/css/fontawesome.min.css?ver=5.15.3' media='all' />
+<link rel='stylesheet' id='elementor-icons-fa-solid-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor/assets/lib/font-awesome/css/solid.min.css?ver=5.15.3' media='all' />
+<link rel='stylesheet' id='widget-nav-menu-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor-pro/assets/css/widget-nav-menu-rtl.min.css?ver=3.27.7' media='all' />
+<link rel='stylesheet' id='widget-woocommerce-menu-cart-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor-pro/assets/css/widget-woocommerce-menu-cart-rtl.min.css?ver=3.27.7' media='all' />
+<link rel='stylesheet' id='widget-image-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor/assets/css/widget-image-rtl.min.css?ver=3.28.3' media='all' />
+<link rel='stylesheet' id='widget-social-icons-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor/assets/css/widget-social-icons-rtl.min.css?ver=3.28.3' media='all' />
+<link rel='stylesheet' id='e-apple-webkit-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor/assets/css/conditionals/apple-webkit.min.css?ver=3.28.3' media='all' />
+<link rel='stylesheet' id='widget-icon-list-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor/assets/css/widget-icon-list-rtl.min.css?ver=3.28.3' media='all' />
+<link rel='stylesheet' id='widget-woocommerce-products-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor-pro/assets/css/widget-woocommerce-products-rtl.min.css?ver=3.27.7' media='all' />
+<link rel='stylesheet' id='widget-woocommerce-products-archive-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor-pro/assets/css/widget-woocommerce-products-archive-rtl.min.css?ver=3.27.7' media='all' />
+<link rel='stylesheet' id='elementor-icons-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor/assets/lib/eicons/css/elementor-icons.min.css?ver=5.36.0' media='all' />
+<link rel='stylesheet' id='elementor-post-11-css' href='https://thevinylroom.co.il/wp-content/uploads/elementor/css/post-11.css?ver=1743693691' media='all' />
+<link rel='stylesheet' id='elementor-post-10910-css' href='https://thevinylroom.co.il/wp-content/uploads/elementor/css/post-10910.css?ver=1773034410' media='all' />
+<link rel='stylesheet' id='elementor-post-14-css' href='https://thevinylroom.co.il/wp-content/uploads/elementor/css/post-14.css?ver=1773616287' media='all' />
+<link rel='stylesheet' id='elementor-post-404-css' href='https://thevinylroom.co.il/wp-content/uploads/elementor/css/post-404.css?ver=1743693768' media='all' />
+<link rel='stylesheet' id='pmw-public-elementor-fix-css' href='https://thevinylroom.co.il/wp-content/plugins/woocommerce-google-adwords-conversion-tracking-tag/css/public/elementor-fix.css?ver=1.47.0' media='all' />
+<link rel='stylesheet' id='atr-scb-css-css' href='https://thevinylroom.co.il/wp-content/plugins/cookie-consent-banner/assets/css/atr-scb.css?ver=1.6.7' media='all' />
+<link rel='stylesheet' id='elementor-gf-local-heebo-css' href='https://thevinylroom.co.il/wp-content/uploads/elementor/google-fonts/css/heebo.css?ver=1743693691' media='all' />
+<link rel='stylesheet' id='elementor-gf-local-assistant-css' href='https://thevinylroom.co.il/wp-content/uploads/elementor/google-fonts/css/assistant.css?ver=1743693695' media='all' />
+<link rel='stylesheet' id='elementor-gf-local-opensanshebrewcondensed-css' href='https://thevinylroom.co.il/wp-content/uploads/elementor/google-fonts/css/opensanshebrewcondensed.css?ver=1743693693' media='all' />
+<link rel='stylesheet' id='elementor-icons-fa-brands-css' href='https://thevinylroom.co.il/wp-content/plugins/elementor/assets/lib/font-awesome/css/brands.min.css?ver=5.15.3' media='all' />
+<script src="https://thevinylroom.co.il/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" id="jquery-core-js"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1" id="jquery-migrate-js"></script>
+<script id="acoplw-script-js-extra">
+var acoplw_frontend_object = {"classname":"","enablejquery":"0"};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/aco-product-labels-for-woocommerce/includes/../assets/js/frontend.js?ver=1.5.12" id="acoplw-script-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js?ver=2.7.0-wc.9.7.3" id="jquery-blockui-js" defer data-wp-strategy="defer"></script>
+<script id="wc-add-to-cart-js-extra">
+var wc_add_to_cart_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","i18n_view_cart":"\u05de\u05e2\u05d1\u05e8 \u05dc\u05e1\u05dc \u05d4\u05e7\u05e0\u05d9\u05d5\u05ea","cart_url":"https:\/\/thevinylroom.co.il\/shopping-cart\/","is_cart":"","cart_redirect_after_add":"yes"};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.min.js?ver=9.7.3" id="wc-add-to-cart-js" defer data-wp-strategy="defer"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js?ver=2.1.4-wc.9.7.3" id="js-cookie-js" defer data-wp-strategy="defer"></script>
+<script id="woocommerce-js-extra">
+var woocommerce_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","i18n_password_show":"\u05dc\u05d4\u05e6\u05d9\u05d2 \u05e1\u05d9\u05e1\u05de\u05d4","i18n_password_hide":"\u05dc\u05d4\u05e1\u05ea\u05d9\u05e8 \u05e1\u05d9\u05e1\u05de\u05d4"};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js?ver=9.7.3" id="woocommerce-js" defer data-wp-strategy="defer"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/dist/hooks.min.js?ver=4d63a3d491d11ffd8ac6" id="wp-hooks-js"></script>
+<script id="wpm-js-extra">
+var wpm = {"ajax_url":"https:\/\/thevinylroom.co.il\/wp-admin\/admin-ajax.php","root":"https:\/\/thevinylroom.co.il\/wp-json\/","nonce_wp_rest":"e6c4e7e31f","nonce_ajax":"6a53108b66"};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/woocommerce-google-adwords-conversion-tracking-tag/js/public/wpm-public.p1.min.js?ver=1.47.0" id="wpm-js"></script>
+<link rel="https://api.w.org/" href="https://thevinylroom.co.il/wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="https://thevinylroom.co.il/wp-json/wp/v2/product_cat/92" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://thevinylroom.co.il/xmlrpc.php?rsd" />
+<meta name="generator" content="WordPress 6.7.5" />
+<meta name="generator" content="WooCommerce 9.7.3" />
+<meta name="google-site-verification" content="DNu8Jao8aMxgW0qbKCO_rlxYlRLK7JaF9gDScKlVFvE" />
+<!-- This website runs the Product Feed PRO for WooCommerce by AdTribes.io plugin - version 13.4.2 -->
+
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<!-- GTM Container placement set to automatic -->
+<script data-cfasync="false" data-pagespeed-no-defer type="text/javascript">
+	var dataLayer_content = {"pagePostType":"product","pagePostType2":"tax-product","pageCategory":[]};
+	dataLayer.push( dataLayer_content );
+</script>
+<script data-rocketlazyloadscript='data:text/javascript;base64,CihmdW5jdGlvbih3LGQscyxsLGkpe3dbbF09d1tsXXx8W107d1tsXS5wdXNoKHsnZ3RtLnN0YXJ0JzoKbmV3IERhdGUoKS5nZXRUaW1lKCksZXZlbnQ6J2d0bS5qcyd9KTt2YXIgZj1kLmdldEVsZW1lbnRzQnlUYWdOYW1lKHMpWzBdLApqPWQuY3JlYXRlRWxlbWVudChzKSxkbD1sIT0nZGF0YUxheWVyJz8nJmw9JytsOicnO2ouYXN5bmM9dHJ1ZTtqLnNyYz0KJy8vd3d3Lmdvb2dsZXRhZ21hbmFnZXIuY29tL2d0bS5qcz9pZD0nK2krZGw7Zi5wYXJlbnROb2RlLmluc2VydEJlZm9yZShqLGYpOwp9KSh3aW5kb3csZG9jdW1lbnQsJ3NjcmlwdCcsJ2RhdGFMYXllcicsJ0dUTS01NDRaUzM4Jyk7Cg==' data-cfasync="false"></script>
+<!-- End Google Tag Manager for WordPress by gtm4wp.com --><script>
+jQuery(document).ready(function($) {
+	$( document.body ).on( 'added_to_cart', function(){
+	   $('.elementor-menu-cart__container').addClass('elementor-menu-cart--shown');
+    });
+});
+	
+</script>
+	<noscript><style>.woocommerce-product-gallery{ opacity: 1 !important; }</style></noscript>
+					<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+				
+				
+				<meta name="generator" content="Elementor 3.28.3; features: additional_custom_breakpoints, e_local_google_fonts; settings: css_print_method-external, google_font-enabled, font_display-auto">
+
+<!-- START Pixel Manager for WooCommerce -->
+
+		<script data-cfasync="false">
+
+			window.wpmDataLayer = window.wpmDataLayer || {};
+			window.wpmDataLayer = Object.assign(window.wpmDataLayer, {"cart":{},"cart_item_keys":{},"version":{"number":"1.47.0","pro":false,"eligible_for_updates":false,"distro":"fms","beta":false,"show":true},"pixels":{"google":{"linker":{"settings":null},"user_id":false,"analytics":{"ga4":{"measurement_id":"G-J6FC0BE7Q0","parameters":{},"mp_active":false,"debug_mode":false,"page_load_time_tracking":false},"id_type":"post_id"},"tracking_id":"G-J6FC0BE7Q0","tcf_support":false,"consent_mode":{"is_active":false,"wait_for_update":500,"ads_data_redaction":false,"url_passthrough":true}}},"shop":{"list_name":"Product Category | תקליטים לועזיים","list_id":"product_category.%d7%9c%d7%95%d7%a2%d7%96%d7%99-2","page_type":"product_category","currency":"ILS","selectors":{"addToCart":[],"beginCheckout":[]},"order_duplication_prevention":true,"view_item_list_trigger":{"test_mode":false,"background_color":"green","opacity":0.5,"repeat":true,"timeout":1000,"threshold":0.8},"variations_output":true,"session_active":false},"page":{"id":11674,"title":"War &#8211; Now Playing (Transparent Red Vinyl) LP","type":"product","categories":[],"parent":{"id":0,"title":"War &#8211; Now Playing (Transparent Red Vinyl) LP","type":"product","categories":[]}},"general":{"user_logged_in":false,"scroll_tracking_thresholds":[],"page_id":11674,"exclude_domains":[],"server_2_server":{"active":false,"ip_exclude_list":[]},"consent_management":{"explicit_consent":false},"lazy_load_pmw":false}});
+
+		</script>
+
+		
+<!-- END Pixel Manager for WooCommerce -->
+			<script data-rocketlazyloadscript='data:text/javascript;base64,CgkJCQkhZnVuY3Rpb24oZixiLGUsdixuLHQscyl7aWYoZi5mYnEpcmV0dXJuO249Zi5mYnE9ZnVuY3Rpb24oKXtuLmNhbGxNZXRob2Q/CgkJCQkJbi5jYWxsTWV0aG9kLmFwcGx5KG4sYXJndW1lbnRzKTpuLnF1ZXVlLnB1c2goYXJndW1lbnRzKX07aWYoIWYuX2ZicSlmLl9mYnE9bjsKCQkJCQluLnB1c2g9bjtuLmxvYWRlZD0hMDtuLnZlcnNpb249JzIuMCc7bi5xdWV1ZT1bXTt0PWIuY3JlYXRlRWxlbWVudChlKTt0LmFzeW5jPSEwOwoJCQkJCXQuc3JjPXY7cz1iLmdldEVsZW1lbnRzQnlUYWdOYW1lKGUpWzBdO3MucGFyZW50Tm9kZS5pbnNlcnRCZWZvcmUodCxzKX0od2luZG93LAoJCQkJCWRvY3VtZW50LCdzY3JpcHQnLCdodHRwczovL2Nvbm5lY3QuZmFjZWJvb2submV0L2VuX1VTL2ZiZXZlbnRzLmpzJyk7CgkJCQ==' type="text/javascript"></script>
+			<!-- WooCommerce Facebook Integration Begin -->
+			<script data-rocketlazyloadscript='data:text/javascript;base64,CgoJCQkJZmJxKCdpbml0JywgJzUxMDAwNDcxOTYyNDk1NCcsIHt9LCB7CiAgICAiYWdlbnQiOiAid29vY29tbWVyY2UtOS43LjMtMy40LjUiCn0pOwoKCQkJCWZicSggJ3RyYWNrJywgJ1BhZ2VWaWV3JywgewogICAgInNvdXJjZSI6ICJ3b29jb21tZXJjZSIsCiAgICAidmVyc2lvbiI6ICI5LjcuMyIsCiAgICAicGx1Z2luVmVyc2lvbiI6ICIzLjQuNSIKfSApOwoKCQkJCWRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoICdET01Db250ZW50TG9hZGVkJywgZnVuY3Rpb24oKSB7CgkJCQkJLy8gSW5zZXJ0IHBsYWNlaG9sZGVyIGZvciBldmVudHMgaW5qZWN0ZWQgd2hlbiBhIHByb2R1Y3QgaXMgYWRkZWQgdG8gdGhlIGNhcnQgdGhyb3VnaCBBSkFYLgoJCQkJCWRvY3VtZW50LmJvZHkuaW5zZXJ0QWRqYWNlbnRIVE1MKCAnYmVmb3JlZW5kJywgJzxkaXYgY2xhc3M9XCJ3Yy1mYWNlYm9vay1waXhlbC1ldmVudC1wbGFjZWhvbGRlclwiPjwvZGl2PicgKTsKCQkJCX0sIGZhbHNlICk7CgoJCQk=' type="text/javascript"></script>
+			<!-- WooCommerce Facebook Integration End -->
+						<style>
+				.e-con.e-parent:nth-of-type(n+4):not(.e-lazyloaded):not(.e-no-lazyload),
+				.e-con.e-parent:nth-of-type(n+4):not(.e-lazyloaded):not(.e-no-lazyload) * {
+					background-image: none !important;
+				}
+				@media screen and (max-height: 1024px) {
+					.e-con.e-parent:nth-of-type(n+3):not(.e-lazyloaded):not(.e-no-lazyload),
+					.e-con.e-parent:nth-of-type(n+3):not(.e-lazyloaded):not(.e-no-lazyload) * {
+						background-image: none !important;
+					}
+				}
+				@media screen and (max-height: 640px) {
+					.e-con.e-parent:nth-of-type(n+2):not(.e-lazyloaded):not(.e-no-lazyload),
+					.e-con.e-parent:nth-of-type(n+2):not(.e-lazyloaded):not(.e-no-lazyload) * {
+						background-image: none !important;
+					}
+				}
+			</style>
+			<meta name="google-site-verification" content="7yldpSsuj9tmZ54FaMVdUZJUuinLE1miM93_YVagUOg" />			            <style>
+				            
+					div[id*='ajaxsearchlitesettings'].searchsettings .asl_option_inner label {
+						font-size: 0px !important;
+						color: rgba(0, 0, 0, 0);
+					}
+					div[id*='ajaxsearchlitesettings'].searchsettings .asl_option_inner label:after {
+						font-size: 11px !important;
+						position: absolute;
+						top: 0;
+						left: 0;
+						z-index: 1;
+					}
+					.asl_w_container {
+						width: 100%;
+						margin: 0px 0px 0px 0px;
+						min-width: 200px;
+					}
+					div[id*='ajaxsearchlite'].asl_m {
+						width: 100%;
+					}
+					div[id*='ajaxsearchliteres'].wpdreams_asl_results div.resdrg span.highlighted {
+						font-weight: bold;
+						color: rgba(217, 49, 43, 1);
+						background-color: rgba(238, 238, 238, 1);
+					}
+					div[id*='ajaxsearchliteres'].wpdreams_asl_results .results img.asl_image {
+						width: 70px;
+						height: 70px;
+						object-fit: cover;
+					}
+					div.asl_r .results {
+						max-height: none;
+					}
+				
+							.asl_w, .asl_w * {font-family:"rubik" !important;}
+							.asl_m input[type=search]::placeholder{font-family:"rubik" !important;}
+							.asl_m input[type=search]::-webkit-input-placeholder{font-family:"rubik" !important;}
+							.asl_m input[type=search]::-moz-placeholder{font-family:"rubik" !important;}
+							.asl_m input[type=search]:-ms-input-placeholder{font-family:"rubik" !important;}
+						
+						.asl_m, .asl_m .probox {
+							background-color: rgba(255, 255, 255, 1) !important;
+							background-image: none !important;
+							-webkit-background-image: none !important;
+							-ms-background-image: none !important;
+						}
+					
+						.asl_m .probox svg {
+							fill: rgba(23, 103, 147, 1) !important;
+						}
+						.asl_m .probox .innericon {
+							background-color: rgba(255, 255, 255, 1) !important;
+							background-image: none !important;
+							-webkit-background-image: none !important;
+							-ms-background-image: none !important;
+						}
+					
+						div.asl_r.asl_w.vertical .results .item::after {
+							display: block;
+							position: absolute;
+							bottom: 0;
+							content: '';
+							height: 1px;
+							width: 100%;
+							background: #D8D8D8;
+						}
+						div.asl_r.asl_w.vertical .results .item.asl_last_item::after {
+							display: none;
+						}
+					 #ajaxsearchlite1 .probox, div.asl_w .probox{
+border:0px;
+}
+.proinput input{
+text-align:right;
+}			            </style>
+			            <style class='wp-fonts-local'>
+@font-face{font-family:Inter;font-style:normal;font-weight:300 900;font-display:fallback;src:url('https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/fonts/Inter-VariableFont_slnt,wght.woff2') format('woff2');font-stretch:normal;}
+@font-face{font-family:Cardo;font-style:normal;font-weight:400;font-display:fallback;src:url('https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/fonts/cardo_normal_400.woff2') format('woff2');}
+</style>
+<link rel="icon" href="https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1-1-32x32.jpg" sizes="32x32" />
+<link rel="icon" href="https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1-1-192x192.jpg" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1-1-180x180.jpg" />
+<meta name="msapplication-TileImage" content="https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1-1-270x270.jpg" />
+</head>
+<body class="rtl archive paged tax-product_cat term-92 wp-custom-logo wp-embed-responsive paged-69 theme-hello-elementor woocommerce woocommerce-page woocommerce-no-js desktop theme-default elementor-page-404 elementor-default elementor-template-full-width elementor-kit-11"><a href="https://thevinylroom.co.il/cdn-cgi/content?id=gmyTvwoZt6E3uA3TTAxKXsbaVH_zoBhW2PRyjPZ0uBc-1774912762.1198597-1.0.1.1-0oBye0OB8AIOh3C8o553tfa.Bd8IxYc2Jks29TLCWuM" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+
+
+<!-- GTM Container placement set to automatic -->
+<!-- Google Tag Manager (noscript) -->
+				<noscript><iframe data-consent="analytics" data-consent-blocked="true" data-scb-src="https://www.googletagmanager.com/ns.html?id=GTM-544ZS38" style="display:none" height="0" width="0" style="display:none;visibility:hidden" aria-hidden="true"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->	<div class="alertbar">משלוח חינם בקנייה באתר מעל ₪189</div>
+		<div data-elementor-type="header" data-elementor-id="10910" class="elementor elementor-10910 elementor-location-header" data-elementor-post-type="elementor_library">
+					<section class="elementor-section elementor-top-section elementor-element elementor-element-665dec0 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="665dec0" data-element_type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-default">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-298d9bf" data-id="298d9bf" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-9a659f7 elementor-widget elementor-widget-heading" data-id="9a659f7" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<p class="elementor-heading-title elementor-size-default">משלוח חינם בקנייה באתר מעל 250 ₪</p>				</div>
+				</div>
+					</div>
+		</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-baac23b elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="baac23b" data-element_type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-default">
+					<div class="elementor-column elementor-col-25 elementor-top-column elementor-element elementor-element-95e920a elementor-hidden-mobile" data-id="95e920a" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-431644d elementor-widget elementor-widget-html" data-id="431644d" data-element_type="widget" data-widget_type="html.default">
+				<div class="elementor-widget-container">
+					<!-- Google tag (gtag.js) -->
+<script data-rocketlazyloadscript='https://www.googletagmanager.com/gtag/js?id=G-J6FC0BE7Q0' async ></script>
+<script data-rocketlazyloadscript='data:text/javascript;base64,DQp3aW5kb3cuZGF0YUxheWVyID0gd2luZG93LmRhdGFMYXllciB8fCBbXTsNCmZ1bmN0aW9uIGd0YWcoKXtkYXRhTGF5ZXIucHVzaChhcmd1bWVudHMpO30NCmd0YWcoJ2pzJywgbmV3IERhdGUoKSk7DQoNCmd0YWcoJ2NvbmZpZycsICdHLUo2RkMwQkU3UTAnKTsNCg==' ></script>				</div>
+				</div>
+				<div class="elementor-element elementor-element-730dcd4 elementor-search-form--skin-classic elementor-search-form--button-type-icon elementor-search-form--icon-search elementor-widget elementor-widget-search-form" data-id="730dcd4" data-element_type="widget" data-settings="{&quot;skin&quot;:&quot;classic&quot;}" data-widget_type="search-form.default">
+				<div class="elementor-widget-container">
+							<search role="search">
+			<form class="elementor-search-form" action="https://thevinylroom.co.il" method="get">
+												<div class="elementor-search-form__container">
+					<label class="elementor-screen-only" for="elementor-search-form-730dcd4">חיפוש</label>
+
+					
+					<input id="elementor-search-form-730dcd4" placeholder="הקלד כאן לחיפוש " class="elementor-search-form__input" type="search" name="s" value="">
+					
+											<button class="elementor-search-form__submit" type="submit" aria-label="חיפוש">
+															<i aria-hidden="true" class="fas fa-search"></i>													</button>
+					
+									</div>
+			</form>
+		</search>
+						</div>
+				</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-25 elementor-top-column elementor-element elementor-element-61f89aa" data-id="61f89aa" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-1f45e61 elementor-nav-menu--stretch elementor-nav-menu__align-start elementor-nav-menu--dropdown-tablet elementor-nav-menu__text-align-aside elementor-nav-menu--toggle elementor-nav-menu--burger elementor-widget elementor-widget-nav-menu" data-id="1f45e61" data-element_type="widget" data-settings="{&quot;full_width&quot;:&quot;stretch&quot;,&quot;submenu_icon&quot;:{&quot;value&quot;:&quot;&lt;i class=\&quot;fas fa-chevron-down\&quot;&gt;&lt;\/i&gt;&quot;,&quot;library&quot;:&quot;fa-solid&quot;},&quot;layout&quot;:&quot;horizontal&quot;,&quot;toggle&quot;:&quot;burger&quot;}" data-widget_type="nav-menu.default">
+				<div class="elementor-widget-container">
+								<nav aria-label="תפריט" class="elementor-nav-menu--main elementor-nav-menu__container elementor-nav-menu--layout-horizontal e--pointer-text e--animation-skew">
+				<ul id="menu-1-1f45e61" class="elementor-nav-menu"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1526"><a href="https://thevinylroom.co.il/" class="elementor-item">חנות</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-1631"><a href="https://thevinylroom.co.il/%d7%90%d7%95%d7%93%d7%95%d7%aa/" class="elementor-item">הסיפור שלנו</a>
+<ul class="sub-menu elementor-nav-menu--dropdown">
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1630"><a href="https://thevinylroom.co.il/%d7%91%d7%9c%d7%95%d7%92/" class="elementor-sub-item">בלוג</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-961"><a href="/קטגוריות-תקליטים/" class="elementor-item">תקליטים</a>
+<ul class="sub-menu elementor-nav-menu--dropdown">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1525"><a href="/product-category/לועזי-2/" class="elementor-sub-item">לועזי</a>
+	<ul class="sub-menu elementor-nav-menu--dropdown">
+		<li class="menu-item menu-item-type-taxonomy menu-item-object-product_cat menu-item-1904"><a href="https://thevinylroom.co.il/product-category/%d7%a4%d7%95%d7%a4-%d7%a8%d7%95%d7%a7/" class="elementor-sub-item">Pop</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1518"><a href="https://thevinylroom.co.il/product-category/%D7%A8%D7%95%D7%A7/" class="elementor-sub-item">Rock</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1956"><a href="/product-category/רוק-כבד-מטאל/" class="elementor-sub-item">Hard Rock</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7999"><a href="https://thevinylroom.co.il/product-category/hard-rockmetal/" class="elementor-sub-item">Metal</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1520"><a href="https://thevinylroom.co.il/product-category/%D7%94%D7%99%D7%A4-%D7%94%D7%95%D7%A4-%D7%A8%D7%90%D7%A4/" class="elementor-sub-item">Hip Hop / Rap</a></li>
+		<li class="menu-item menu-item-type-taxonomy menu-item-object-product_cat menu-item-2239"><a href="https://thevinylroom.co.il/product-category/%d7%92%d7%90%d7%96-%d7%91%d7%9c%d7%95%d7%96/" class="elementor-sub-item">Jazz / Blues</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1905"><a href="/product-category/סול-פאנק/" class="elementor-sub-item">Soul / Funk</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1522"><a href="https://thevinylroom.co.il/product-category/%D7%96%D7%9E%D7%A8%D7%95%D7%AA/" class="elementor-sub-item">זמרות</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1523"><a href="/product-category/זמרים/" class="elementor-sub-item">זמרים</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1524"><a href="/product-category/להקות/" class="elementor-sub-item">להקות</a></li>
+	</ul>
+</li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1527"><a href="/product-category/חדשים/" class="elementor-sub-item">חדשים</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1528"><a href="/product-category/הכי-נמכרים/" class="elementor-sub-item">Best Sellers</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1529"><a href="/product-category/במבצע/" class="elementor-sub-item">Sale</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1530"><a href="/product-category/ישראלי/" class="elementor-sub-item">ישראלי</a></li>
+	<li class="menu-item menu-item-type-taxonomy menu-item-object-product_cat menu-item-has-children menu-item-13042"><a href="https://thevinylroom.co.il/product-category/rsd25/" class="elementor-sub-item">RSD25</a>
+	<ul class="sub-menu elementor-nav-menu--dropdown">
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10450"><a href="https://thevinylroom.co.il/product-category/rsd24/" class="elementor-sub-item">RSD24</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-8097"><a href="https://thevinylroom.co.il/product-category/rsd23/" class="elementor-sub-item">RSD23</a></li>
+	</ul>
+</li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1531"><a href="/קטגוריות-תקליטים/" class="elementor-sub-item">קטלוג</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-11290"><a href="https://thevinylroom.co.il/product-category/%d7%aa%d7%a7%d7%9c%d7%99%d7%98%d7%99%d7%9d-%d7%99%d7%93-2/" class="elementor-item">תקליטים יד 2</a>
+<ul class="sub-menu elementor-nav-menu--dropdown">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11291"><a href="https://thevinylroom.co.il/product-category/%d7%aa%d7%a7%d7%9c%d7%99%d7%98%d7%99%d7%9d-%d7%99%d7%93-2-%d7%99%d7%a9%d7%a8%d7%90%d7%9c/" class="elementor-sub-item">ישראל</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11292"><a href="https://thevinylroom.co.il/product-category/%d7%aa%d7%a7%d7%9c%d7%99%d7%98%d7%99%d7%9d-%d7%99%d7%93-2-%d7%99%d7%a4%d7%9f/" class="elementor-sub-item">יפן</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11293"><a href="https://thevinylroom.co.il/product-category/%d7%aa%d7%a7%d7%9c%d7%99%d7%98%d7%99%d7%9d-%d7%99%d7%93-2-%d7%90%d7%a8%d7%94%d7%91/" class="elementor-sub-item">ארה&quot;ב</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11294"><a href="https://thevinylroom.co.il/product-category/%d7%aa%d7%a7%d7%9c%d7%99%d7%98%d7%99%d7%9d-%d7%99%d7%93-2-%d7%90%d7%99%d7%a8%d7%95%d7%a4%d7%94/" class="elementor-sub-item">אירופה</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7732"><a href="https://thevinylroom.co.il/product-category/cd/" class="elementor-item">דיסקים</a>
+<ul class="sub-menu elementor-nav-menu--dropdown">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7996"><a href="https://thevinylroom.co.il/product-category/cd/%d7%93%d7%99%d7%a1%d7%a7%d7%99%d7%9d-%d7%a4%d7%95%d7%a4/" class="elementor-sub-item">פופ</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-8036"><a href="https://thevinylroom.co.il/product-category/cd/%d7%93%d7%99%d7%a1%d7%a7%d7%99%d7%9d-%d7%94%d7%99%d7%a4-%d7%94%d7%95%d7%a4/" class="elementor-sub-item">היפ הופ</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7997"><a href="https://thevinylroom.co.il/product-category/cd/%d7%93%d7%99%d7%a1%d7%a7%d7%99%d7%9d-%d7%a8%d7%95%d7%a7/" class="elementor-sub-item">רוק</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7998"><a href="https://thevinylroom.co.il/product-category/cd/%d7%93%d7%99%d7%a1%d7%a7%d7%99%d7%9d-%d7%9e%d7%98%d7%90%d7%9c/" class="elementor-sub-item">מטאל</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1232"><a href="/product-category/פטיפונים/" class="elementor-item">פטיפונים</a>
+<ul class="sub-menu elementor-nav-menu--dropdown">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1233"><a href="/product-category/מתנות/" class="elementor-sub-item">מתנות</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1467"><a href="/product-category/מתנות/" class="elementor-sub-item">גיפט קארד</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-product_cat menu-item-13917"><a href="https://thevinylroom.co.il/product-category/%d7%a7%d7%9c%d7%98%d7%95%d7%aa/" class="elementor-item">קלטות</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1629"><a href="https://thevinylroom.co.il/%d7%a6%d7%95%d7%a8-%d7%a7%d7%a9%d7%a8/" class="elementor-item">צור קשר</a></li>
+</ul>			</nav>
+					<div class="elementor-menu-toggle" role="button" tabindex="0" aria-label="כפתור פתיחת תפריט" aria-expanded="false">
+			<i aria-hidden="true" role="presentation" class="elementor-menu-toggle__icon--open eicon-menu-bar"></i><i aria-hidden="true" role="presentation" class="elementor-menu-toggle__icon--close eicon-close"></i>		</div>
+					<nav class="elementor-nav-menu--dropdown elementor-nav-menu__container" aria-hidden="true">
+				<ul id="menu-2-1f45e61" class="elementor-nav-menu"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1526"><a href="https://thevinylroom.co.il/" class="elementor-item" tabindex="-1">חנות</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-1631"><a href="https://thevinylroom.co.il/%d7%90%d7%95%d7%93%d7%95%d7%aa/" class="elementor-item" tabindex="-1">הסיפור שלנו</a>
+<ul class="sub-menu elementor-nav-menu--dropdown">
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1630"><a href="https://thevinylroom.co.il/%d7%91%d7%9c%d7%95%d7%92/" class="elementor-sub-item" tabindex="-1">בלוג</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-961"><a href="/קטגוריות-תקליטים/" class="elementor-item" tabindex="-1">תקליטים</a>
+<ul class="sub-menu elementor-nav-menu--dropdown">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1525"><a href="/product-category/לועזי-2/" class="elementor-sub-item" tabindex="-1">לועזי</a>
+	<ul class="sub-menu elementor-nav-menu--dropdown">
+		<li class="menu-item menu-item-type-taxonomy menu-item-object-product_cat menu-item-1904"><a href="https://thevinylroom.co.il/product-category/%d7%a4%d7%95%d7%a4-%d7%a8%d7%95%d7%a7/" class="elementor-sub-item" tabindex="-1">Pop</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1518"><a href="https://thevinylroom.co.il/product-category/%D7%A8%D7%95%D7%A7/" class="elementor-sub-item" tabindex="-1">Rock</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1956"><a href="/product-category/רוק-כבד-מטאל/" class="elementor-sub-item" tabindex="-1">Hard Rock</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7999"><a href="https://thevinylroom.co.il/product-category/hard-rockmetal/" class="elementor-sub-item" tabindex="-1">Metal</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1520"><a href="https://thevinylroom.co.il/product-category/%D7%94%D7%99%D7%A4-%D7%94%D7%95%D7%A4-%D7%A8%D7%90%D7%A4/" class="elementor-sub-item" tabindex="-1">Hip Hop / Rap</a></li>
+		<li class="menu-item menu-item-type-taxonomy menu-item-object-product_cat menu-item-2239"><a href="https://thevinylroom.co.il/product-category/%d7%92%d7%90%d7%96-%d7%91%d7%9c%d7%95%d7%96/" class="elementor-sub-item" tabindex="-1">Jazz / Blues</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1905"><a href="/product-category/סול-פאנק/" class="elementor-sub-item" tabindex="-1">Soul / Funk</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1522"><a href="https://thevinylroom.co.il/product-category/%D7%96%D7%9E%D7%A8%D7%95%D7%AA/" class="elementor-sub-item" tabindex="-1">זמרות</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1523"><a href="/product-category/זמרים/" class="elementor-sub-item" tabindex="-1">זמרים</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1524"><a href="/product-category/להקות/" class="elementor-sub-item" tabindex="-1">להקות</a></li>
+	</ul>
+</li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1527"><a href="/product-category/חדשים/" class="elementor-sub-item" tabindex="-1">חדשים</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1528"><a href="/product-category/הכי-נמכרים/" class="elementor-sub-item" tabindex="-1">Best Sellers</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1529"><a href="/product-category/במבצע/" class="elementor-sub-item" tabindex="-1">Sale</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1530"><a href="/product-category/ישראלי/" class="elementor-sub-item" tabindex="-1">ישראלי</a></li>
+	<li class="menu-item menu-item-type-taxonomy menu-item-object-product_cat menu-item-has-children menu-item-13042"><a href="https://thevinylroom.co.il/product-category/rsd25/" class="elementor-sub-item" tabindex="-1">RSD25</a>
+	<ul class="sub-menu elementor-nav-menu--dropdown">
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10450"><a href="https://thevinylroom.co.il/product-category/rsd24/" class="elementor-sub-item" tabindex="-1">RSD24</a></li>
+		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-8097"><a href="https://thevinylroom.co.il/product-category/rsd23/" class="elementor-sub-item" tabindex="-1">RSD23</a></li>
+	</ul>
+</li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1531"><a href="/קטגוריות-תקליטים/" class="elementor-sub-item" tabindex="-1">קטלוג</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-11290"><a href="https://thevinylroom.co.il/product-category/%d7%aa%d7%a7%d7%9c%d7%99%d7%98%d7%99%d7%9d-%d7%99%d7%93-2/" class="elementor-item" tabindex="-1">תקליטים יד 2</a>
+<ul class="sub-menu elementor-nav-menu--dropdown">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11291"><a href="https://thevinylroom.co.il/product-category/%d7%aa%d7%a7%d7%9c%d7%99%d7%98%d7%99%d7%9d-%d7%99%d7%93-2-%d7%99%d7%a9%d7%a8%d7%90%d7%9c/" class="elementor-sub-item" tabindex="-1">ישראל</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11292"><a href="https://thevinylroom.co.il/product-category/%d7%aa%d7%a7%d7%9c%d7%99%d7%98%d7%99%d7%9d-%d7%99%d7%93-2-%d7%99%d7%a4%d7%9f/" class="elementor-sub-item" tabindex="-1">יפן</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11293"><a href="https://thevinylroom.co.il/product-category/%d7%aa%d7%a7%d7%9c%d7%99%d7%98%d7%99%d7%9d-%d7%99%d7%93-2-%d7%90%d7%a8%d7%94%d7%91/" class="elementor-sub-item" tabindex="-1">ארה&quot;ב</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11294"><a href="https://thevinylroom.co.il/product-category/%d7%aa%d7%a7%d7%9c%d7%99%d7%98%d7%99%d7%9d-%d7%99%d7%93-2-%d7%90%d7%99%d7%a8%d7%95%d7%a4%d7%94/" class="elementor-sub-item" tabindex="-1">אירופה</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7732"><a href="https://thevinylroom.co.il/product-category/cd/" class="elementor-item" tabindex="-1">דיסקים</a>
+<ul class="sub-menu elementor-nav-menu--dropdown">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7996"><a href="https://thevinylroom.co.il/product-category/cd/%d7%93%d7%99%d7%a1%d7%a7%d7%99%d7%9d-%d7%a4%d7%95%d7%a4/" class="elementor-sub-item" tabindex="-1">פופ</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-8036"><a href="https://thevinylroom.co.il/product-category/cd/%d7%93%d7%99%d7%a1%d7%a7%d7%99%d7%9d-%d7%94%d7%99%d7%a4-%d7%94%d7%95%d7%a4/" class="elementor-sub-item" tabindex="-1">היפ הופ</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7997"><a href="https://thevinylroom.co.il/product-category/cd/%d7%93%d7%99%d7%a1%d7%a7%d7%99%d7%9d-%d7%a8%d7%95%d7%a7/" class="elementor-sub-item" tabindex="-1">רוק</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7998"><a href="https://thevinylroom.co.il/product-category/cd/%d7%93%d7%99%d7%a1%d7%a7%d7%99%d7%9d-%d7%9e%d7%98%d7%90%d7%9c/" class="elementor-sub-item" tabindex="-1">מטאל</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1232"><a href="/product-category/פטיפונים/" class="elementor-item" tabindex="-1">פטיפונים</a>
+<ul class="sub-menu elementor-nav-menu--dropdown">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1233"><a href="/product-category/מתנות/" class="elementor-sub-item" tabindex="-1">מתנות</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1467"><a href="/product-category/מתנות/" class="elementor-sub-item" tabindex="-1">גיפט קארד</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-product_cat menu-item-13917"><a href="https://thevinylroom.co.il/product-category/%d7%a7%d7%9c%d7%98%d7%95%d7%aa/" class="elementor-item" tabindex="-1">קלטות</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1629"><a href="https://thevinylroom.co.il/%d7%a6%d7%95%d7%a8-%d7%a7%d7%a9%d7%a8/" class="elementor-item" tabindex="-1">צור קשר</a></li>
+</ul>			</nav>
+						</div>
+				</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-25 elementor-top-column elementor-element elementor-element-0d13f4e" data-id="0d13f4e" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-f334dfc toggle-icon--cart-light elementor-menu-cart--items-indicator-bubble elementor-menu-cart--show-subtotal-yes elementor-menu-cart--cart-type-side-cart elementor-menu-cart--show-remove-button-yes elementor-widget elementor-widget-woocommerce-menu-cart" data-id="f334dfc" data-element_type="widget" data-settings="{&quot;cart_type&quot;:&quot;side-cart&quot;,&quot;open_cart&quot;:&quot;click&quot;,&quot;automatically_open_cart&quot;:&quot;no&quot;}" data-widget_type="woocommerce-menu-cart.default">
+				<div class="elementor-widget-container">
+							<div class="elementor-menu-cart__wrapper">
+							<div class="elementor-menu-cart__toggle_wrapper">
+					<div class="elementor-menu-cart__container elementor-lightbox" aria-hidden="true">
+						<div class="elementor-menu-cart__main" aria-hidden="true">
+									<div class="elementor-menu-cart__close-button">
+					</div>
+									<div class="widget_shopping_cart_content">
+															</div>
+						</div>
+					</div>
+							<div class="elementor-menu-cart__toggle elementor-button-wrapper">
+			<a id="elementor-menu-cart__toggle_button" href="#" class="elementor-menu-cart__toggle_button elementor-button elementor-size-sm" aria-expanded="false">
+				<span class="elementor-button-text"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>0</bdi></span></span>
+				<span class="elementor-button-icon">
+					<span class="elementor-button-icon-qty" data-counter="0">0</span>
+					<i class="eicon-cart-light"></i>					<span class="elementor-screen-only">עגלת קניות</span>
+				</span>
+			</a>
+		</div>
+						</div>
+					</div> <!-- close elementor-menu-cart__wrapper -->
+						</div>
+				</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-25 elementor-top-column elementor-element elementor-element-d0937e5" data-id="d0937e5" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-d0edefe elementor-widget elementor-widget-theme-site-logo elementor-widget-image" data-id="d0edefe" data-element_type="widget" data-widget_type="theme-site-logo.default">
+				<div class="elementor-widget-container">
+											<a href="https://thevinylroom.co.il">
+			<img fetchpriority="high" width="645" height="449" src="https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1.jpg" class="attachment-full size-full wp-image-1574" alt="" srcset="https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1.jpg 645w, https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1-300x209.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1-600x418.jpg 600w" sizes="(max-width: 645px) 100vw, 645px" />				</a>
+											</div>
+				</div>
+					</div>
+		</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-08f73bf elementor-section-full_width elementor-hidden-desktop elementor-hidden-tablet elementor-section-height-default elementor-section-height-default" data-id="08f73bf" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-e6edb86" data-id="e6edb86" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-fd6caa0 elementor-search-form--skin-classic elementor-search-form--button-type-icon elementor-search-form--icon-search elementor-widget elementor-widget-search-form" data-id="fd6caa0" data-element_type="widget" data-settings="{&quot;skin&quot;:&quot;classic&quot;}" data-widget_type="search-form.default">
+				<div class="elementor-widget-container">
+							<search role="search">
+			<form class="elementor-search-form" action="https://thevinylroom.co.il" method="get">
+												<div class="elementor-search-form__container">
+					<label class="elementor-screen-only" for="elementor-search-form-fd6caa0">חיפוש</label>
+
+					
+					<input id="elementor-search-form-fd6caa0" placeholder="הקלד כאן לחיפוש מהיר" class="elementor-search-form__input" type="search" name="s" value="">
+					
+											<button class="elementor-search-form__submit" type="submit" aria-label="חיפוש">
+															<i aria-hidden="true" class="fas fa-search"></i>													</button>
+					
+									</div>
+			</form>
+		</search>
+						</div>
+				</div>
+					</div>
+		</div>
+					</div>
+		</section>
+				</div>
+				<div data-elementor-type="product-archive" data-elementor-id="404" class="elementor elementor-404 elementor-location-archive product" data-elementor-post-type="elementor_library">
+					<section class="elementor-section elementor-top-section elementor-element elementor-element-9b4f48b elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="9b4f48b" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-29e5137" data-id="29e5137" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-267d39d elementor-widget elementor-widget-heading" data-id="267d39d" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<h1 class="elementor-heading-title elementor-size-default">תקליטים לועזיים</h1>				</div>
+				</div>
+				<div class="elementor-element elementor-element-6631ec9 elementor-product-loop-item--align-center elementor-products-grid elementor-wc-products elementor-show-pagination-border-yes elementor-widget elementor-widget-wc-archive-products" data-id="6631ec9" data-element_type="widget" data-widget_type="wc-archive-products.default">
+				<div class="elementor-widget-container">
+					<div class="woocommerce columns-4 "><div class="woocommerce-notices-wrapper"></div><p class="woocommerce-result-count" role="alert" aria-relevant="all" data-is-sorted-by="true">
+	מציג 1089–1104 מתוך 2357 תוצאות<span class="screen-reader-text">ממוין לפי הפריט העדכני ביותר</span></p>
+<form class="woocommerce-ordering" method="get">
+		<select
+		name="orderby"
+		class="orderby"
+					aria-label="הזמנה בחנות"
+			>
+					<option value="popularity" >למיין לפי פופולריות</option>
+					<option value="rating" >למיין לפי דירוג ממוצע</option>
+					<option value="date"  selected='selected'>למיין לפי המעודכן ביותר</option>
+					<option value="price" >למיין מהזול ליקר</option>
+					<option value="price-desc" >למיין מהיקר לזול</option>
+			</select>
+	<input type="hidden" name="paged" value="1" />
+	</form>
+<ul class="products elementor-grid columns-4">
+<li class="product type-product post-11674 status-publish first outofstock product_cat-colored-vinyl product_cat-103 product_cat-166 product_cat-82 product_cat-167 product_cat-83 product_cat-92 product_tag-funk-soul product_tag-soul product_tag-war has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/war-now-playing-transparent-red-vinyl-lp/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+	<span class="wcsob_soldout">אזל מהמלאי</span>
+	<img width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/09/war-300x300.webp" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/09/war-300x300.webp 300w, https://thevinylroom.co.il/wp-content/uploads/2024/09/war-150x150.webp 150w, https://thevinylroom.co.il/wp-content/uploads/2024/09/war-100x100.webp 100w, https://thevinylroom.co.il/wp-content/uploads/2024/09/war.webp 600w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">War &#8211; Now Playing (Transparent Red Vinyl) LP</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>130</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="https://thevinylroom.co.il/product/war-now-playing-transparent-red-vinyl-lp/" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_11674" data-quantity="1" class="button product_type_simple" data-product_id="11674" data-product_sku="הליקון 603497826056" aria-label="מידע נוסף על &quot;War - Now Playing (Transparent Red Vinyl) LP&quot;" rel="nofollow" data-success_message="">מידע נוסף</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_11674" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:11674,&quot;item_id&quot;:11674,&quot;item_name&quot;:&quot;War - Now Playing (Transparent Red Vinyl) LP&quot;,&quot;sku&quot;:&quot;\u05d4\u05dc\u05d9\u05e7\u05d5\u05df 603497826056&quot;,&quot;price&quot;:130,&quot;stocklevel&quot;:0,&quot;stockstatus&quot;:&quot;outofstock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;Colored Vinyl&quot;,&quot;id&quot;:11674,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/war-now-playing-transparent-red-vinyl-lp\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1089,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="11674">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[11674] = {"id":"11674","sku":"הליקון 603497826056","price":130,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"11674","sku":"הליקון 603497826056","gpf":"woocommerce_gpf_11674","gla":"gla_11674"},"is_variable":false,"type":"simple","name":"War - Now Playing (Transparent Red Vinyl) LP","category":["Colored Vinyl","Soul / Funk","חיפה","להקות","קרית ביאליק","תקליטים חדשים","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[11674]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-11669 status-publish instock product_cat-colored-vinyl product_cat-80 product_cat-167 product_cat-83 product_cat-92 product_cat-76 product_tag-colored-vinyl product_tag-katy-perry product_tag-new-arrivals product_tag-pop product_tag-125 has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/katy-perry-143-silver-lp/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link"><img width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/09/Katy-Perry-–-143-300x300.webp" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/09/Katy-Perry-–-143-300x300.webp 300w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Katy-Perry-–-143-150x150.webp 150w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Katy-Perry-–-143-768x768.webp 768w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Katy-Perry-–-143-600x600.webp 600w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Katy-Perry-–-143-100x100.webp 100w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Katy-Perry-–-143.webp 800w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Katy Perry – 143 (Silver LP)</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>130</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="?add-to-cart=11669" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_11669" data-quantity="1" class="button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="11669" data-product_sku="הליקון 602465897401" aria-label="הוספה לעגלת הקניות: &quot;Katy Perry – 143 (Silver LP)&quot;" rel="nofollow" data-success_message="הפריט &quot;Katy Perry – 143 (Silver LP)&quot; נוסף לעגלת הקניות">הוספה לסל</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_11669" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:11669,&quot;item_id&quot;:11669,&quot;item_name&quot;:&quot;Katy Perry \u2013 143 (Silver LP)&quot;,&quot;sku&quot;:&quot;\u05d4\u05dc\u05d9\u05e7\u05d5\u05df 602465897401&quot;,&quot;price&quot;:130,&quot;stocklevel&quot;:1,&quot;stockstatus&quot;:&quot;instock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;\u05e7\u05e8\u05d9\u05ea \u05d1\u05d9\u05d0\u05dc\u05d9\u05e7&quot;,&quot;id&quot;:11669,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/katy-perry-143-silver-lp\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1090,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="11669">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[11669] = {"id":"11669","sku":"הליקון 602465897401","price":130,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"11669","sku":"הליקון 602465897401","gpf":"woocommerce_gpf_11669","gla":"gla_11669"},"is_variable":false,"type":"simple","name":"Katy Perry – 143 (Silver LP)","category":["Colored Vinyl","זמרות","קרית ביאליק","תקליטים חדשים","תקליטים לועזיים","תקליטים של פופ / תקליטים של רוק"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[11669]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-11556 status-publish instock product_cat-hard-rockmetal product_cat-music-on-vinyl product_cat-82 product_cat-167 product_cat-83 product_cat-92 product_tag-heavy-metal product_tag-music-on-vinyl product_tag-suicidal-tendencies product_tag-105 has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/suicidal-tendencies-still-cyco-after-all-these-years/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link"><img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/09/Suicidal-Tendencies-Still-Cyco-After-All-These-Years-300x300.webp" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/09/Suicidal-Tendencies-Still-Cyco-After-All-These-Years-300x300.webp 300w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Suicidal-Tendencies-Still-Cyco-After-All-These-Years-150x150.webp 150w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Suicidal-Tendencies-Still-Cyco-After-All-These-Years-100x100.webp 100w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Suicidal Tendencies &#8211; Still Cyco After All These Years</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>150</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="?add-to-cart=11556" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_11556" data-quantity="1" class="button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="11556" data-product_sku="8718469533084" aria-label="הוספה לעגלת הקניות: &quot;Suicidal Tendencies - Still Cyco After All These Years&quot;" rel="nofollow" data-success_message="הפריט &quot;Suicidal Tendencies - Still Cyco After All These Years&quot; נוסף לעגלת הקניות">הוספה לסל</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_11556" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:11556,&quot;item_id&quot;:11556,&quot;item_name&quot;:&quot;Suicidal Tendencies - Still Cyco After All These Years&quot;,&quot;sku&quot;:&quot;8718469533084&quot;,&quot;price&quot;:150,&quot;stocklevel&quot;:1,&quot;stockstatus&quot;:&quot;instock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;Hard Rock &amp; Metal&quot;,&quot;id&quot;:11556,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/suicidal-tendencies-still-cyco-after-all-these-years\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1091,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="11556">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[11556] = {"id":"11556","sku":"8718469533084","price":150,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"11556","sku":"8718469533084","gpf":"woocommerce_gpf_11556","gla":"gla_11556"},"is_variable":false,"type":"simple","name":"Suicidal Tendencies - Still Cyco After All These Years","category":["Hard Rock &amp; Metal","Music On Vinyl","להקות","קרית ביאליק","תקליטים חדשים","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[11556]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-11549 status-publish last outofstock product_cat-hard-rockmetal product_cat-music-on-vinyl product_cat-166 product_cat-82 product_cat-167 product_cat-92 product_tag-heavy-metal product_tag-music-on-vinyl product_tag-tankard product_tag-105 has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/tankard-two-faced-limited-edition-half-half-colour/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+	<span class="wcsob_soldout">אזל מהמלאי</span>
+	<img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/09/Tankard-Two-faced-Limited-Edition-Half-Half-Colour-300x300.webp" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/09/Tankard-Two-faced-Limited-Edition-Half-Half-Colour-300x300.webp 300w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Tankard-Two-faced-Limited-Edition-Half-Half-Colour-150x150.webp 150w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Tankard-Two-faced-Limited-Edition-Half-Half-Colour-100x100.webp 100w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Tankard-Two-faced-Limited-Edition-Half-Half-Colour.webp 400w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Tankard &#8211; Two-faced [Limited Edition Half &#038; Half Colour]</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>150</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="https://thevinylroom.co.il/product/tankard-two-faced-limited-edition-half-half-colour/" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_11549" data-quantity="1" class="button product_type_simple" data-product_id="11549" data-product_sku="4050538270037" aria-label="מידע נוסף על &quot;Tankard - Two-faced [Limited Edition Half &amp; Half Colour]&quot;" rel="nofollow" data-success_message="">מידע נוסף</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_11549" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:11549,&quot;item_id&quot;:11549,&quot;item_name&quot;:&quot;Tankard - Two-faced [Limited Edition Half &amp; Half Colour]&quot;,&quot;sku&quot;:&quot;4050538270037&quot;,&quot;price&quot;:150,&quot;stocklevel&quot;:0,&quot;stockstatus&quot;:&quot;outofstock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;Hard Rock &amp; Metal&quot;,&quot;id&quot;:11549,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/tankard-two-faced-limited-edition-half-half-colour\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1092,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="11549">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[11549] = {"id":"11549","sku":"4050538270037","price":150,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"11549","sku":"4050538270037","gpf":"woocommerce_gpf_11549","gla":"gla_11549"},"is_variable":false,"type":"simple","name":"Tankard - Two-faced [Limited Edition Half & Half Colour]","category":["Hard Rock &amp; Metal","Music On Vinyl","חיפה","להקות","קרית ביאליק","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[11549]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-11547 status-publish first instock product_cat-hard-rockmetal product_cat-music-on-vinyl product_cat-82 product_cat-167 product_cat-92 product_tag-heavy-metal product_tag-music-on-vinyl product_tag-white-zombie product_tag-105 has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/white-zombie-astro-creep-2000-lp/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link"><img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/09/White-Zombie-Astro-Creep-2000-300x300.webp" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/09/White-Zombie-Astro-Creep-2000-300x300.webp 300w, https://thevinylroom.co.il/wp-content/uploads/2024/09/White-Zombie-Astro-Creep-2000-150x150.webp 150w, https://thevinylroom.co.il/wp-content/uploads/2024/09/White-Zombie-Astro-Creep-2000-768x768.webp 768w, https://thevinylroom.co.il/wp-content/uploads/2024/09/White-Zombie-Astro-Creep-2000-600x600.webp 600w, https://thevinylroom.co.il/wp-content/uploads/2024/09/White-Zombie-Astro-Creep-2000-100x100.webp 100w, https://thevinylroom.co.il/wp-content/uploads/2024/09/White-Zombie-Astro-Creep-2000.webp 800w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">White Zombie &#8211; Astro-Creep 2000 LP</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>150</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="?add-to-cart=11547" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_11547" data-quantity="1" class="button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="11547" data-product_sku="0600753381526" aria-label="הוספה לעגלת הקניות: &quot;White Zombie - Astro-Creep 2000 LP&quot;" rel="nofollow" data-success_message="הפריט &quot;White Zombie - Astro-Creep 2000 LP&quot; נוסף לעגלת הקניות">הוספה לסל</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_11547" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:11547,&quot;item_id&quot;:11547,&quot;item_name&quot;:&quot;White Zombie - Astro-Creep 2000 LP&quot;,&quot;sku&quot;:&quot;0600753381526&quot;,&quot;price&quot;:150,&quot;stocklevel&quot;:1,&quot;stockstatus&quot;:&quot;instock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;Hard Rock &amp; Metal&quot;,&quot;id&quot;:11547,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/white-zombie-astro-creep-2000-lp\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1093,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="11547">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[11547] = {"id":"11547","sku":"0600753381526","price":150,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"11547","sku":"0600753381526","gpf":"woocommerce_gpf_11547","gla":"gla_11547"},"is_variable":false,"type":"simple","name":"White Zombie - Astro-Creep 2000 LP","category":["Hard Rock &amp; Metal","Music On Vinyl","להקות","קרית ביאליק","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[11547]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-11696 status-publish outofstock product_cat-103 product_cat-80 product_cat-166 product_cat-167 product_cat-83 product_cat-92 product_tag-funk-soul product_tag-sade product_tag-soul product_tag-125 has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/sade-soldier-of-love/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+	<span class="wcsob_soldout">אזל מהמלאי</span>
+	<img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Soldier-Of-Love-300x300.jpg" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Soldier-Of-Love-300x300.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Soldier-Of-Love-150x150.jpg 150w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Soldier-Of-Love-100x100.jpg 100w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Soldier-Of-Love.jpg 500w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Sade – Soldier Of Love LP</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>130</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="https://thevinylroom.co.il/product/sade-soldier-of-love/" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_11696" data-quantity="1" class="button product_type_simple" data-product_id="11696" data-product_sku="עדלי 196587848514" aria-label="מידע נוסף על &quot;Sade – Soldier Of Love LP&quot;" rel="nofollow" data-success_message="">מידע נוסף</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_11696" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:11696,&quot;item_id&quot;:11696,&quot;item_name&quot;:&quot;Sade \u2013 Soldier Of Love LP&quot;,&quot;sku&quot;:&quot;\u05e2\u05d3\u05dc\u05d9 196587848514&quot;,&quot;price&quot;:130,&quot;stocklevel&quot;:0,&quot;stockstatus&quot;:&quot;outofstock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;\u05d7\u05d9\u05e4\u05d4&quot;,&quot;id&quot;:11696,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/sade-soldier-of-love\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1094,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="11696">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[11696] = {"id":"11696","sku":"עדלי 196587848514","price":130,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"11696","sku":"עדלי 196587848514","gpf":"woocommerce_gpf_11696","gla":"gla_11696"},"is_variable":false,"type":"simple","name":"Sade – Soldier Of Love LP","category":["Soul / Funk","זמרות","חיפה","קרית ביאליק","תקליטים חדשים","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[11696]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-11694 status-publish outofstock product_cat-downtempo product_cat-electronic product_cat-reggae product_cat-103 product_cat-80 product_cat-166 product_cat-167 product_cat-83 product_cat-92 product_tag-downtempo product_tag-electronic product_tag-funk-soul product_tag-lovers-rock product_tag-reggae product_tag-rock product_tag-sade product_tag-soft-rock product_tag-soul product_tag-125 has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/sade-lovers-rock/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+	<span class="wcsob_soldout">אזל מהמלאי</span>
+	<img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Lovers-Rock-300x300.jpg" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Lovers-Rock-300x300.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Lovers-Rock-150x150.jpg 150w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Lovers-Rock-100x100.jpg 100w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Lovers-Rock.jpg 600w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Sade – Lovers Rock LP</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>130</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="https://thevinylroom.co.il/product/sade-lovers-rock/" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_11694" data-quantity="1" class="button product_type_simple" data-product_id="11694" data-product_sku="עדלי 196587848415" aria-label="מידע נוסף על &quot;Sade – Lovers Rock LP&quot;" rel="nofollow" data-success_message="">מידע נוסף</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_11694" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:11694,&quot;item_id&quot;:11694,&quot;item_name&quot;:&quot;Sade \u2013 Lovers Rock LP&quot;,&quot;sku&quot;:&quot;\u05e2\u05d3\u05dc\u05d9 196587848415&quot;,&quot;price&quot;:130,&quot;stocklevel&quot;:0,&quot;stockstatus&quot;:&quot;outofstock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;Soul &quot;,&quot;item_category2&quot;:&quot; Funk&quot;,&quot;id&quot;:11694,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/sade-lovers-rock\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1095,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="11694">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[11694] = {"id":"11694","sku":"עדלי 196587848415","price":130,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"11694","sku":"עדלי 196587848415","gpf":"woocommerce_gpf_11694","gla":"gla_11694"},"is_variable":false,"type":"simple","name":"Sade – Lovers Rock LP","category":["Downtempo","Electronic","Reggae","Soul / Funk","זמרות","חיפה","קרית ביאליק","תקליטים חדשים","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[11694]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-11680 status-publish last outofstock product_cat-80 product_cat-166 product_cat-167 product_cat-83 product_cat-92 product_cat-76 product_tag-pop product_tag-sade product_tag-125 has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/sade-love-deluxe/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+	<span class="wcsob_soldout">אזל מהמלאי</span>
+	<img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Love-Deluxe-1-300x300.webp" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Love-Deluxe-1-300x300.webp 300w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Love-Deluxe-1-150x150.webp 150w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Love-Deluxe-1-100x100.webp 100w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Sade-–-Love-Deluxe-1.webp 600w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Sade – Love Deluxe</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>130</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="https://thevinylroom.co.il/product/sade-love-deluxe/" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_11680" data-quantity="1" class="button product_type_simple" data-product_id="11680" data-product_sku="עדלי 0196587848316" aria-label="מידע נוסף על &quot;Sade – Love Deluxe&quot;" rel="nofollow" data-success_message="">מידע נוסף</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_11680" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:11680,&quot;item_id&quot;:11680,&quot;item_name&quot;:&quot;Sade \u2013 Love Deluxe&quot;,&quot;sku&quot;:&quot;\u05e2\u05d3\u05dc\u05d9 0196587848316&quot;,&quot;price&quot;:130,&quot;stocklevel&quot;:0,&quot;stockstatus&quot;:&quot;outofstock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;\u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05e9\u05dc \u05e4\u05d5\u05e4 &quot;,&quot;item_category2&quot;:&quot; \u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05e9\u05dc \u05e8\u05d5\u05e7&quot;,&quot;id&quot;:11680,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/sade-love-deluxe\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1096,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="11680">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[11680] = {"id":"11680","sku":"עדלי 0196587848316","price":130,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"11680","sku":"עדלי 0196587848316","gpf":"woocommerce_gpf_11680","gla":"gla_11680"},"is_variable":false,"type":"simple","name":"Sade – Love Deluxe","category":["זמרות","חיפה","קרית ביאליק","תקליטים חדשים","תקליטים לועזיים","תקליטים של פופ / תקליטים של רוק"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[11680]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-10753 status-publish first instock product_cat-80s product_cat-75 product_cat-166 product_cat-82 product_cat-98 product_cat-83 product_cat-92 product_tag-blondie product_tag-new-arrivals product_tag-new-wave product_tag-rock product_tag-105 product_tag-374 has-post-thumbnail sale taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/blondie-against-the-odds-1974-1982-deluxe-edition/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+	<span class="onsale">מבצע!</span>
+	<img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/05/Blondie-‎–-Against-The-Odds-1974-1982-Deluxe-Edition-300x300.jpg" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/05/Blondie-‎–-Against-The-Odds-1974-1982-Deluxe-Edition-300x300.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2024/05/Blondie-‎–-Against-The-Odds-1974-1982-Deluxe-Edition-150x150.jpg 150w, https://thevinylroom.co.il/wp-content/uploads/2024/05/Blondie-‎–-Against-The-Odds-1974-1982-Deluxe-Edition-768x768.jpg 768w, https://thevinylroom.co.il/wp-content/uploads/2024/05/Blondie-‎–-Against-The-Odds-1974-1982-Deluxe-Edition-600x600.jpg 600w, https://thevinylroom.co.il/wp-content/uploads/2024/05/Blondie-‎–-Against-The-Odds-1974-1982-Deluxe-Edition-100x100.jpg 100w, https://thevinylroom.co.il/wp-content/uploads/2024/05/Blondie-‎–-Against-The-Odds-1974-1982-Deluxe-Edition.jpg 894w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Blondie ‎– Against The Odds 1974-1982 Deluxe Edition</h2>
+	<span class="price"><del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>680</bdi></span></del> <span class="screen-reader-text">המחיר המקורי היה: &#8362;680.</span><ins aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>480</bdi></span></ins><span class="screen-reader-text">המחיר הנוכחי הוא: &#8362;480.</span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="?add-to-cart=10753" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_10753" data-quantity="1" class="button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="10753" data-product_sku="הליקון 060250876074" aria-label="הוספה לעגלת הקניות: &quot;Blondie ‎– Against The Odds 1974-1982 Deluxe Edition&quot;" rel="nofollow" data-success_message="הפריט &quot;Blondie ‎– Against The Odds 1974-1982 Deluxe Edition&quot; נוסף לעגלת הקניות">הוספה לסל</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_10753" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:10753,&quot;item_id&quot;:10753,&quot;item_name&quot;:&quot;Blondie \u200e\u2013 Against The Odds 1974-1982 Deluxe Edition&quot;,&quot;sku&quot;:&quot;\u05d4\u05dc\u05d9\u05e7\u05d5\u05df 060250876074&quot;,&quot;price&quot;:480,&quot;stocklevel&quot;:1,&quot;stockstatus&quot;:&quot;instock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;\u05d7\u05d9\u05e4\u05d4&quot;,&quot;id&quot;:10753,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/blondie-against-the-odds-1974-1982-deluxe-edition\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1097,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="10753">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[10753] = {"id":"10753","sku":"הליקון 060250876074","price":480,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"10753","sku":"הליקון 060250876074","gpf":"woocommerce_gpf_10753","gla":"gla_10753"},"is_variable":false,"type":"simple","name":"Blondie ‎– Against The Odds 1974-1982 Deluxe Edition","category":["80s","Rock","חיפה","להקות","תקליטים","תקליטים חדשים","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[10753]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-10472 status-publish instock product_cat-80 product_cat-166 product_cat-98 product_cat-83 product_cat-92 product_cat-76 product_tag-cher product_tag-new-arrivals product_tag-pop product_tag-125 product_tag-536 product_tag-108 product_tag-374 has-post-thumbnail sale taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/cher-believe-25th-anniversary-deluxe-edition-clear-sea-blue-light-blue-vinyl-3lp/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+	<span class="onsale">מבצע!</span>
+	<img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/03/Cher-–-Believe-25th-Anniversary-Deluxe-Edition-Clear-Sea-Blue-Light-Blue-Vinyl-–-3LP-300x300.jpg" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="Cher – Believe (25th Anniversary Deluxe Edition) Clear, Sea Blue &amp; Light Blue Vinyl – 3LP" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/03/Cher-–-Believe-25th-Anniversary-Deluxe-Edition-Clear-Sea-Blue-Light-Blue-Vinyl-–-3LP-300x300.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2024/03/Cher-–-Believe-25th-Anniversary-Deluxe-Edition-Clear-Sea-Blue-Light-Blue-Vinyl-–-3LP-150x150.jpg 150w, https://thevinylroom.co.il/wp-content/uploads/2024/03/Cher-–-Believe-25th-Anniversary-Deluxe-Edition-Clear-Sea-Blue-Light-Blue-Vinyl-–-3LP-768x771.jpg 768w, https://thevinylroom.co.il/wp-content/uploads/2024/03/Cher-–-Believe-25th-Anniversary-Deluxe-Edition-Clear-Sea-Blue-Light-Blue-Vinyl-–-3LP-600x602.jpg 600w, https://thevinylroom.co.il/wp-content/uploads/2024/03/Cher-–-Believe-25th-Anniversary-Deluxe-Edition-Clear-Sea-Blue-Light-Blue-Vinyl-–-3LP-100x100.jpg 100w, https://thevinylroom.co.il/wp-content/uploads/2024/03/Cher-–-Believe-25th-Anniversary-Deluxe-Edition-Clear-Sea-Blue-Light-Blue-Vinyl-–-3LP.jpg 797w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Cher &#8211; Believe (25th Anniversary Deluxe Edition) Clear, Sea Blue &#038; Light Blue Vinyl &#8211; 3LP</h2>
+	<span class="price"><del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>490</bdi></span></del> <span class="screen-reader-text">המחיר המקורי היה: &#8362;490.</span><ins aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>450</bdi></span></ins><span class="screen-reader-text">המחיר הנוכחי הוא: &#8362;450.</span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="?add-to-cart=10472" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_10472" data-quantity="1" class="button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="10472" data-product_sku="הליקון 5054197614200" aria-label="הוספה לעגלת הקניות: &quot;Cher - Believe (25th Anniversary Deluxe Edition) Clear, Sea Blue &amp; Light Blue Vinyl - 3LP&quot;" rel="nofollow" data-success_message="הפריט &quot;Cher - Believe (25th Anniversary Deluxe Edition) Clear, Sea Blue &amp; Light Blue Vinyl - 3LP&quot; נוסף לעגלת הקניות">הוספה לסל</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_10472" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:10472,&quot;item_id&quot;:10472,&quot;item_name&quot;:&quot;Cher - Believe (25th Anniversary Deluxe Edition) Clear, Sea Blue &amp; Light Blue Vinyl - 3LP&quot;,&quot;sku&quot;:&quot;\u05d4\u05dc\u05d9\u05e7\u05d5\u05df 5054197614200&quot;,&quot;price&quot;:450,&quot;stocklevel&quot;:1,&quot;stockstatus&quot;:&quot;instock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;\u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05e9\u05dc \u05e4\u05d5\u05e4 &quot;,&quot;item_category2&quot;:&quot; \u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05e9\u05dc \u05e8\u05d5\u05e7&quot;,&quot;id&quot;:10472,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/cher-believe-25th-anniversary-deluxe-edition-clear-sea-blue-light-blue-vinyl-3lp\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1098,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="10472">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[10472] = {"id":"10472","sku":"הליקון 5054197614200","price":450,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"10472","sku":"הליקון 5054197614200","gpf":"woocommerce_gpf_10472","gla":"gla_10472"},"is_variable":false,"type":"simple","name":"Cher - Believe (25th Anniversary Deluxe Edition) Clear, Sea Blue & Light Blue Vinyl - 3LP","category":["זמרות","חיפה","תקליטים","תקליטים חדשים","תקליטים לועזיים","תקליטים של פופ / תקליטים של רוק"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[10472]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-6557 status-publish outofstock product_cat-electronic product_cat-103 product_cat-80 product_cat-166 product_cat-167 product_cat-98 product_cat-85 product_cat-83 product_cat-92 product_tag-beyonce product_tag-contemporary-rb product_tag-electronic product_tag-funk-soul product_tag-new-arrivals product_tag-pop product_tag-125 product_tag-114 product_tag-374 has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/beyonce-renaissance-collectors-edition-2lps/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+	<span class="wcsob_soldout">אזל מהמלאי</span>
+	<img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2022/10/COLLECTORS_VINYL_FRONT-300x300.png" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2022/10/COLLECTORS_VINYL_FRONT-300x300.png 300w, https://thevinylroom.co.il/wp-content/uploads/2022/10/COLLECTORS_VINYL_FRONT-1024x1024.png 1024w, https://thevinylroom.co.il/wp-content/uploads/2022/10/COLLECTORS_VINYL_FRONT-150x150.png 150w, https://thevinylroom.co.il/wp-content/uploads/2022/10/COLLECTORS_VINYL_FRONT-768x768.png 768w, https://thevinylroom.co.il/wp-content/uploads/2022/10/COLLECTORS_VINYL_FRONT-1536x1536.png 1536w, https://thevinylroom.co.il/wp-content/uploads/2022/10/COLLECTORS_VINYL_FRONT-2048x2048.png 2048w, https://thevinylroom.co.il/wp-content/uploads/2022/10/COLLECTORS_VINYL_FRONT-600x600.png 600w, https://thevinylroom.co.il/wp-content/uploads/2022/10/COLLECTORS_VINYL_FRONT-100x100.png 100w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Beyoncé – Renaissance (Collector's Edition) 2LPs</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>280</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="https://thevinylroom.co.il/product/beyonce-renaissance-collectors-edition-2lps/" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_6557" data-quantity="1" class="button product_type_simple" data-product_id="6557" data-product_sku="עדלי 196587196714" aria-label="מידע נוסף על &quot;Beyoncé – Renaissance (Collector&#039;s Edition) 2LPs&quot;" rel="nofollow" data-success_message="">מידע נוסף</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_6557" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:6557,&quot;item_id&quot;:6557,&quot;item_name&quot;:&quot;Beyonc\u00e9 \u2013 Renaissance (Collector&#039;s Edition) 2LPs&quot;,&quot;sku&quot;:&quot;\u05e2\u05d3\u05dc\u05d9 196587196714&quot;,&quot;price&quot;:280,&quot;stocklevel&quot;:0,&quot;stockstatus&quot;:&quot;outofstock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;\u05d7\u05d9\u05e4\u05d4&quot;,&quot;id&quot;:6557,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/beyonce-renaissance-collectors-edition-2lps\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1099,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="6557">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[6557] = {"id":"6557","sku":"עדלי 196587196714","price":280,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"6557","sku":"עדלי 196587196714","gpf":"woocommerce_gpf_6557","gla":"gla_6557"},"is_variable":false,"type":"simple","name":"Beyoncé – Renaissance (Collector's Edition) 2LPs","category":["Electronic","Soul / Funk","זמרות","חיפה","קרית ביאליק","תקליטים","תקליטים במבצע","תקליטים חדשים","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[6557]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-7198 status-publish last instock product_cat-alternative product_cat-alternative-metal product_cat-hard-rockmetal product_cat-progressive-metal product_cat-166 product_cat-82 product_cat-83 product_cat-92 product_tag-alternative product_tag-rock product_tag-tool has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/tool-opiate/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link"><img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2023/01/Tool-Opiate-300x300.jpg" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2023/01/Tool-Opiate-300x300.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2023/01/Tool-Opiate-150x150.jpg 150w, https://thevinylroom.co.il/wp-content/uploads/2023/01/Tool-Opiate-100x100.jpg 100w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Tool – Opiate EP</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>150</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="?add-to-cart=7198" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_7198" data-quantity="1" class="button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="7198" data-product_sku="עדלי 614223102719" aria-label="הוספה לעגלת הקניות: &quot;Tool – Opiate EP&quot;" rel="nofollow" data-success_message="הפריט &quot;Tool – Opiate EP&quot; נוסף לעגלת הקניות">הוספה לסל</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_7198" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:7198,&quot;item_id&quot;:7198,&quot;item_name&quot;:&quot;Tool \u2013 Opiate EP&quot;,&quot;sku&quot;:&quot;\u05e2\u05d3\u05dc\u05d9 614223102719&quot;,&quot;price&quot;:150,&quot;stocklevel&quot;:1,&quot;stockstatus&quot;:&quot;instock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;Hard Rock &amp; Metal&quot;,&quot;id&quot;:7198,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/tool-opiate\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1100,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="7198">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[7198] = {"id":"7198","sku":"עדלי 614223102719","price":150,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"7198","sku":"עדלי 614223102719","gpf":"woocommerce_gpf_7198","gla":"gla_7198"},"is_variable":false,"type":"simple","name":"Tool – Opiate EP","category":["Alternative","Alternative Metal","Hard Rock &amp; Metal","Progressive Metal","חיפה","להקות","תקליטים חדשים","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[7198]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-8256 status-publish first outofstock product_cat-soundtracks product_cat-166 product_cat-167 product_cat-85 product_cat-92 product_tag-new-arrivals product_tag-soundtracks has-post-thumbnail sale taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/spider-man-no-way-home-original-motion-picture-soundtrack-picture-disc/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+	<span class="wcsob_soldout">אזל מהמלאי</span>
+	
+	
+	<img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2023/05/Spider-Man-No-Way-Home-Original-Motion-Picture-Soundtrack-Picture-disc-300x300.jpg" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2023/05/Spider-Man-No-Way-Home-Original-Motion-Picture-Soundtrack-Picture-disc-300x300.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2023/05/Spider-Man-No-Way-Home-Original-Motion-Picture-Soundtrack-Picture-disc-150x150.jpg 150w, https://thevinylroom.co.il/wp-content/uploads/2023/05/Spider-Man-No-Way-Home-Original-Motion-Picture-Soundtrack-Picture-disc-100x100.jpg 100w, https://thevinylroom.co.il/wp-content/uploads/2023/05/Spider-Man-No-Way-Home-Original-Motion-Picture-Soundtrack-Picture-disc.jpg 550w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Spider-Man: No Way Home (Original Motion Picture Soundtrack) (Picture disc)</h2>
+	<span class="price"><del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>120</bdi></span></del> <span class="screen-reader-text">המחיר המקורי היה: &#8362;120.</span><ins aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>100</bdi></span></ins><span class="screen-reader-text">המחיר הנוכחי הוא: &#8362;100.</span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="https://thevinylroom.co.il/product/spider-man-no-way-home-original-motion-picture-soundtrack-picture-disc/" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_8256" data-quantity="1" class="button product_type_simple" data-product_id="8256" data-product_sku="הליקון 194399888919" aria-label="מידע נוסף על &quot;Spider-Man: No Way Home (Original Motion Picture Soundtrack) (Picture disc)&quot;" rel="nofollow" data-success_message="">מידע נוסף</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_8256" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:8256,&quot;item_id&quot;:8256,&quot;item_name&quot;:&quot;Spider-Man: No Way Home (Original Motion Picture Soundtrack) (Picture disc)&quot;,&quot;sku&quot;:&quot;\u05d4\u05dc\u05d9\u05e7\u05d5\u05df 194399888919&quot;,&quot;price&quot;:100,&quot;stocklevel&quot;:0,&quot;stockstatus&quot;:&quot;outofstock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;Soundtracks&quot;,&quot;id&quot;:8256,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/spider-man-no-way-home-original-motion-picture-soundtrack-picture-disc\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1101,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="8256">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[8256] = {"id":"8256","sku":"הליקון 194399888919","price":100,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"8256","sku":"הליקון 194399888919","gpf":"woocommerce_gpf_8256","gla":"gla_8256"},"is_variable":false,"type":"simple","name":"Spider-Man: No Way Home (Original Motion Picture Soundtrack) (Picture disc)","category":["Soundtracks","חיפה","קרית ביאליק","תקליטים במבצע","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[8256]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-10762 status-publish outofstock product_cat-75 product_cat-166 product_cat-82 product_cat-167 product_cat-83 product_cat-92 product_tag-classic-rock product_tag-nirvana product_tag-105 has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/nirvana-in-utero-2023-mix-lp10%e2%80%b3/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+	<span class="wcsob_soldout">אזל מהמלאי</span>
+	<img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/05/Nirvana-–-In-Utero-2023-Mix-LP10″-300x300.jpg" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/05/Nirvana-–-In-Utero-2023-Mix-LP10″-300x300.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2024/05/Nirvana-–-In-Utero-2023-Mix-LP10″-150x150.jpg 150w, https://thevinylroom.co.il/wp-content/uploads/2024/05/Nirvana-–-In-Utero-2023-Mix-LP10″-100x100.jpg 100w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Nirvana – In Utero (2023 Mix LP+10″)</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>200</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="https://thevinylroom.co.il/product/nirvana-in-utero-2023-mix-lp10%e2%80%b3/" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_10762" data-quantity="1" class="button product_type_simple" data-product_id="10762" data-product_sku="הליקון 0602455178589" aria-label="מידע נוסף על &quot;Nirvana – In Utero (2023 Mix LP+10″)&quot;" rel="nofollow" data-success_message="">מידע נוסף</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_10762" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:10762,&quot;item_id&quot;:10762,&quot;item_name&quot;:&quot;Nirvana \u2013 In Utero (2023 Mix LP+10\u2033)&quot;,&quot;sku&quot;:&quot;\u05d4\u05dc\u05d9\u05e7\u05d5\u05df 0602455178589&quot;,&quot;price&quot;:200,&quot;stocklevel&quot;:0,&quot;stockstatus&quot;:&quot;outofstock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;Rock&quot;,&quot;id&quot;:10762,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/nirvana-in-utero-2023-mix-lp10%e2%80%b3\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1102,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="10762">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[10762] = {"id":"10762","sku":"הליקון 0602455178589","price":200,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"10762","sku":"הליקון 0602455178589","gpf":"woocommerce_gpf_10762","gla":"gla_10762"},"is_variable":false,"type":"simple","name":"Nirvana – In Utero (2023 Mix LP+10″)","category":["Rock","חיפה","להקות","קרית ביאליק","תקליטים חדשים","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[10762]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-11596 status-publish instock product_cat-166 product_cat-83 product_cat-92 product_cat-76 product_tag-elizabeth-fraser product_tag-harold-budd product_tag-pop-rock product_tag-robin-guthrie product_tag-simon-raymonde has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/cocteau-twins-and-harold-budd-the-moon-and-the-melodies/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link"><img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/09/Harold-Budd-▪-Elizabeth-Fraser-▪-Robin-Guthrie-▪-Simon-Raymonde-–-The-Moon-And-The-Melodies-300x300.jpg" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/09/Harold-Budd-▪-Elizabeth-Fraser-▪-Robin-Guthrie-▪-Simon-Raymonde-–-The-Moon-And-The-Melodies-300x300.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Harold-Budd-▪-Elizabeth-Fraser-▪-Robin-Guthrie-▪-Simon-Raymonde-–-The-Moon-And-The-Melodies-150x150.jpg 150w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Harold-Budd-▪-Elizabeth-Fraser-▪-Robin-Guthrie-▪-Simon-Raymonde-–-The-Moon-And-The-Melodies-100x100.jpg 100w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Harold-Budd-▪-Elizabeth-Fraser-▪-Robin-Guthrie-▪-Simon-Raymonde-–-The-Moon-And-The-Melodies.jpg 600w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Cocteau Twins And Harold Budd – The Moon And The Melodies LP</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>130</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="?add-to-cart=11596" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_11596" data-quantity="1" class="button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="11596" data-product_sku="זהב שחור 191400064218" aria-label="הוספה לעגלת הקניות: &quot;Cocteau Twins And Harold Budd – The Moon And The Melodies LP&quot;" rel="nofollow" data-success_message="הפריט &quot;Cocteau Twins And Harold Budd – The Moon And The Melodies LP&quot; נוסף לעגלת הקניות">הוספה לסל</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_11596" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:11596,&quot;item_id&quot;:11596,&quot;item_name&quot;:&quot;Cocteau Twins And Harold Budd \u2013 The Moon And The Melodies LP&quot;,&quot;sku&quot;:&quot;\u05d6\u05d4\u05d1 \u05e9\u05d7\u05d5\u05e8 191400064218&quot;,&quot;price&quot;:130,&quot;stocklevel&quot;:1,&quot;stockstatus&quot;:&quot;instock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;\u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05e9\u05dc \u05e4\u05d5\u05e4 &quot;,&quot;item_category2&quot;:&quot; \u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05e9\u05dc \u05e8\u05d5\u05e7&quot;,&quot;id&quot;:11596,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/cocteau-twins-and-harold-budd-the-moon-and-the-melodies\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1103,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="11596">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[11596] = {"id":"11596","sku":"זהב שחור 191400064218","price":130,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"11596","sku":"זהב שחור 191400064218","gpf":"woocommerce_gpf_11596","gla":"gla_11596"},"is_variable":false,"type":"simple","name":"Cocteau Twins And Harold Budd – The Moon And The Melodies LP","category":["חיפה","תקליטים חדשים","תקליטים לועזיים","תקליטים של פופ / תקליטים של רוק"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[11596]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+<li class="product type-product post-11594 status-publish last instock product_cat-alternative product_cat-82 product_cat-167 product_cat-98 product_cat-83 product_cat-92 product_tag-alternative-rock product_tag-new-arrivals product_tag-queens-of-the-stone-age product_tag-rock product_tag-114 product_tag-536 product_tag-105 product_tag-374 has-post-thumbnail taxable shipping-taxable purchasable product-type-simple">
+	<a href="https://thevinylroom.co.il/product/queens-of-the-stone-age-queens-of-the-stone-age/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link"><img loading="lazy" width="300" height="300" src="https://thevinylroom.co.il/wp-content/uploads/2024/09/Queens-Of-the-Stone-Age-–-Queens-Of-the-Stone-Age-2LP-300x300.jpg" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="" decoding="async" srcset="https://thevinylroom.co.il/wp-content/uploads/2024/09/Queens-Of-the-Stone-Age-–-Queens-Of-the-Stone-Age-2LP-300x300.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Queens-Of-the-Stone-Age-–-Queens-Of-the-Stone-Age-2LP-150x150.jpg 150w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Queens-Of-the-Stone-Age-–-Queens-Of-the-Stone-Age-2LP-768x768.jpg 768w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Queens-Of-the-Stone-Age-–-Queens-Of-the-Stone-Age-2LP-600x600.jpg 600w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Queens-Of-the-Stone-Age-–-Queens-Of-the-Stone-Age-2LP-100x100.jpg 100w, https://thevinylroom.co.il/wp-content/uploads/2024/09/Queens-Of-the-Stone-Age-–-Queens-Of-the-Stone-Age-2LP.jpg 1000w" sizes="(max-width: 300px) 100vw, 300px" /><h2 class="woocommerce-loop-product__title">Queens Of the Stone Age – Queens Of the Stone Age 2LP</h2>
+	<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#8362;</span>160</bdi></span></span>
+</a><div class="woocommerce-loop-product__buttons"><a href="?add-to-cart=11594" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_11594" data-quantity="1" class="button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="11594" data-product_sku="זהב שחור 191401179812" aria-label="הוספה לעגלת הקניות: &quot;Queens Of the Stone Age – Queens Of the Stone Age 2LP&quot;" rel="nofollow" data-success_message="הפריט &quot;Queens Of the Stone Age – Queens Of the Stone Age 2LP&quot; נוסף לעגלת הקניות">הוספה לסל</a></div>	<span id="woocommerce_loop_add_to_cart_link_describedby_11594" class="screen-reader-text">
+			</span>
+<span class="gtm4wp_productdata" style="display:none; visibility:hidden;" data-gtm4wp_product_data="{&quot;internal_id&quot;:11594,&quot;item_id&quot;:11594,&quot;item_name&quot;:&quot;Queens Of the Stone Age \u2013 Queens Of the Stone Age 2LP&quot;,&quot;sku&quot;:&quot;\u05d6\u05d4\u05d1 \u05e9\u05d7\u05d5\u05e8 191401179812&quot;,&quot;price&quot;:160,&quot;stocklevel&quot;:1,&quot;stockstatus&quot;:&quot;instock&quot;,&quot;google_business_vertical&quot;:&quot;retail&quot;,&quot;item_category&quot;:&quot;Alternative&quot;,&quot;id&quot;:11594,&quot;productlink&quot;:&quot;https:\/\/thevinylroom.co.il\/product\/queens-of-the-stone-age-queens-of-the-stone-age\/&quot;,&quot;item_list_name&quot;:&quot;General Product List&quot;,&quot;index&quot;:1104,&quot;product_type&quot;:&quot;simple&quot;,&quot;item_brand&quot;:&quot;&quot;}"></span>			<input type="hidden" class="wpmProductId" data-id="11594">
+					<script data-cfasync="false">
+			(window.wpmDataLayer = window.wpmDataLayer || {}).products             = window.wpmDataLayer.products || {};
+			window.wpmDataLayer.products[11594] = {"id":"11594","sku":"זהב שחור 191401179812","price":160,"brand":"","quantity":1,"dyn_r_ids":{"post_id":"11594","sku":"זהב שחור 191401179812","gpf":"woocommerce_gpf_11594","gla":"gla_11594"},"is_variable":false,"type":"simple","name":"Queens Of the Stone Age – Queens Of the Stone Age 2LP","category":["Alternative","להקות","קרית ביאליק","תקליטים","תקליטים חדשים","תקליטים לועזיים"],"is_variation":false};
+					window.pmw_product_position = window.pmw_product_position || 1;
+		window.wpmDataLayer.products[11594]['position'] = window.pmw_product_position++;
+				</script>
+		</li>
+</ul>
+<nav class="woocommerce-pagination" aria-label="עימוד מוצר">
+	<ul class='page-numbers'>
+	<li><a class="prev page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/68/">&rarr;</a></li>
+	<li><a aria-label="עמוד 1" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/1/">1</a></li>
+	<li><a aria-label="עמוד 2" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/2/">2</a></li>
+	<li><a aria-label="עמוד 3" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/3/">3</a></li>
+	<li><span class="page-numbers dots">&hellip;</span></li>
+	<li><a aria-label="עמוד 66" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/66/">66</a></li>
+	<li><a aria-label="עמוד 67" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/67/">67</a></li>
+	<li><a aria-label="עמוד 68" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/68/">68</a></li>
+	<li><span aria-label="עמוד 69" aria-current="page" class="page-numbers current">69</span></li>
+	<li><a aria-label="עמוד 70" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/70/">70</a></li>
+	<li><a aria-label="עמוד 71" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/71/">71</a></li>
+	<li><a aria-label="עמוד 72" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/72/">72</a></li>
+	<li><span class="page-numbers dots">&hellip;</span></li>
+	<li><a aria-label="עמוד 146" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/146/">146</a></li>
+	<li><a aria-label="עמוד 147" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/147/">147</a></li>
+	<li><a aria-label="עמוד 148" class="page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/148/">148</a></li>
+	<li><a class="next page-numbers" href="https://thevinylroom.co.il/product-category/%D7%9C%D7%95%D7%A2%D7%96%D7%99-2/page/70/">&larr;</a></li>
+</ul>
+</nav>
+</div>				</div>
+				</div>
+					</div>
+		</div>
+					</div>
+		</section>
+				</div>
+		
+<script nitro-exclude>
+    document.cookie = 'nitroCachedPage=' + (!window.NITROPACK_STATE ? '0' : '1') + '; path=/; SameSite=Lax';
+</script>		<div data-elementor-type="footer" data-elementor-id="14" class="elementor elementor-14 elementor-location-footer" data-elementor-post-type="elementor_library">
+					<section class="elementor-section elementor-top-section elementor-element elementor-element-eea0b7f elementor-section-height-min-height elementor-section-boxed elementor-section-height-default elementor-section-items-middle" data-id="eea0b7f" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-3fb3f00f" data-id="3fb3f00f" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-1cede38b e-grid-align-right e-grid-align-mobile-center elementor-shape-circle elementor-widget__width-auto elementor-fixed elementor-grid-0 elementor-widget elementor-widget-social-icons" data-id="1cede38b" data-element_type="widget" data-settings="{&quot;_position&quot;:&quot;fixed&quot;}" data-widget_type="social-icons.default">
+				<div class="elementor-widget-container">
+							<div class="elementor-social-icons-wrapper elementor-grid">
+							<span class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-whatsapp elementor-repeater-item-dc10550" href="https://api.whatsapp.com/send?phone=9720546464256" target="_blank">
+						<span class="elementor-screen-only">Whatsapp</span>
+						<i class="fab fa-whatsapp"></i>					</a>
+				</span>
+					</div>
+						</div>
+				</div>
+					</div>
+		</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-51b5a553 elementor-section-height-min-height elementor-section-boxed elementor-section-height-default elementor-section-items-middle" data-id="51b5a553" data-element_type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+							<div class="elementor-background-overlay"></div>
+							<div class="elementor-container elementor-column-gap-default">
+					<div class="elementor-column elementor-col-33 elementor-top-column elementor-element elementor-element-753a16ae" data-id="753a16ae" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-6e0d18d1 elementor-widget elementor-widget-heading" data-id="6e0d18d1" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<h4 class="elementor-heading-title elementor-size-default">ניווט באתר</h4>				</div>
+				</div>
+				<div class="elementor-element elementor-element-15b8ee96 elementor-icon-list--layout-traditional elementor-list-item-link-full_width elementor-widget elementor-widget-icon-list" data-id="15b8ee96" data-element_type="widget" data-widget_type="icon-list.default">
+				<div class="elementor-widget-container">
+							<ul class="elementor-icon-list-items">
+							<li class="elementor-icon-list-item">
+											<a href="/">
+
+											<span class="elementor-icon-list-text">עמוד הבית </span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="/אודות/">
+
+											<span class="elementor-icon-list-text">מי אנחנו </span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="/קטגוריות-תקליטים/">
+
+											<span class="elementor-icon-list-text">לכל התקליטים</span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="/product-category/חדשים/">
+
+											<span class="elementor-icon-list-text">חדשים בחנות </span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="/product/גיפט-קארד/">
+
+											<span class="elementor-icon-list-text">גיפט קארד</span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="https://thevinylroom.co.il/%d7%aa%d7%a7%d7%a0%d7%95%d7%9f/">
+
+											<span class="elementor-icon-list-text">מדיניות פרטיות</span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="https://thevinylroom.co.il/%d7%94%d7%a6%d7%94%d7%a8%d7%aa-%d7%a0%d7%92%d7%99%d7%a9%d7%95%d7%aa/">
+
+											<span class="elementor-icon-list-text">הצהרת נגישות</span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="/צור-קשר/">
+
+											<span class="elementor-icon-list-text">צרו קשר</span>
+											</a>
+									</li>
+						</ul>
+						</div>
+				</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-33 elementor-top-column elementor-element elementor-element-73e4dd4c" data-id="73e4dd4c" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-7d99fcef elementor-widget elementor-widget-heading" data-id="7d99fcef" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<h4 class="elementor-heading-title elementor-size-default">פרטי התקשרות</h4>				</div>
+				</div>
+				<div class="elementor-element elementor-element-1dee065 elementor-icon-list--layout-traditional elementor-list-item-link-full_width elementor-widget elementor-widget-icon-list" data-id="1dee065" data-element_type="widget" data-widget_type="icon-list.default">
+				<div class="elementor-widget-container">
+							<ul class="elementor-icon-list-items">
+							<li class="elementor-icon-list-item">
+											<a href="tel:%200546464256">
+
+											<span class="elementor-icon-list-text">טלפון ראשי: 054-6464256</span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="tel:04-8780548">
+
+											<span class="elementor-icon-list-text">טלפון: 04-8780548</span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="/cdn-cgi/l/email-protection#597c6b692d313c2f303720352b3636343138303f38193e34383035773a3634">
+
+											<span class="elementor-icon-list-text">דוא''ל:<span class="__cf_email__" data-cfemail="86f2eee3f0efe8ffeaf4e9e9ebeee7efe0e7c6e1ebe7efeaa8e5e9eb">[email&#160;protected]</span></span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="https://goo.gl/maps/tQGRLv2jbQYEH2JU7" target="_blank">
+
+											<span class="elementor-icon-list-text">סניף חיפה : רחוב חשבון 5 עיר תחתית חיפה</span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+											<a href="https://goo.gl/maps/UqLZwm8an3hmVQPk9" target="_blank">
+
+											<span class="elementor-icon-list-text"> סניף קריות : רחוב קרן היסוד 64 קרית ביאליק</span>
+											</a>
+									</li>
+								<li class="elementor-icon-list-item">
+										<span class="elementor-icon-list-text"><u>שעות פעילות ** שימו לב בגלל המלחמה יתכנו שינויים : <br></u><b>חיפה </b>: ימים ראשון עד חמישי <b>: 14:00-10:00 </b>/ יום שישי : <b>14:00-10:00   </b><br>ק<b>רית ביאליק</b> : ימים ראשון עד חמישי : *<b>בתאום מראש</b> / יום שישי : <b>14:00-10:00</b></span>
+									</li>
+						</ul>
+						</div>
+				</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-33 elementor-top-column elementor-element elementor-element-7efdc566" data-id="7efdc566" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-845bab9 elementor-widget elementor-widget-theme-site-logo elementor-widget-image" data-id="845bab9" data-element_type="widget" data-widget_type="theme-site-logo.default">
+				<div class="elementor-widget-container">
+											<a href="https://thevinylroom.co.il">
+			<img fetchpriority="high" width="645" height="449" src="https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1.jpg" class="attachment-full size-full wp-image-1574" alt="" srcset="https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1.jpg 645w, https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1-300x209.jpg 300w, https://thevinylroom.co.il/wp-content/uploads/2020/07/cropped-72982480_104666007642957_8744874197173403648_n-1-600x418.jpg 600w" sizes="(max-width: 645px) 100vw, 645px" />				</a>
+											</div>
+				</div>
+				<div class="elementor-element elementor-element-9375997 elementor-widget elementor-widget-heading" data-id="9375997" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<h4 class="elementor-heading-title elementor-size-default">עקבו אחרינו </h4>				</div>
+				</div>
+				<div class="elementor-element elementor-element-b7e3706 elementor-shape-rounded elementor-grid-0 e-grid-align-center elementor-widget elementor-widget-social-icons" data-id="b7e3706" data-element_type="widget" data-widget_type="social-icons.default">
+				<div class="elementor-widget-container">
+							<div class="elementor-social-icons-wrapper elementor-grid">
+							<span class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-facebook elementor-repeater-item-3575336" href="https://www.facebook.com/thevinylroomhaifa" target="_blank">
+						<span class="elementor-screen-only">Facebook</span>
+						<i class="fab fa-facebook"></i>					</a>
+				</span>
+							<span class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-instagram elementor-repeater-item-9274c7d" href="https://www.instagram.com/thevinylroomhaifa/" target="_blank">
+						<span class="elementor-screen-only">Instagram</span>
+						<i class="fab fa-instagram"></i>					</a>
+				</span>
+							<span class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-wordpress elementor-repeater-item-f59f6f1" href="https://danielzrihen.co.il/" target="_blank">
+						<span class="elementor-screen-only">Wordpress</span>
+						<i class="fab fa-wordpress"></i>					</a>
+				</span>
+					</div>
+						</div>
+				</div>
+					</div>
+		</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-39e4cf3 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="39e4cf3" data-element_type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-default">
+					<div class="elementor-column elementor-col-33 elementor-top-column elementor-element elementor-element-4835f608" data-id="4835f608" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-6087f191 elementor-widget elementor-widget-heading" data-id="6087f191" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<h4 class="elementor-heading-title elementor-size-default"><a href="https://www.h-tech.co.il/">שיווק דיגיטלי ובניית אתרים</a></h4>				</div>
+				</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-33 elementor-top-column elementor-element elementor-element-7140f76f" data-id="7140f76f" data-element_type="column">
+			<div class="elementor-widget-wrap">
+							</div>
+		</div>
+				<div class="elementor-column elementor-col-33 elementor-top-column elementor-element elementor-element-4907c3ae" data-id="4907c3ae" data-element_type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-1eb55772 elementor-widget elementor-widget-image" data-id="1eb55772" data-element_type="widget" data-widget_type="image.default">
+				<div class="elementor-widget-container">
+																<a href="https://www.h-tech.co.il/" target="_blank">
+							<img loading="lazy" width="800" height="267" src="https://thevinylroom.co.il/wp-content/uploads/2021/01/לבן-ללא-רקע-1024x342-1.png" class="attachment-large size-large wp-image-1773" alt="" srcset="https://thevinylroom.co.il/wp-content/uploads/2021/01/לבן-ללא-רקע-1024x342-1.png 1024w, https://thevinylroom.co.il/wp-content/uploads/2021/01/לבן-ללא-רקע-1024x342-1-300x100.png 300w, https://thevinylroom.co.il/wp-content/uploads/2021/01/לבן-ללא-רקע-1024x342-1-768x257.png 768w, https://thevinylroom.co.il/wp-content/uploads/2021/01/לבן-ללא-רקע-1024x342-1-600x200.png 600w" sizes="(max-width: 800px) 100vw, 800px" />								</a>
+															</div>
+				</div>
+					</div>
+		</div>
+					</div>
+		</section>
+				</div>
+		
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+(function(w,d){
+  // Additional blocking for footer scripts and dynamic content
+  var cookieName = 'scb_consent';
+  
+  function hasConsent(){
+    try{
+      var m = d.cookie.match(new RegExp('(?:^| )'+cookieName+'=([^;]+)'));
+      if(!m) return false;
+      var c = JSON.parse(decodeURIComponent(m[1]));
+      return !!(c && (c.all||c.analytics||c.marketing));
+    }catch(e){return false;}
+  }
+  if (hasConsent()) return;
+
+  // Block GTM more aggressively in footer
+  if (typeof w.gtag === 'undefined') {
+    w.gtag = function(){};
+  }
+  if (typeof w.dataLayer === 'undefined') {
+    w.dataLayer = [];
+  }
+  
+  // Block any remaining GTM attempts
+  var originalCreateElement = d.createElement;
+  d.createElement = function(tagName) {
+    var element = originalCreateElement.call(d, tagName);
+    if (tagName.toLowerCase() === 'script') {
+      var originalSetAttribute = element.setAttribute;
+      element.setAttribute = function(name, value) {
+        if (name === 'src' && value && value.indexOf('googletagmanager.com') !== -1) {
+          // Block GTM scripts
+          originalSetAttribute.call(this, 'type', 'text/plain');
+          originalSetAttribute.call(this, 'data-consent', 'analytics');
+          originalSetAttribute.call(this, 'data-scb-src', value);
+          return;
+        }
+        return originalSetAttribute.call(this, name, value);
+      };
+    }
+    return element;
+  };
+  
+  // Block inline GTM code
+  var scripts = d.querySelectorAll('script');
+  scripts.forEach(function(script) {
+    if (script.textContent && script.textContent.indexOf('googletagmanager.com') !== -1) {
+      script.type = 'text/plain';
+      script.setAttribute('data-consent', 'analytics');
+      script.setAttribute('data-scb-blocked', 'true');
+    }
+  });
+  
+})(window,document);
+</script>
+        <!-- Cookie Consent Banner -->
+        <div id="scb-overlay" aria-hidden="true"></div>
+
+        <div id="scb-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" style="display: none;">
+          <div class="scb-content">
+            <div class="scb-text">
+              <h3>אנחנו משתמשים בעוגיות</h3>
+              <p>אנחנו משתמשים בעוגיות כדי לשפר את החוויה שלך באתר שלנו. אנא בחר איזה סוגי עוגיות אתה מאפשר לנו להשתמש בהם.</p>
+            </div>
+            
+
+            
+            <!-- Cookie Preferences Section -->
+            <div id="scb-settings" class="scb-settings" style="display: none;">
+                <fieldset>
+                    <legend>בחר איזה עוגיות להפעיל:</legend>
+                    
+                    <div class="scb-toggle-item">
+                        <div class="scb-toggle-info">
+                            <strong>עוגיות הכרחיות</strong>
+                            <small>עוגיות הנדרשות לפעולת האתר הבסיסית - תמיד פעילות</small>
+                        </div>
+                        <div class="scb-toggle-switch">
+                            <input type="checkbox" id="essential-toggle" checked disabled>
+                            <label for="essential-toggle" class="scb-toggle-label essential-toggle">
+                                <span class="scb-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="scb-toggle-item">
+                        <div class="scb-toggle-info">
+                            <strong>עוגיות אנליטיקה</strong>
+                            <small>עוזרות לנו להבין איך האתר משמש</small>
+                        </div>
+                        <div class="scb-toggle-switch">
+                            <input type="checkbox" id="analytics-toggle" name="cookie-consent" value="analytics" checked>
+                            <label for="analytics-toggle" class="scb-toggle-label analytics-toggle">
+                                <span class="scb-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="scb-toggle-item">
+                        <div class="scb-toggle-info">
+                            <strong>עוגיות שיווק</strong>
+                            <small>משמשות לפרסום מותאם אישית</small>
+                        </div>
+                        <div class="scb-toggle-switch">
+                            <input type="checkbox" id="marketing-toggle" name="cookie-consent" value="marketing" checked>
+                            <label for="marketing-toggle" class="scb-toggle-label marketing-toggle">
+                                <span class="scb-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            
+            <!-- Privacy Policy Acceptance Checkbox -->
+            <div class="scb-privacy-acceptance">
+                <label class="scb-checkbox-label">
+                    <input type="checkbox" id="scb-privacy-accept" required>
+                    <span class="scb-checkbox-text">
+                        אני מסכים ל<a href="https://thevinylroom.co.il/%d7%aa%d7%a7%d7%a0%d7%95%d7%9f/" target="_blank" class="scb-privacy-link">מדיניות הפרטיות</a> של האתר
+                    </span>
+                </label>
+            </div>
+            
+            <div class="scb-actions">
+                <button type="button" class="scb-btn scb-btn-secondary" id="scb-custom-preferences">בחר סוגי עוגיות</button>
+                <button type="button" class="scb-btn scb-btn-primary" id="scb-accept-all" onclick="SCB_acceptSelectedCookies()">אני מאשר את הבחירה</button>
+            </div>
+            
+            <!-- מאת MWS - Credits -->
+            <div class="scb-credits">
+              <small>מאת <a href="https://mws.co.il" target="_blank" rel="noopener">MWS</a></small>
+            </div>
+          </div>
+        </div>
+        <!-- End Cookie Consent Banner -->
+            <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // בדיקה אם זה חנות WooCommerce
+        const isWooCommerce = typeof wc_add_to_cart_params !== 'undefined' || 
+                             document.querySelector('.woocommerce') !== null ||
+                             document.querySelector('.woocommerce-checkout') !== null ||
+                             document.querySelector('.woocommerce-cart') !== null ||
+                             window.location.href.includes('/shop/') ||
+                             window.location.href.includes('/product/') ||
+                             window.location.href.includes('/checkout/');
+        
+        console.log('SCB: WooCommerce detected:', isWooCommerce);
+        
+        // טפסי לידים נפוצים בלבד
+        const ALLOWED_SELECTORS = [
+            // Elementor
+            'form.elementor-form',
+
+            // Contact Form 7
+            'form.wpcf7-form',
+
+            // Gravity Forms
+            '.gform_wrapper form',
+            'form.gform',
+
+            // Ninja Forms
+            'form.ninja-forms-form',
+            'form.nf-form',
+
+            // WPForms
+            'form.wpforms-form',
+
+            // Formidable Forms
+            'form.frm-show-form',
+            'form.frm_forms',
+
+            // HappyForms
+            'form.happyforms-form',
+
+            // Caldera Forms
+            '.caldera-grid form',
+            'form.caldera_forms_form',
+            'form.caldera-form',
+
+            // Quform
+            'form.quform',
+
+            // Visual Form Builder
+            'form.vfb-form',
+
+            // Forminator
+            'form.forminator-custom-form',
+            'form.forminator-ui',
+
+            // Fluent Forms
+            'form.fluentform',
+            'form.ff-el-form',
+
+            // JetFormBuilder
+            'form.jet-form-builder',
+
+            // MetForm
+            'form.metform-form',
+
+            // Kadence Forms
+            'form.kadence-form',
+
+            // Divi Contact Form
+            'form.et_pb_contact_form',
+            '.et_pb_contact_form_container form',
+
+            // מותאמים נפוצים
+            'form.contact-form',
+            'form.inquiry-form',
+            'form.quote-form',
+            'form.booking-form',
+            'form.appointment-form',
+
+            // אפשרות כפייה ידנית
+            'form.scb-allow'
+        ];
+
+        // מה לא לעבד בכלל
+        const EXCLUDE_SELECTORS = [
+            // חיפוש כללי
+            'form.search-form',
+            'form[role="search"]',
+            'form input[type="search"]',
+
+            // חיפוש/סינון WooCommerce
+            'form.woocommerce-product-search',
+            '.woocommerce-ordering',
+            '.widget_price_filter form',
+            'form.variations_form',
+            '.yith-wcan-container form',
+            'form.yith-wcan-form',
+
+            // חיתוכים לפי action/פרמטרים
+            'form[action*="min_price"]',
+            'form[action*="max_price"]',
+            'form[action*="orderby"]',
+            'form[action*="filter"]',
+            'form[action*="add-to-cart"]',
+            'form[action*="wc-ajax"]',
+            'form[action*="wc-api"]'
+        ];
+
+        function hasSearchLikeInputs(form) {
+            if (form.querySelector('input[type="search"]')) return true;
+            const names = ['s', 'min_price', 'max_price', 'orderby'];
+            for (const n of names) {
+                if (form.querySelector(`[name="${n}"]`)) return true;
+            }
+            return false;
+        }
+
+        function shouldProcessForm(form) {
+            if (form.hasAttribute('data-scb-processed')) return false;
+            if (form.matches('.scb-ignore')) return false;
+
+            // מותר רק אם הוא ב־allowlist או שסימנת ידנית scb-allow
+            const inAllow = form.matches(ALLOWED_SELECTORS.join(', '));
+            if (!inAllow) return false;
+
+            // אל תיגע בטפסי GET (כמעט כל טופסי חיפוש/סינון)
+            const method = (form.getAttribute('method') || 'get').toLowerCase();
+            if (method === 'get') return false;
+
+            // אל תיגע בטפסים שמזוהים כסינון/חיפוש
+            if (EXCLUDE_SELECTORS.some(sel => form.matches(sel))) return false;
+            if (hasSearchLikeInputs(form)) return false;
+
+            return true;
+        }
+        
+        // אל תוסיף טפסי WooCommerce - הם מטופלים בנפרד
+        console.log('SCB: WooCommerce forms excluded from universal form integration');
+        
+        // עיבוד ראשוני - רק טפסים מותרים
+        document.querySelectorAll(ALLOWED_SELECTORS.join(', ')).forEach(form => {
+            if (shouldProcessForm(form)) {
+                processLeadForm(form);
+            }
+        });
+        
+        // פונקציה להוספת הסימון
+        function addPrivacyCheckbox(form) {
+            const privacyCheckbox = document.createElement('div');
+            privacyCheckbox.className = 'scb-privacy-checkbox';
+            privacyCheckbox.innerHTML = `
+                <label style="display: block; margin: 10px 0; font-size: 14px;">
+                    <input type="checkbox" required name="privacy_policy_accepted" style="margin-left: 8px;">
+                    אני מסכים ל<a href="https://thevinylroom.co.il/%d7%aa%d7%a7%d7%a0%d7%95%d7%9f/" target="_blank" style="color: #0073aa;">מדיניות הפרטיות</a>
+                </label>
+            `;
+            
+            // הוספה לפני כפתור השליחה
+            const submitButton = form.querySelector('input[type="submit"], button[type="submit"], .elementor-button, .wpcf7-submit, .gform_submit_button, .woocommerce-checkout-payment, .place-order');
+            if (submitButton) {
+                submitButton.parentNode.insertBefore(privacyCheckbox, submitButton);
+            } else {
+                // אם אין כפתור שליחה, הוסף בסוף הטופס
+                form.appendChild(privacyCheckbox);
+            }
+            
+            // ולידציה
+            form.addEventListener('submit', function(e) {
+                const checkbox = form.querySelector('input[name="privacy_policy_accepted"]');
+                if (!checkbox || !checkbox.checked) {
+                    e.preventDefault();
+                    alert('יש לאשר את מדיניות הפרטיות לפני השליחה');
+                    return false;
+                }
+            });
+        }
+        
+        // מעקב אחרי טפסים שנוספים דינמית (AJAX)
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1) { // Element node
+                        // בדיקת טפסים דינמיים
+                        const forms = node.matches && node.matches(ALLOWED_SELECTORS.join(', '))
+                            ? [node]
+                            : (node.querySelectorAll ? node.querySelectorAll(ALLOWED_SELECTORS.join(', ')) : []);
+                        forms.forEach(form => {
+                            if (shouldProcessForm(form)) {
+                                processLeadForm(form);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+        
+        // דוגמה לפעולת עיבוד בפועל
+        function processLeadForm(form) {
+            // בדיקה שזה לא אדמין
+            if (window.location.href.includes('/wp-admin/') || window.location.href.includes('/admin/')) {
+                return;
+            }
+            
+            form.setAttribute('data-scb-processed', 'true');
+            addPrivacyCheckbox(form);
+        }
+        
+        // התחלת המעקב
+        if (document.body) {
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    });
+    </script>
+    			<!-- Facebook Pixel Code -->
+			<noscript>
+				<img
+					height="1"
+					width="1"
+					style="display:none"
+					alt="fbpx"
+					src="https://www.facebook.com/tr?id=510004719624954&ev=PageView&noscript=1"
+				/>
+			</noscript>
+			<!-- End Facebook Pixel Code -->
+						<script>
+				const lazyloadRunObserver = () => {
+					const lazyloadBackgrounds = document.querySelectorAll( `.e-con.e-parent:not(.e-lazyloaded)` );
+					const lazyloadBackgroundObserver = new IntersectionObserver( ( entries ) => {
+						entries.forEach( ( entry ) => {
+							if ( entry.isIntersecting ) {
+								let lazyloadBackground = entry.target;
+								if( lazyloadBackground ) {
+									lazyloadBackground.classList.add( 'e-lazyloaded' );
+								}
+								lazyloadBackgroundObserver.unobserve( entry.target );
+							}
+						});
+					}, { rootMargin: '200px 0px 200px 0px' } );
+					lazyloadBackgrounds.forEach( ( lazyloadBackground ) => {
+						lazyloadBackgroundObserver.observe( lazyloadBackground );
+					} );
+				};
+				const events = [
+					'DOMContentLoaded',
+					'elementor/lazyload/observe',
+				];
+				events.forEach( ( event ) => {
+					document.addEventListener( event, lazyloadRunObserver );
+				} );
+			</script>
+				<script>
+		(function () {
+			var c = document.body.className;
+			c = c.replace(/woocommerce-no-js/, 'woocommerce-js');
+			document.body.className = c;
+		})();
+	</script>
+	<link rel='stylesheet' id='wc-blocks-style-rtl-css' href='https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks-rtl.css?ver=wc-9.7.3' media='all' />
+<script src="https://thevinylroom.co.il/wp-content/plugins/dynamicconditions/Public/js/dynamic-conditions-public.js?ver=1.7.5" id="dynamic-conditions-js"></script>
+<script src="https://cdn.enable.co.il/licenses/enable-L451726chajgs3m-1019-18616/init.js?ver=1.4.1" id="enable-accessibility-js"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/jquery/ui/core.min.js?ver=1.13.3" id="jquery-ui-core-js"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/jquery/ui/mouse.min.js?ver=1.13.3" id="jquery-ui-mouse-js"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/jquery/ui/resizable.min.js?ver=1.13.3" id="jquery-ui-resizable-js"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/jquery/ui/draggable.min.js?ver=1.13.3" id="jquery-ui-draggable-js"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/jquery/ui/controlgroup.min.js?ver=1.13.3" id="jquery-ui-controlgroup-js"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/jquery/ui/checkboxradio.min.js?ver=1.13.3" id="jquery-ui-checkboxradio-js"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/jquery/ui/button.min.js?ver=1.13.3" id="jquery-ui-button-js"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/jquery/ui/dialog.min.js?ver=1.13.3" id="jquery-ui-dialog-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/duracelltomi-google-tag-manager/dist/js/gtm4wp-ecommerce-generic.js?ver=1.20.3" id="gtm4wp-ecommerce-generic-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/duracelltomi-google-tag-manager/dist/js/gtm4wp-woocommerce.js?ver=1.20.3" id="gtm4wp-woocommerce-js"></script>
+<script id="rocket-browser-checker-js-after">
+"use strict";var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||!1,descriptor.configurable=!0,"value"in descriptor&&(descriptor.writable=!0),Object.defineProperty(target,descriptor.key,descriptor)}}return function(Constructor,protoProps,staticProps){return protoProps&&defineProperties(Constructor.prototype,protoProps),staticProps&&defineProperties(Constructor,staticProps),Constructor}}();function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor))throw new TypeError("Cannot call a class as a function")}var RocketBrowserCompatibilityChecker=function(){function RocketBrowserCompatibilityChecker(options){_classCallCheck(this,RocketBrowserCompatibilityChecker),this.passiveSupported=!1,this._checkPassiveOption(this),this.options=!!this.passiveSupported&&options}return _createClass(RocketBrowserCompatibilityChecker,[{key:"_checkPassiveOption",value:function(self){try{var options={get passive(){return!(self.passiveSupported=!0)}};window.addEventListener("test",null,options),window.removeEventListener("test",null,options)}catch(err){self.passiveSupported=!1}}},{key:"initRequestIdleCallback",value:function(){!1 in window&&(window.requestIdleCallback=function(cb){var start=Date.now();return setTimeout(function(){cb({didTimeout:!1,timeRemaining:function(){return Math.max(0,50-(Date.now()-start))}})},1)}),!1 in window&&(window.cancelIdleCallback=function(id){return clearTimeout(id)})}},{key:"isDataSaverModeOn",value:function(){return"connection"in navigator&&!0===navigator.connection.saveData}},{key:"supportsLinkPrefetch",value:function(){var elem=document.createElement("link");return elem.relList&&elem.relList.supports&&elem.relList.supports("prefetch")&&window.IntersectionObserver&&"isIntersecting"in IntersectionObserverEntry.prototype}},{key:"isSlowConnection",value:function(){return"connection"in navigator&&"effectiveType"in navigator.connection&&("2g"===navigator.connection.effectiveType||"slow-2g"===navigator.connection.effectiveType)}}]),RocketBrowserCompatibilityChecker}();
+</script>
+<script id="rocket-delay-js-js-after">
+(function() {
+"use strict";var e=function(){function n(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(e,t,r){return t&&n(e.prototype,t),r&&n(e,r),e}}();function n(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}var t=function(){function r(e,t){n(this,r),this.attrName="data-rocketlazyloadscript",this.browser=t,this.options=this.browser.options,this.triggerEvents=e,this.userEventListener=this.triggerListener.bind(this)}return e(r,[{key:"init",value:function(){this._addEventListener(this)}},{key:"reset",value:function(){this._removeEventListener(this)}},{key:"_addEventListener",value:function(t){this.triggerEvents.forEach(function(e){return window.addEventListener(e,t.userEventListener,t.options)})}},{key:"_removeEventListener",value:function(t){this.triggerEvents.forEach(function(e){return window.removeEventListener(e,t.userEventListener,t.options)})}},{key:"_loadScriptSrc",value:function(){var r=this,e=document.querySelectorAll("script["+this.attrName+"]");0!==e.length&&Array.prototype.slice.call(e).forEach(function(e){var t=e.getAttribute(r.attrName);e.setAttribute("src",t),e.removeAttribute(r.attrName)}),this.reset()}},{key:"triggerListener",value:function(){this._loadScriptSrc(),this._removeEventListener(this)}}],[{key:"run",value:function(){RocketBrowserCompatibilityChecker&&new r(["keydown","mouseover","touchmove","touchstart","wheel"],new RocketBrowserCompatibilityChecker({passive:!0})).init()}}]),r}();t.run();
+}());
+</script>
+<script id="rocket-preload-links-js-extra">
+var RocketPreloadLinksConfig = {"excludeUris":"\/(.+\/)?feed\/?.+\/?|\/(?:.+\/)?embed\/|\/checkout\/|\/shopping-cart\/|\/(index\\.php\/)?wp\\-json(\/.*|$)|\/login-htech\/|\/wp-admin\/|\/logout\/|\/login-htech\/","usesTrailingSlash":"1","imageExt":"jpg|jpeg|gif|png|tiff|bmp|webp|avif","fileExt":"jpg|jpeg|gif|png|tiff|bmp|webp|avif|php|pdf|html|htm","siteUrl":"https:\/\/thevinylroom.co.il","onHoverDelay":"100","rateThrottle":"3"};
+</script>
+<script id="rocket-preload-links-js-after">
+(function() {
+"use strict";var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},e=function(){function i(e,t){for(var n=0;n<t.length;n++){var i=t[n];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(e,t,n){return t&&i(e.prototype,t),n&&i(e,n),e}}();function i(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}var t=function(){function n(e,t){i(this,n),this.browser=e,this.config=t,this.options=this.browser.options,this.prefetched=new Set,this.eventTime=null,this.threshold=1111,this.numOnHover=0}return e(n,[{key:"init",value:function(){!this.browser.supportsLinkPrefetch()||this.browser.isDataSaverModeOn()||this.browser.isSlowConnection()||(this.regex={excludeUris:RegExp(this.config.excludeUris,"i"),images:RegExp(".("+this.config.imageExt+")$","i"),fileExt:RegExp(".("+this.config.fileExt+")$","i")},this._initListeners(this))}},{key:"_initListeners",value:function(e){-1<this.config.onHoverDelay&&document.addEventListener("mouseover",e.listener.bind(e),e.listenerOptions),document.addEventListener("mousedown",e.listener.bind(e),e.listenerOptions),document.addEventListener("touchstart",e.listener.bind(e),e.listenerOptions)}},{key:"listener",value:function(e){var t=e.target.closest("a"),n=this._prepareUrl(t);if(null!==n)switch(e.type){case"mousedown":case"touchstart":this._addPrefetchLink(n);break;case"mouseover":this._earlyPrefetch(t,n,"mouseout")}}},{key:"_earlyPrefetch",value:function(t,e,n){var i=this,r=setTimeout(function(){if(r=null,0===i.numOnHover)setTimeout(function(){return i.numOnHover=0},1e3);else if(i.numOnHover>i.config.rateThrottle)return;i.numOnHover++,i._addPrefetchLink(e)},this.config.onHoverDelay);t.addEventListener(n,function e(){t.removeEventListener(n,e,{passive:!0}),null!==r&&(clearTimeout(r),r=null)},{passive:!0})}},{key:"_addPrefetchLink",value:function(i){return this.prefetched.add(i.href),new Promise(function(e,t){var n=document.createElement("link");n.rel="prefetch",n.href=i.href,n.onload=e,n.onerror=t,document.head.appendChild(n)}).catch(function(){})}},{key:"_prepareUrl",value:function(e){if(null===e||"object"!==(void 0===e?"undefined":r(e))||!1 in e||-1===["http:","https:"].indexOf(e.protocol))return null;var t=e.href.substring(0,this.config.siteUrl.length),n=this._getPathname(e.href,t),i={original:e.href,protocol:e.protocol,origin:t,pathname:n,href:t+n};return this._isLinkOk(i)?i:null}},{key:"_getPathname",value:function(e,t){var n=t?e.substring(this.config.siteUrl.length):e;return n.startsWith("/")||(n="/"+n),this._shouldAddTrailingSlash(n)?n+"/":n}},{key:"_shouldAddTrailingSlash",value:function(e){return this.config.usesTrailingSlash&&!e.endsWith("/")&&!this.regex.fileExt.test(e)}},{key:"_isLinkOk",value:function(e){return null!==e&&"object"===(void 0===e?"undefined":r(e))&&(!this.prefetched.has(e.href)&&e.origin===this.config.siteUrl&&-1===e.href.indexOf("?")&&-1===e.href.indexOf("#")&&!this.regex.excludeUris.test(e.href)&&!this.regex.images.test(e.href))}}],[{key:"run",value:function(){"undefined"!=typeof RocketPreloadLinksConfig&&new n(new RocketBrowserCompatibilityChecker({capture:!0,passive:!0}),RocketPreloadLinksConfig).init()}}]),n}();t.run();
+}());
+</script>
+<script id="mailchimp-woocommerce-js-extra">
+var mailchimp_public_data = {"site_url":"https:\/\/thevinylroom.co.il","ajax_url":"https:\/\/thevinylroom.co.il\/wp-admin\/admin-ajax.php","disable_carts":"","subscribers_only":"","language":"he","allowed_to_set_cookies":"1"};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/mailchimp-for-woocommerce/public/js/mailchimp-woocommerce-public.min.js?ver=5.3.07" id="mailchimp-woocommerce-js"></script>
+<script id="wd-asl-ajaxsearchlite-js-before">
+window.ASL = typeof window.ASL !== 'undefined' ? window.ASL : {}; window.ASL.wp_rocket_exception = "DOMContentLoaded"; window.ASL.ajaxurl = "https:\/\/thevinylroom.co.il\/wp-admin\/admin-ajax.php"; window.ASL.backend_ajaxurl = "https:\/\/thevinylroom.co.il\/wp-admin\/admin-ajax.php"; window.ASL.js_scope = "jQuery"; window.ASL.asl_url = "https:\/\/thevinylroom.co.il\/wp-content\/plugins\/ajax-search-lite\/"; window.ASL.detect_ajax = 1; window.ASL.media_query = 4768; window.ASL.version = 4768; window.ASL.pageHTML = ""; window.ASL.additional_scripts = [{"handle":"wd-asl-ajaxsearchlite","src":"https:\/\/thevinylroom.co.il\/wp-content\/plugins\/ajax-search-lite\/js\/min\/plugin\/optimized\/asl-prereq.js","prereq":[]},{"handle":"wd-asl-ajaxsearchlite-core","src":"https:\/\/thevinylroom.co.il\/wp-content\/plugins\/ajax-search-lite\/js\/min\/plugin\/optimized\/asl-core.js","prereq":[]},{"handle":"wd-asl-ajaxsearchlite-vertical","src":"https:\/\/thevinylroom.co.il\/wp-content\/plugins\/ajax-search-lite\/js\/min\/plugin\/optimized\/asl-results-vertical.js","prereq":["wd-asl-ajaxsearchlite"]},{"handle":"wd-asl-ajaxsearchlite-load","src":"https:\/\/thevinylroom.co.il\/wp-content\/plugins\/ajax-search-lite\/js\/min\/plugin\/optimized\/asl-load.js","prereq":["wd-asl-ajaxsearchlite-vertical"]}]; window.ASL.script_async_load = false; window.ASL.init_only_in_viewport = true; window.ASL.font_url = "https:\/\/thevinylroom.co.il\/wp-content\/plugins\/ajax-search-lite\/css\/fonts\/icons2.woff2"; window.ASL.css_async = false; window.ASL.highlight = {"enabled":false,"data":[]}; window.ASL.analytics = {"method":0,"tracking_id":"","string":"?ajax_search={asl_term}","event":{"focus":{"active":1,"action":"focus","category":"ASL","label":"Input focus","value":"1"},"search_start":{"active":0,"action":"search_start","category":"ASL","label":"Phrase: {phrase}","value":"1"},"search_end":{"active":1,"action":"search_end","category":"ASL","label":"{phrase} | {results_count}","value":"1"},"magnifier":{"active":1,"action":"magnifier","category":"ASL","label":"Magnifier clicked","value":"1"},"return":{"active":1,"action":"return","category":"ASL","label":"Return button pressed","value":"1"},"facet_change":{"active":0,"action":"facet_change","category":"ASL","label":"{option_label} | {option_value}","value":"1"},"result_click":{"active":1,"action":"result_click","category":"ASL","label":"{result_title} | {result_url}","value":"1"}}};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/ajax-search-lite/js/min/plugin/optimized/asl-prereq.js?ver=4768" id="wd-asl-ajaxsearchlite-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/ajax-search-lite/js/min/plugin/optimized/asl-core.js?ver=4768" id="wd-asl-ajaxsearchlite-core-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/ajax-search-lite/js/min/plugin/optimized/asl-results-vertical.js?ver=4768" id="wd-asl-ajaxsearchlite-vertical-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/ajax-search-lite/js/min/plugin/optimized/asl-load.js?ver=4768" id="wd-asl-ajaxsearchlite-load-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/ajax-search-lite/js/min/plugin/optimized/asl-wrapper.js?ver=4768" id="wd-asl-ajaxsearchlite-wrapper-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/elementor-pro/assets/lib/smartmenus/jquery.smartmenus.min.js?ver=1.2.1" id="smartmenus-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.min.js?ver=9.7.3" id="sourcebuster-js-js"></script>
+<script id="wc-order-attribution-js-extra">
+var wc_order_attribution = {"params":{"lifetime":1.0e-5,"session":30,"base64":false,"ajaxurl":"https:\/\/thevinylroom.co.il\/wp-admin\/admin-ajax.php","prefix":"wc_order_attribution_","allowTracking":true},"fields":{"source_type":"current.typ","referrer":"current_add.rf","utm_campaign":"current.cmp","utm_source":"current.src","utm_medium":"current.mdm","utm_content":"current.cnt","utm_id":"current.id","utm_term":"current.trm","utm_source_platform":"current.plt","utm_creative_format":"current.fmt","utm_marketing_tactic":"current.tct","session_entry":"current_add.ep","session_start_time":"current_add.fd","session_pages":"session.pgs","session_count":"udata.vst","user_agent":"udata.uag"}};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/js/frontend/order-attribution.min.js?ver=9.7.3" id="wc-order-attribution-js"></script>
+<script id="atr-scb-js-js-extra">
+var scbSettings = {"cookieName":"scb_consent","expiryDays":"365","isPrivacyPage":""};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/cookie-consent-banner/assets/js/atr-scb.js?ver=1.6.7" id="atr-scb-js-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/cookie-consent-banner/assets/js/conversion-tracking.js?ver=1.6.7" id="atr-scb-conversion-js"></script>
+<script id="wc-cart-fragments-js-extra">
+var wc_cart_fragments_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","cart_hash_key":"wc_cart_hash_6e3e0faecedc3de4c88090fc8bc73c2f","fragment_name":"wc_fragments_6e3e0faecedc3de4c88090fc8bc73c2f","request_timeout":"5000"};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/woocommerce/assets/js/frontend/cart-fragments.min.js?ver=9.7.3" id="wc-cart-fragments-js" defer data-wp-strategy="defer"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/elementor-pro/assets/js/webpack-pro.runtime.min.js?ver=3.27.7" id="elementor-pro-webpack-runtime-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/elementor/assets/js/webpack.runtime.min.js?ver=3.28.3" id="elementor-webpack-runtime-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/elementor/assets/js/frontend-modules.min.js?ver=3.28.3" id="elementor-frontend-modules-js"></script>
+<script src="https://thevinylroom.co.il/wp-includes/js/dist/i18n.min.js?ver=5e580eb46a90c2b997e6" id="wp-i18n-js"></script>
+<script id="wp-i18n-js-after">
+wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'rtl' ] } );
+</script>
+<script id="elementor-pro-frontend-js-before">
+var ElementorProFrontendConfig = {"ajaxurl":"https:\/\/thevinylroom.co.il\/wp-admin\/admin-ajax.php","nonce":"accca7c3c4","urls":{"assets":"https:\/\/thevinylroom.co.il\/wp-content\/plugins\/elementor-pro\/assets\/","rest":"https:\/\/thevinylroom.co.il\/wp-json\/"},"settings":{"lazy_load_background_images":true},"popup":{"hasPopUps":true},"shareButtonsNetworks":{"facebook":{"title":"Facebook","has_counter":true},"twitter":{"title":"Twitter"},"linkedin":{"title":"LinkedIn","has_counter":true},"pinterest":{"title":"Pinterest","has_counter":true},"reddit":{"title":"Reddit","has_counter":true},"vk":{"title":"VK","has_counter":true},"odnoklassniki":{"title":"OK","has_counter":true},"tumblr":{"title":"Tumblr"},"digg":{"title":"Digg"},"skype":{"title":"Skype"},"stumbleupon":{"title":"StumbleUpon","has_counter":true},"mix":{"title":"Mix"},"telegram":{"title":"Telegram"},"pocket":{"title":"Pocket","has_counter":true},"xing":{"title":"XING","has_counter":true},"whatsapp":{"title":"WhatsApp"},"email":{"title":"Email"},"print":{"title":"Print"},"x-twitter":{"title":"X"},"threads":{"title":"Threads"}},"woocommerce":{"menu_cart":{"cart_page_url":"https:\/\/thevinylroom.co.il\/shopping-cart\/","checkout_page_url":"https:\/\/thevinylroom.co.il\/checkout\/","fragments_nonce":"9c98760248"}},"facebook_sdk":{"lang":"he_IL","app_id":""},"lottie":{"defaultAnimationUrl":"https:\/\/thevinylroom.co.il\/wp-content\/plugins\/elementor-pro\/modules\/lottie\/assets\/animations\/default.json"}};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/elementor-pro/assets/js/frontend.min.js?ver=3.27.7" id="elementor-pro-frontend-js"></script>
+<script id="elementor-frontend-js-before">
+var elementorFrontendConfig = {"environmentMode":{"edit":false,"wpPreview":false,"isScriptDebug":false},"i18n":{"shareOnFacebook":"\u05e9\u05ea\u05e3 \u05d1\u05e4\u05d9\u05d9\u05e1\u05d1\u05d5\u05e7","shareOnTwitter":"\u05e9\u05ea\u05e3 \u05d1\u05d8\u05d5\u05d5\u05d9\u05d8\u05e8","pinIt":"\u05dc\u05e0\u05e2\u05d5\u05e5 \u05d1\u05e4\u05d9\u05e0\u05d8\u05e8\u05e1\u05d8","download":"\u05d4\u05d5\u05e8\u05d3\u05d4","downloadImage":"\u05d4\u05d5\u05e8\u05d3\u05ea \u05ea\u05de\u05d5\u05e0\u05d4","fullscreen":"\u05de\u05e1\u05da \u05de\u05dc\u05d0","zoom":"\u05de\u05d9\u05e7\u05d5\u05d3","share":"\u05e9\u05ea\u05e3","playVideo":"\u05e0\u05d2\u05df \u05d5\u05d9\u05d3\u05d0\u05d5","previous":"\u05e7\u05d5\u05d3\u05dd","next":"\u05d4\u05d1\u05d0","close":"\u05e1\u05d2\u05d5\u05e8","a11yCarouselPrevSlideMessage":"\u05e9\u05e7\u05d5\u05e4\u05d9\u05ea \u05e7\u05d5\u05d3\u05de\u05ea","a11yCarouselNextSlideMessage":"\u05e9\u05e7\u05d5\u05e4\u05d9\u05ea \u05d4\u05d1\u05d0\u05d4","a11yCarouselFirstSlideMessage":"\u05d6\u05d5\u05d4\u05d9 \u05d4\u05e9\u05e7\u05d5\u05e4\u05d9\u05ea \u05d4\u05e8\u05d0\u05e9\u05d5\u05e0\u05d4","a11yCarouselLastSlideMessage":"\u05d6\u05d5\u05d4\u05d9 \u05d4\u05e9\u05e7\u05d5\u05e4\u05d9\u05ea \u05d4\u05d0\u05d7\u05e8\u05d5\u05e0\u05d4","a11yCarouselPaginationBulletMessage":"\u05dc\u05e2\u05d1\u05d5\u05e8 \u05dc\u05e9\u05e7\u05d5\u05e4\u05d9\u05ea"},"is_rtl":true,"breakpoints":{"xs":0,"sm":480,"md":768,"lg":1025,"xl":1440,"xxl":1600},"responsive":{"breakpoints":{"mobile":{"label":"\u05de\u05d5\u05d1\u05d9\u05d9\u05dc \u05d0\u05e0\u05db\u05d9","value":767,"default_value":767,"direction":"max","is_enabled":true},"mobile_extra":{"label":"\u05de\u05d5\u05d1\u05d9\u05d9\u05dc \u05d0\u05d5\u05e4\u05e7\u05d9","value":880,"default_value":880,"direction":"max","is_enabled":false},"tablet":{"label":"\u05d8\u05d0\u05d1\u05dc\u05d8 \u05d0\u05e0\u05db\u05d9","value":1024,"default_value":1024,"direction":"max","is_enabled":true},"tablet_extra":{"label":"\u05d8\u05d0\u05d1\u05dc\u05d8 \u05d0\u05d5\u05e4\u05e7\u05d9","value":1200,"default_value":1200,"direction":"max","is_enabled":false},"laptop":{"label":"\u05dc\u05e4\u05d8\u05d5\u05e4","value":1366,"default_value":1366,"direction":"max","is_enabled":false},"widescreen":{"label":"\u05de\u05e1\u05da \u05e8\u05d7\u05d1","value":2400,"default_value":2400,"direction":"min","is_enabled":false}},"hasCustomBreakpoints":false},"version":"3.28.3","is_static":false,"experimentalFeatures":{"additional_custom_breakpoints":true,"e_local_google_fonts":true,"theme_builder_v2":true,"landing-pages":true,"editor_v2":true,"home_screen":true},"urls":{"assets":"https:\/\/thevinylroom.co.il\/wp-content\/plugins\/elementor\/assets\/","ajaxurl":"https:\/\/thevinylroom.co.il\/wp-admin\/admin-ajax.php","uploadUrl":"https:\/\/thevinylroom.co.il\/wp-content\/uploads"},"nonces":{"floatingButtonsClickTracking":"d37b76859c"},"swiperClass":"swiper","settings":{"editorPreferences":[]},"kit":{"active_breakpoints":["viewport_mobile","viewport_tablet"],"global_image_lightbox":"yes","lightbox_enable_counter":"yes","lightbox_enable_fullscreen":"yes","lightbox_enable_zoom":"yes","lightbox_enable_share":"yes","lightbox_title_src":"title","lightbox_description_src":"description","woocommerce_notices_elements":[]},"post":{"id":0,"title":"\u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05dc\u05d5\u05e2\u05d6\u05d9\u05d9\u05dd \u05dc\u05e8\u05db\u05d9\u05e9\u05d4 \u05d0\u05d5\u05e0\u05dc\u05d9\u05d9\u05df | The Vinyl Room - \u05d7\u05e0\u05d5\u05ea \u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd","excerpt":"<h2>\u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05dc\u05d5\u05e2\u05d6\u05d9\u05d9\u05dd<\/h2>\n<p>\u05d0\u05d5\u05d4\u05d1\u05d9\u05dd \u05de\u05d5\u05d6\u05d9\u05e7\u05d4 \u05dc\u05d5\u05e2\u05d6\u05d9\u05ea \u05d5\u05de\u05d7\u05e4\u05e9\u05d9\u05dd \u05d0\u05ea \u05d4\u05d3\u05e8\u05da \u05d4\u05de\u05d5\u05e9\u05dc\u05de\u05ea \u05dc\u05d4\u05d0\u05d6\u05d9\u05df \u05dc\u05d4? \u05d0\u05dd \u05d0\u05ea\u05dd \u05de\u05e2\u05e8\u05d9\u05e6\u05d9\u05dd \u05e9\u05dc \u05d4\u05e1\u05d0\u05d5\u05e0\u05d3 \u05d4\u05d9\u05d9\u05d7\u05d5\u05d3\u05d9, \u05d4\u05d7\u05dd \u05d5\u05d4\u05e2\u05de\u05d5\u05e7 \u05e9\u05dc \u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd, \u05d4\u05d2\u05e2\u05ea\u05dd \u05dc\u05de\u05e7\u05d5\u05dd \u05d4\u05e0\u05db\u05d5\u05df! \u05d1-The Vinyl Room, \u05d4\u05d7\u05e0\u05d5\u05ea \u05d4\u05d5\u05d5\u05ea\u05d9\u05e7\u05d4 \u05d1\u05d9\u05d5\u05ea\u05e8 \u05d1\u05d0\u05e8\u05e5 \u05d1\u05ea\u05d7\u05d5\u05dd \u05d4\u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd, \u05d0\u05e0\u05d7\u05e0\u05d5 \u05de\u05ea\u05de\u05d7\u05d9\u05dd \u05d1\u05de\u05ea\u05df \u05d7\u05d5\u05d5\u05d9\u05d9\u05ea \u05d4\u05d0\u05d6\u05e0\u05d4 \u05d0\u05d5\u05ea\u05e0\u05d8\u05d9\u05ea \u05e2\u05dd \u05de\u05d1\u05d7\u05e8 \u05e2\u05e6\u05d5\u05dd \u05e9\u05dc \u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05dc\u05d5\u05e2\u05d6\u05d9\u05d9\u05dd, \u05e9\u05de\u05ea\u05d0\u05d9\u05dd \u05dc\u05db\u05dc \u05d8\u05e2\u05dd \u05d5\u05dc\u05db\u05dc \u05e1\u05d2\u05e0\u05d5\u05df.<\/p>\n<p>\u05d1\u05e7\u05d8\u05d2\u05d5\u05e8\u05d9\u05d9\u05ea \u05d4\u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05d4\u05dc\u05d5\u05e2\u05d6\u05d9\u05d9\u05dd \u05e9\u05dc\u05e0\u05d5, \u05ea\u05de\u05e6\u05d0\u05d5 \u05d0\u05ea \u05de\u05d9\u05d8\u05d1 \u05d4\u05e7\u05dc\u05d0\u05e1\u05d9\u05e7\u05d5\u05ea \u05d4\u05d0\u05d9\u05d9\u05e7\u05d5\u05e0\u05d9\u05d5\u05ea \u05e9\u05dc \u05d4\u05d0\u05de\u05e0\u05d9\u05dd \u05d4\u05d2\u05d3\u05d5\u05dc\u05d9\u05dd \u05d1\u05d9\u05d5\u05ea\u05e8 \u05d1\u05db\u05dc \u05d4\u05d6\u05de\u05e0\u05d9\u05dd. \u05de\u05d7\u05e4\u05e9\u05d9\u05dd \u05d0\u05ea \u05d4\u05e6\u05dc\u05d9\u05dc\u05d9\u05dd \u05d4\u05de\u05e8\u05d2\u05e9\u05d9\u05dd \u05e9\u05dc \u05e0\u05d9\u05e8\u05d5\u05d5\u05e0\u05d4, \u05d4\u05d0\u05d5\u05d5\u05d9\u05e8\u05d4 \u05d4\u05e4\u05e1\u05d9\u05db\u05d3\u05dc\u05d9\u05ea \u05e9\u05dc \u05e4\u05d9\u05e0\u05e7 \u05e4\u05dc\u05d5\u05d9\u05d3, \u05d0\u05d5 \u05d0\u05ea \u05d4\u05e7\u05e1\u05dd \u05d4\u05e0\u05e6\u05d7\u05d9 \u05e9\u05dc \u05d4\u05d1\u05d9\u05d8\u05dc\u05e1? \u05d0\u05e6\u05dc\u05e0\u05d5 \u05ea\u05de\u05e6\u05d0\u05d5 \u05d0\u05d5\u05ea\u05dd \u05d5\u05e2\u05d5\u05d3 \u05e8\u05d1\u05d9\u05dd \u05d0\u05d7\u05e8\u05d9\u05dd. \u05d5\u05d0\u05dd \u05d0\u05ea\u05dd \u05de\u05d7\u05e4\u05e9\u05d9\u05dd \u05dc\u05d4\u05ea\u05e8\u05e2\u05e0\u05df \u05e2\u05dd \u05e6\u05dc\u05d9\u05dc\u05d9\u05dd \u05e2\u05db\u05e9\u05d5\u05d5\u05d9\u05d9\u05dd, \u05d0\u05e0\u05d7\u05e0\u05d5 \u05de\u05e6\u05d9\u05e2\u05d9\u05dd \u05d2\u05dd \u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05e9\u05dc \u05d0\u05de\u05e0\u05d9\u05dd \u05e2\u05db\u05e9\u05d5\u05d5\u05d9\u05d9\u05dd \u05d5\u05e9\u05de\u05d5\u05ea \u05d7\u05de\u05d9\u05dd \u05de\u05d4\u05e9\u05e0\u05d9\u05dd \u05d4\u05d0\u05d7\u05e8\u05d5\u05e0\u05d5\u05ea, \u05db\u05da \u05e9\u05ea\u05d5\u05db\u05dc\u05d5 \u05dc\u05d4\u05e2\u05e9\u05d9\u05e8 \u05d0\u05ea \u05d4\u05d0\u05d5\u05e1\u05e3 \u05e9\u05dc\u05db\u05dd \u05d1\u05db\u05dc \u05d2\u05d5\u05d5\u05e0\u05d9 \u05d4\u05de\u05d5\u05d6\u05d9\u05e7\u05d4.<\/p>\n<p>\u05dc\u05d0 \u05de\u05e9\u05e0\u05d4 \u05d0\u05dd \u05d0\u05ea\u05dd \u05d7\u05d5\u05d1\u05d1\u05d9 \u05e8\u05d5\u05e7, \u05d2'\u05d0\u05d6, \u05e4\u05d5\u05e4, \u05d1\u05dc\u05d5\u05d6, \u05d0\u05d9\u05e0\u05d3\u05d9 \u05d0\u05d5 \u05db\u05dc \u05e1\u05d2\u05e0\u05d5\u05df \u05d0\u05d7\u05e8 \u2013 \u05d9\u05e9 \u05dc\u05e0\u05d5 \u05d0\u05ea \u05db\u05dc \u05de\u05d4 \u05e9\u05d0\u05ea\u05dd \u05e6\u05e8\u05d9\u05db\u05d9\u05dd \u05db\u05d3\u05d9 \u05dc\u05d4\u05d7\u05d6\u05d9\u05e8 \u05d0\u05ea \u05d7\u05d5\u05d5\u05d9\u05d9\u05ea \u05d4\u05d4\u05d0\u05d6\u05e0\u05d4 \u05dc\u05d0\u05d5\u05ea\u05dd \u05d9\u05de\u05d9\u05dd \u05e7\u05e1\u05d5\u05de\u05d9\u05dd \u05e9\u05d1\u05d4\u05dd \u05d4\u05de\u05d5\u05d6\u05d9\u05e7\u05d4 \u05d4\u05d9\u05d9\u05ea\u05d4 \u05d0\u05de\u05d9\u05ea\u05d9\u05ea \u05d5\u05e0\u05d5\u05d2\u05e2\u05ea \u05d1\u05dc\u05d1. \u05d4\u05e6\u05d5\u05d5\u05ea \u05e9\u05dc\u05e0\u05d5 \u05ea\u05de\u05d9\u05d3 \u05db\u05d0\u05df \u05dc\u05e2\u05d6\u05d5\u05e8 \u05dc\u05db\u05dd \u05dc\u05de\u05e6\u05d5\u05d0 \u05d0\u05ea \u05d4\u05ea\u05e7\u05dc\u05d9\u05d8 \u05d4\u05d1\u05d0 \u05e9\u05d9\u05e9\u05d3\u05e8\u05d2 \u05d0\u05ea \u05d4\u05d0\u05d5\u05e1\u05e3 \u05e9\u05dc\u05db\u05dd.<\/p>\n<p>\u05d0\u05d6 \u05e7\u05d3\u05d9\u05de\u05d4, \u05e4\u05e9\u05e4\u05e9\u05d5 \u05d1\u05e7\u05d8\u05d2\u05d5\u05e8\u05d9\u05d9\u05ea \u05d4\u05ea\u05e7\u05dc\u05d9\u05d8\u05d9\u05dd \u05d4\u05dc\u05d5\u05e2\u05d6\u05d9\u05d9\u05dd \u05e9\u05dc\u05e0\u05d5, \u05d2\u05dc\u05d5 \u05d0\u05ea \u05d4\u05d0\u05d5\u05e6\u05e8\u05d5\u05ea \u05e9\u05de\u05d7\u05db\u05d9\u05dd \u05dc\u05db\u05dd \u05e2\u05dc \u05d4\u05de\u05d3\u05e4\u05d9\u05dd, \u05d5\u05d1\u05d5\u05d0\u05d5 \u05dc\u05d2\u05dc\u05d5\u05ea \u05de\u05d7\u05d3\u05e9 \u05d0\u05ea \u05d4\u05de\u05d5\u05d6\u05d9\u05e7\u05d4 \u05e9\u05d0\u05ea\u05dd \u05db\u05dc \u05db\u05da \u05d0\u05d5\u05d4\u05d1\u05d9\u05dd \u05dc\u05e9\u05de\u05d5\u05e2, \u05db\u05de\u05d5 \u05e4\u05e2\u05dd.<\/p>\n"}};
+</script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/elementor/assets/js/frontend.min.js?ver=3.28.3" id="elementor-frontend-js"></script>
+<script src="https://thevinylroom.co.il/wp-content/plugins/elementor-pro/assets/js/elements-handlers.min.js?ver=3.27.7" id="pro-elements-handlers-js"></script>
+<!-- WooCommerce JavaScript -->
+<script data-rocketlazyloadscript='data:text/javascript;base64,CmpRdWVyeShmdW5jdGlvbigkKSB7IAovKiBXb29Db21tZXJjZSBGYWNlYm9vayBJbnRlZ3JhdGlvbiBFdmVudCBUcmFja2luZyAqLwpmYnEoJ3NldCcsICdhZ2VudCcsICd3b29jb21tZXJjZS05LjcuMy0zLjQuNScsICc1MTAwMDQ3MTk2MjQ5NTQnKTsKZmJxKCd0cmFja0N1c3RvbScsICdWaWV3Q2F0ZWdvcnknLCB7CiAgICAic291cmNlIjogIndvb2NvbW1lcmNlIiwKICAgICJ2ZXJzaW9uIjogIjkuNy4zIiwKICAgICJwbHVnaW5WZXJzaW9uIjogIjMuNC41IiwKICAgICJjb250ZW50X25hbWUiOiAiXHUwNWVhXHUwNWU3XHUwNWRjXHUwNWQ5XHUwNWQ4XHUwNWQ5XHUwNWRkIFx1MDVkY1x1MDVkNVx1MDVlMlx1MDVkNlx1MDVkOVx1MDVkOVx1MDVkZCIsCiAgICAiY29udGVudF9jYXRlZ29yeSI6ICJcdTA1ZWFcdTA1ZTdcdTA1ZGNcdTA1ZDlcdTA1ZDhcdTA1ZDlcdTA1ZGQgXHUwNWRjXHUwNWQ1XHUwNWUyXHUwNWQ2XHUwNWQ5XHUwNWQ5XHUwNWRkIiwKICAgICJjb250ZW50X2lkcyI6ICJbXCJcXHUwNWQ0XFx1MDVkY1xcdTA1ZDlcXHUwNWU3XFx1MDVkNVxcdTA1ZGYgNjAzNDk3ODI2MDU2XzExNjc0XCIsXCJcXHUwNWQ0XFx1MDVkY1xcdTA1ZDlcXHUwNWU3XFx1MDVkNVxcdTA1ZGYgNjAyNDY1ODk3NDAxXzExNjY5XCIsXCI4NzE4NDY5NTMzMDg0XzExNTU2XCIsXCI0MDUwNTM4MjcwMDM3XzExNTQ5XCIsXCIwNjAwNzUzMzgxNTI2XzExNTQ3XCIsXCJcXHUwNWUyXFx1MDVkM1xcdTA1ZGNcXHUwNWQ5IDE5NjU4Nzg0ODUxNF8xMTY5NlwiLFwiXFx1MDVlMlxcdTA1ZDNcXHUwNWRjXFx1MDVkOSAxOTY1ODc4NDg0MTVfMTE2OTRcIixcIlxcdTA1ZTJcXHUwNWQzXFx1MDVkY1xcdTA1ZDkgMDE5NjU4Nzg0ODMxNl8xMTY4MFwiLFwiXFx1MDVkNFxcdTA1ZGNcXHUwNWQ5XFx1MDVlN1xcdTA1ZDVcXHUwNWRmIDA2MDI1MDg3NjA3NF8xMDc1M1wiLFwiXFx1MDVkNFxcdTA1ZGNcXHUwNWQ5XFx1MDVlN1xcdTA1ZDVcXHUwNWRmIDUwNTQxOTc2MTQyMDBfMTA0NzJcIl0iLAogICAgImNvbnRlbnRfdHlwZSI6ICJwcm9kdWN0IiwKICAgICJjb250ZW50cyI6IHsKICAgICAgICAiMCI6IHsKICAgICAgICAgICAgImlkIjogIlx1MDVkNFx1MDVkY1x1MDVkOVx1MDVlN1x1MDVkNVx1MDVkZiA2MDM0OTc4MjYwNTZfMTE2NzQiLAogICAgICAgICAgICAicXVhbnRpdHkiOiAxCiAgICAgICAgfSwKICAgICAgICAiMSI6IHsKICAgICAgICAgICAgImlkIjogIlx1MDVkNFx1MDVkY1x1MDVkOVx1MDVlN1x1MDVkNVx1MDVkZiA2MDI0NjU4OTc0MDFfMTE2NjkiLAogICAgICAgICAgICAicXVhbnRpdHkiOiAxCiAgICAgICAgfSwKICAgICAgICAiMiI6IHsKICAgICAgICAgICAgImlkIjogIjg3MTg0Njk1MzMwODRfMTE1NTYiLAogICAgICAgICAgICAicXVhbnRpdHkiOiAxCiAgICAgICAgfSwKICAgICAgICAiMyI6IHsKICAgICAgICAgICAgImlkIjogIjQwNTA1MzgyNzAwMzdfMTE1NDkiLAogICAgICAgICAgICAicXVhbnRpdHkiOiAxCiAgICAgICAgfSwKICAgICAgICAiNCI6IHsKICAgICAgICAgICAgImlkIjogIjA2MDA3NTMzODE1MjZfMTE1NDciLAogICAgICAgICAgICAicXVhbnRpdHkiOiAxCiAgICAgICAgfSwKICAgICAgICAiNSI6IHsKICAgICAgICAgICAgImlkIjogIlx1MDVlMlx1MDVkM1x1MDVkY1x1MDVkOSAxOTY1ODc4NDg1MTRfMTE2OTYiLAogICAgICAgICAgICAicXVhbnRpdHkiOiAxCiAgICAgICAgfSwKICAgICAgICAiNiI6IHsKICAgICAgICAgICAgImlkIjogIlx1MDVlMlx1MDVkM1x1MDVkY1x1MDVkOSAxOTY1ODc4NDg0MTVfMTE2OTQiLAogICAgICAgICAgICAicXVhbnRpdHkiOiAxCiAgICAgICAgfSwKICAgICAgICAiNyI6IHsKICAgICAgICAgICAgImlkIjogIlx1MDVlMlx1MDVkM1x1MDVkY1x1MDVkOSAwMTk2NTg3ODQ4MzE2XzExNjgwIiwKICAgICAgICAgICAgInF1YW50aXR5IjogMQogICAgICAgIH0sCiAgICAgICAgIjgiOiB7CiAgICAgICAgICAgICJpZCI6ICJcdTA1ZDRcdTA1ZGNcdTA1ZDlcdTA1ZTdcdTA1ZDVcdTA1ZGYgMDYwMjUwODc2MDc0XzEwNzUzIiwKICAgICAgICAgICAgInF1YW50aXR5IjogMQogICAgICAgIH0sCiAgICAgICAgIjkiOiB7CiAgICAgICAgICAgICJpZCI6ICJcdTA1ZDRcdTA1ZGNcdTA1ZDlcdTA1ZTdcdTA1ZDVcdTA1ZGYgNTA1NDE5NzYxNDIwMF8xMDQ3MiIsCiAgICAgICAgICAgICJxdWFudGl0eSI6IDEKICAgICAgICB9LAogICAgICAgICIxMCI6IHsKICAgICAgICAgICAgImlkIjogIlx1MDVlMlx1MDVkM1x1MDVkY1x1MDVkOSAxOTY1ODcxOTY3MTRfNjU1NyIsCiAgICAgICAgICAgICJxdWFudGl0eSI6IDEKICAgICAgICB9LAogICAgICAgICIxMSI6IHsKICAgICAgICAgICAgImlkIjogIlx1MDVlMlx1MDVkM1x1MDVkY1x1MDVkOSA2MTQyMjMxMDI3MTlfNzE5OCIsCiAgICAgICAgICAgICJxdWFudGl0eSI6IDEKICAgICAgICB9LAogICAgICAgICIxMiI6IHsKICAgICAgICAgICAgImlkIjogIlx1MDVkNFx1MDVkY1x1MDVkOVx1MDVlN1x1MDVkNVx1MDVkZiAxOTQzOTk4ODg5MTlfODI1NiIsCiAgICAgICAgICAgICJxdWFudGl0eSI6IDEKICAgICAgICB9LAogICAgICAgICIxMyI6IHsKICAgICAgICAgICAgImlkIjogIlx1MDVkNFx1MDVkY1x1MDVkOVx1MDVlN1x1MDVkNVx1MDVkZiAwNjAyNDU1MTc4NTg5XzEwNzYyIiwKICAgICAgICAgICAgInF1YW50aXR5IjogMQogICAgICAgIH0sCiAgICAgICAgIjE0IjogewogICAgICAgICAgICAiaWQiOiAiXHUwNWQ2XHUwNWQ0XHUwNWQxIFx1MDVlOVx1MDVkN1x1MDVkNVx1MDVlOCAxOTE0MDAwNjQyMThfMTE1OTYiLAogICAgICAgICAgICAicXVhbnRpdHkiOiAxCiAgICAgICAgfSwKICAgICAgICAiMTUiOiB7CiAgICAgICAgICAgICJpZCI6ICJcdTA1ZDZcdTA1ZDRcdTA1ZDEgXHUwNWU5XHUwNWQ3XHUwNWQ1XHUwNWU4IDE5MTQwMTE3OTgxMl8xMTU5NCIsCiAgICAgICAgICAgICJxdWFudGl0eSI6IDEKICAgICAgICB9CiAgICB9Cn0sIHsKICAgICJldmVudElEIjogIjFmZDYzMmZmLTY5ODUtNGFlNS05YmU0LWUxOTRjOTE4MTlkNiIKfSk7CiB9KTsK' type="text/javascript"></script>
+
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e4ad6bb3914ef49',t:'MTc3NDkxMjc2Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+
+<!-- This website is like a Rocket, isn't it? Performance optimized by WP Rocket. Learn more: https://wp-rocket.me -->

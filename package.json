@@ -1,0 +1,50 @@
+{
+  "name": "vinyl-store",
+  "version": "1.0.0",
+  "description": "Vinyl Store - 10X Better Database with Discogs API + Israeli Retailers",
+  "main": "main.js",
+  "homepage": "./",
+  "author": "Vinyl Store",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --debug",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:all": "electron-builder -mwl"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "29.0.1",
+    "electron-builder": "24.9.1"
+  },
+  "build": {
+    "appId": "com.vinylstore.app",
+    "productName": "Vinyl Store",
+    "asar": false,
+    "directories": {
+      "buildResources": "assets"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "node_modules/",
+      "dist/",
+      "app.py",
+      "backend/",
+      "scheduler_service.py",
+      "augment_with_israeli_records.py",
+      "*.md"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "certificateFile": null,
+      "sign": null
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}.exe"
+    }
+  }
+}
