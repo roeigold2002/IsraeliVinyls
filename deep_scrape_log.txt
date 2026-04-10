@@ -1,0 +1,23 @@
+
+======================================================================
+SCRAPLING: Deep Pagination Extractor (Aggressive)
+======================================================================
+Traceback (most recent call last):
+  File "E:\Code\Project V\scrapling_deep_extraction.py", line 357, in <module>
+    main()
+  File "E:\Code\Project V\scrapling_deep_extraction.py", line 318, in main
+    print(f"\n\U0001f3c1 Starting with: {initial_total:,} records\n")
+  File "C:\Users\RoeiG\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f3c1' in position 2: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\Code\Project V\scrapling_deep_extraction.py", line 361, in <module>
+    print(f"\n\n\u274c Fatal error: {e}")
+  File "C:\Users\RoeiG\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 4: character maps to <undefined>
