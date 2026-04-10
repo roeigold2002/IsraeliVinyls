@@ -1,50 +1,27 @@
 {
   "name": "vinyl-store",
+  "private": true,
   "version": "1.0.0",
-  "description": "Vinyl Store - 10X Better Database with Discogs API + Israeli Retailers",
-  "main": "main.js",
-  "homepage": "./",
-  "author": "Vinyl Store",
-  "license": "MIT",
+  "type": "module",
   "scripts": {
-    "start": "electron .",
-    "dev": "electron . --debug",
-    "build": "electron-builder",
-    "build:win": "electron-builder --win",
-    "build:all": "electron-builder -mwl"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@supabase/supabase-js": "^2.103.0",
+    "lucide-react": "^1.8.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-router-dom": "^7.14.0"
+  },
   "devDependencies": {
-    "electron": "29.0.1",
-    "electron-builder": "24.9.1"
-  },
-  "build": {
-    "appId": "com.vinylstore.app",
-    "productName": "Vinyl Store",
-    "asar": false,
-    "directories": {
-      "buildResources": "assets"
-    },
-    "files": [
-      "main.js",
-      "preload.js",
-      "node_modules/",
-      "dist/",
-      "app.py",
-      "backend/",
-      "scheduler_service.py",
-      "augment_with_israeli_records.py",
-      "*.md"
-    ],
-    "win": {
-      "target": [
-        "portable"
-      ],
-      "certificateFile": null,
-      "sign": null
-    },
-    "portable": {
-      "artifactName": "${productName}-${version}.exe"
-    }
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.8"
   }
 }
