@@ -43,7 +43,7 @@ export function RecordPage() {
   const handleWishlist = () => {
     if (!id) return
     const result = toggleWishlist(id)
-    setInWishlist(result.inWishlist)
+    setInWishlist(result)
   }
 
   if (loading) {

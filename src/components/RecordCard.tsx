@@ -18,7 +18,7 @@ export function RecordCard({ record, index = 0 }: Props) {
     e.preventDefault()
     e.stopPropagation()
     const result = toggleWishlist(record.id)
-    setInWishlist(result.inWishlist)
+    setInWishlist(result)
   }
 
   const coverSrc = imgError || !record.cover_url ? DEFAULT_COVER : record.cover_url
