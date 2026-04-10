@@ -13,7 +13,8 @@ export function WishlistPage() {
   const load = async () => {
     setLoading(true)
     try {
-      const ids = getWishlist()
+      const wishlist = getWishlist()
+      const ids = wishlist.map(i => i.recordId)
       if (ids.length > 0) {
         const data = await fetchRecordsByIds(ids)
         setRecords(data)
