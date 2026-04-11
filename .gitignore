@@ -46,6 +46,9 @@ vinyl_records.db
 *~
 .DS_Store
 
+# Node
+node_modules/
+
 # Environment variables
 .env
 .env.local
