@@ -1,13 +1,95 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { Search, SlidersHorizontal, X, TrendingUp, Zap, Music2, Star } from 'lucide-react'
 import { SearchBar } from '../components/SearchBar'
 import { RecordGrid } from '../components/RecordGrid'
 import { Pagination } from '../components/Pagination'
-import { searchRecords, fetchStores, fetchGenres } from '../lib/api'
+import { searchRecords, fetchStores, fetchGenres, fetchFeaturedRecords, fetchCheapestRecords } from '../lib/api'
 import { FORMATS, SORT_OPTIONS } from '../lib/constants'
 import { buildStoreSearchUrl } from '../lib/storeCatalog'
-import type { SearchFilters, SearchResult, Store, SortOption } from '../lib/types'
+import type { SearchFilters, SearchResult, Store, SortOption, VinylRecord } from '../lib/types'
+
+const QUICK_SEARCHES = ['Beatles', 'Pink Floyd', 'Jazz', 'Rock', 'Classical', 'Elvis', 'Bob Dylan', 'David Bowie']
+
+function SectionHeader({ icon: Icon, title, subtitle }: { icon: React.ElementType; title: string; subtitle?: string }) {
+  return (
+    <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-xl bg-accent/15 flex items-center justify-center">
+          <Icon size={18} className="text-accent" />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold text-text-primary">{title}</h2>
+          {subtitle && <p className="text-xs text-text-muted">{subtitle}</p>}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function HomeView({ onSearch }: { onSearch: (q: string) => void }) {
+  const [featured, setFeatured] = useState<VinylRecord[]>([])
+  const [cheapest, setCheapest] = useState<VinylRecord[]>([])
+  const [loadingFeatured, setLoadingFeatured] = useState(true)
+  const [loadingCheapest, setLoadingCheapest] = useState(true)
+
+  useEffect(() => {
+    fetchFeaturedRecords()
+      .then(setFeatured)
+      .catch(console.error)
+      .finally(() => setLoadingFeatured(false))
+
+    fetchCheapestRecords()
+      .then(setCheapest)
+      .catch(console.error)
+      .finally(() => setLoadingCheapest(false))
+  }, [])
+
+  return (
+    <div className="space-y-16 py-6">
+      <section className="text-center py-10">
+        <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 rounded-full px-4 py-1.5 text-accent text-sm font-medium mb-6">
+          <Zap size={14} />
+          97,000+ תקליטים מ-19 חנויות בישראל
+        </div>
+        <h1 className="text-4xl md:text-5xl font-black text-text-primary mb-3 leading-tight">
+          מצאו את התקליט
+          <span className="text-accent block md:inline"> הבא שלכם</span>
+        </h1>
+        <p className="text-text-secondary text-base mb-8 max-w-md mx-auto">
+          השוואת מחירים ומלאי ממקום אחד. עם עטיפות, מחירים ולינק לקנייה ישירה.
+        </p>
+
+        <div className="max-w-2xl mx-auto mb-8">
+          <SearchBar large autoFocus />
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-2">
+          <span className="text-text-muted text-sm ml-2">חיפושים פופולריים:</span>
+          {QUICK_SEARCHES.map(term => (
+            <button
+              key={term}
+              onClick={() => onSearch(term)}
+              className="px-3 py-1 text-sm bg-bg-card border border-border hover:border-accent/40 hover:text-accent text-text-secondary rounded-full transition-all duration-200 latin-text"
+            >
+              {term}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <SectionHeader icon={Star} title="תקליטים מומלצים" subtitle="עם עטיפות ומחירים" />
+        <RecordGrid records={featured} loading={loadingFeatured} />
+      </section>
+
+      <section>
+        <SectionHeader icon={TrendingUp} title="הכי זולים" subtitle="תקליטים במחירים הנמוכים ביותר" />
+        <RecordGrid records={cheapest} loading={loadingCheapest} />
+      </section>
+    </div>
+  )
+}
 
 export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -48,8 +130,7 @@ export function SearchPage() {
         setGenres(g)
       })
       .catch((err) => {
-        const message = err instanceof Error ? err.message : 'Failed to load filter metadata'
-        setLoadError(message)
+        setLoadError(err instanceof Error ? err.message : 'Failed to load filters')
         console.error(err)
       })
   }, [hasQuery, stores.length, genres.length])
@@ -69,8 +150,7 @@ export function SearchPage() {
         setResult(res)
         setLoadError(null)
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Failed to load search results'
-        setLoadError(message)
+        setLoadError(err instanceof Error ? err.message : 'Failed to load results')
         setResult(null)
         console.error(err)
       } finally {
@@ -88,12 +168,7 @@ export function SearchPage() {
     } else {
       params.set(key, value)
     }
-
-    const shouldResetPage = options?.resetPage ?? key !== 'page'
-    if (shouldResetPage) {
-      params.delete('page')
-    }
-
+    if (options?.resetPage ?? key !== 'page') params.delete('page')
     setSearchParams(params)
   }
 
@@ -114,6 +189,12 @@ export function SearchPage() {
     const q = searchParams.get('q')
     const params = new URLSearchParams()
     if (q) params.set('q', q)
+    setSearchParams(params)
+  }
+
+  const handleQuickSearch = (term: string) => {
+    const params = new URLSearchParams()
+    params.set('q', term)
     setSearchParams(params)
   }
 
@@ -143,38 +224,46 @@ export function SearchPage() {
     (filters.priceMax !== null ? 1 : 0)
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
-      <div className="max-w-4xl mx-auto mb-8">
-        <SearchBar
-          large
-          autoFocus
-          initialQuery={filters.query}
-          onSearch={(q) => updateParam('q', q || null)}
-        />
-      </div>
-
+    <div className="max-w-7xl mx-auto px-4 py-6">
       {!hasQuery ? (
-        <div className="max-w-2xl mx-auto text-center py-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 text-accent mb-4">
-            <Search size={28} />
-          </div>
-          <h2 className="text-2xl font-bold text-text-primary mb-2">התחילו לחפש</h2>
-          <p className="text-text-secondary">התוצאות עם העטיפות יופיעו מיד אחרי שתקלידו חיפוש</p>
-        </div>
+        <HomeView onSearch={handleQuickSearch} />
       ) : (
         <>
-          <div className="flex items-center justify-between mb-6">
+          <div className="max-w-3xl mx-auto mb-8">
+            <SearchBar
+              large
+              autoFocus
+              initialQuery={filters.query}
+              onSearch={(q) => updateParam('q', q || null)}
+            />
+          </div>
+
+          <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-3">
               {result && !loading && (
-                <span className="text-text-secondary text-sm">{result.total} תוצאות</span>
+                <div className="flex items-center gap-2">
+                  <Music2 size={15} className="text-text-muted" />
+                  <span className="text-text-secondary text-sm">
+                    <span className="text-text-primary font-semibold">{result.total.toLocaleString('he-IL')}</span> תוצאות
+                    {filters.query && (
+                      <span className="text-text-muted"> עבור "<span className="latin-text">{filters.query}</span>"</span>
+                    )}
+                  </span>
+                </div>
+              )}
+              {loading && (
+                <div className="flex items-center gap-2 text-text-muted text-sm">
+                  <div className="w-3.5 h-3.5 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
+                  מחפש...
+                </div>
               )}
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <select
                 value={filters.sortBy}
                 onChange={(e) => updateParam('sort', e.target.value)}
-                className="bg-bg-card border border-border rounded-lg text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50"
+                className="bg-bg-card border border-border rounded-xl text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50 cursor-pointer hover:border-border-light transition-colors"
               >
                 {SORT_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>
@@ -185,16 +274,16 @@ export function SearchPage() {
 
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                   showFilters || hasActiveFilters
                     ? 'bg-accent/15 text-accent border border-accent/30'
-                    : 'bg-bg-card border border-border text-text-secondary hover:text-text-primary'
+                    : 'bg-bg-card border border-border text-text-secondary hover:text-text-primary hover:border-border-light'
                 }`}
               >
-                <SlidersHorizontal size={16} />
+                <SlidersHorizontal size={15} />
                 סינון
                 {hasActiveFilters && (
-                  <span className="bg-accent text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
+                  <span className="bg-accent text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">
                     {activeFilterCount}
                   </span>
                 )}
@@ -203,74 +292,77 @@ export function SearchPage() {
           </div>
 
           {showFilters && (
-            <div className="bg-bg-card border border-border rounded-2xl p-6 mb-8 animate-fade-in">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="font-semibold text-text-primary">סינון תוצאות</h3>
+            <div className="bg-bg-card border border-border rounded-2xl p-5 mb-6 animate-fade-in">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-text-primary text-sm">סינון תוצאות</h3>
                 {hasActiveFilters && (
                   <button
                     onClick={clearFilters}
-                    className="flex items-center gap-1 text-sm text-accent hover:text-accent-hover"
+                    className="flex items-center gap-1.5 text-xs text-accent hover:text-accent-hover transition-colors"
                   >
-                    <X size={14} />
+                    <X size={13} />
                     נקה הכל
                   </button>
                 )}
               </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-5">
                 <div>
-                  <label className="text-xs text-text-muted font-medium mb-2 block">חנויות</label>
-                  <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto">
+                  <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">חנויות</label>
+                  <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
                     {stores.map((s) => (
                       <button
                         key={s.id}
                         onClick={() => toggleArrayParam('store', s.id)}
-                        className={`text-xs px-3 py-1.5 rounded-full transition-all ${
+                        className={`text-[11px] px-2.5 py-1 rounded-full transition-all border ${
                           filters.storeIds.includes(s.id)
-                            ? 'bg-accent text-white'
-                            : 'bg-white/5 text-text-secondary hover:text-text-primary hover:bg-white/10'
+                            ? 'bg-accent text-white border-accent'
+                            : 'bg-white/4 text-text-secondary border-transparent hover:text-text-primary hover:bg-white/8'
                         }`}
                       >
                         {s.logo_emoji} {s.name_he}
-                        {s.record_count === 0 ? ' · אתר' : ''}
+                        {s.record_count === 0 ? ' ↗' : ''}
                       </button>
                     ))}
                     {stores.length === 0 && (
-                      <div className="text-xs text-text-muted">אין חנויות להצגה כרגע</div>
+                      <div className="text-xs text-text-muted">טוען חנויות...</div>
                     )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs text-text-muted font-medium mb-2 block">ז'אנר</label>
-                  <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto">
+                  <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">ז'אנר</label>
+                  <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
                     {genres.map((g) => (
                       <button
                         key={g}
                         onClick={() => toggleArrayParam('genre', g)}
-                        className={`text-xs px-3 py-1.5 rounded-full transition-all latin-text ${
+                        className={`text-[11px] px-2.5 py-1 rounded-full transition-all border latin-text ${
                           filters.genres.includes(g)
-                            ? 'bg-accent text-white'
-                            : 'bg-white/5 text-text-secondary hover:text-text-primary hover:bg-white/10'
+                            ? 'bg-accent text-white border-accent'
+                            : 'bg-white/4 text-text-secondary border-transparent hover:text-text-primary hover:bg-white/8'
                         }`}
                       >
                         {g}
                       </button>
                     ))}
+                    {genres.length === 0 && (
+                      <div className="text-xs text-text-muted">טוען ז'אנרים...</div>
+                    )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs text-text-muted font-medium mb-2 block">פורמט</label>
+                  <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">פורמט</label>
                   <div className="flex flex-wrap gap-1.5">
                     {FORMATS.map((f) => (
                       <button
                         key={f}
                         onClick={() => toggleArrayParam('format', f)}
-                        className={`text-xs px-3 py-1.5 rounded-full transition-all latin-text ${
+                        className={`text-[11px] px-2.5 py-1 rounded-full transition-all border latin-text ${
                           filters.formats.includes(f)
-                            ? 'bg-accent text-white'
-                            : 'bg-white/5 text-text-secondary hover:text-text-primary hover:bg-white/10'
+                            ? 'bg-accent text-white border-accent'
+                            : 'bg-white/4 text-text-secondary border-transparent hover:text-text-primary hover:bg-white/8'
                         }`}
                       >
                         {f}
@@ -280,37 +372,37 @@ export function SearchPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs text-text-muted font-medium mb-2 block">טווח מחירים (₪)</label>
+                  <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">מחיר (₪)</label>
                   <div className="flex items-center gap-2">
                     <input
                       type="number"
                       placeholder="מ-"
                       value={filters.priceMin ?? ''}
                       onChange={(e) => updateParam('pmin', e.target.value || null)}
-                      className="w-full bg-white/5 border border-border rounded-lg text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50"
+                      className="w-full bg-white/4 border border-border rounded-lg text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50 placeholder:text-text-muted"
                     />
-                    <span className="text-text-muted">-</span>
+                    <span className="text-text-muted text-sm">-</span>
                     <input
                       type="number"
                       placeholder="עד"
                       value={filters.priceMax ?? ''}
                       onChange={(e) => updateParam('pmax', e.target.value || null)}
-                      className="w-full bg-white/5 border border-border rounded-lg text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50"
+                      className="w-full bg-white/4 border border-border rounded-lg text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50 placeholder:text-text-muted"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs text-text-muted font-medium mb-2 block">זמינות</label>
+                  <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">זמינות</label>
                   <button
                     onClick={() => updateParam('in_stock', filters.onlyInStock ? null : '1')}
-                    className={`w-full text-sm px-3 py-2 rounded-lg border transition-all ${
+                    className={`w-full text-sm px-3 py-2 rounded-xl border transition-all font-medium ${
                       filters.onlyInStock
-                        ? 'bg-accent/15 border-accent/30 text-accent'
-                        : 'bg-white/5 border-border text-text-secondary hover:text-text-primary hover:bg-white/10'
+                        ? 'bg-success/15 border-success/30 text-success'
+                        : 'bg-white/4 border-border text-text-secondary hover:text-text-primary hover:bg-white/8'
                     }`}
                   >
-                    רק במלאי
+                    {filters.onlyInStock ? '✓ ' : ''} רק במלאי
                   </button>
                 </div>
               </div>
@@ -318,15 +410,16 @@ export function SearchPage() {
           )}
 
           {loadError && (
-            <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200 mb-6">
+            <div className="rounded-xl border border-red-500/30 bg-red-500/8 px-4 py-3 text-sm text-red-300 mb-6 flex items-center gap-2">
+              <X size={16} className="shrink-0" />
               שגיאה בטעינת הנתונים: {loadError}
             </div>
           )}
 
           {selectedStoresWithoutLocalCatalog.length > 0 && (
-            <div className="rounded-xl border border-accent/30 bg-accent/10 px-4 py-3 mb-6">
+            <div className="rounded-xl border border-accent/25 bg-accent/8 px-4 py-3 mb-6">
               <p className="text-sm text-text-primary mb-2">
-                לחלק מהחנויות שבחרתם אין עדיין קטלוג מקומי. אפשר לבצע חיפוש ישיר באתר החנות:
+                חפשו ישירות באתרי החנויות שנבחרו:
               </p>
               <div className="flex flex-wrap gap-2">
                 {externalSearchTargets.map(({ store, url }) => (
@@ -335,14 +428,11 @@ export function SearchPage() {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs px-3 py-1.5 rounded-full bg-white/10 text-text-secondary hover:text-text-primary hover:bg-white/15 transition-all"
+                    className="text-xs px-3 py-1.5 rounded-full bg-white/8 text-text-secondary hover:text-accent hover:bg-accent/10 transition-all border border-border hover:border-accent/30"
                   >
-                    {store.logo_emoji} {store.name_he}
+                    {store.logo_emoji} {store.name_he} ↗
                   </a>
                 ))}
-                {externalSearchTargets.length === 0 && (
-                  <span className="text-xs text-text-secondary">הקלידו חיפוש כדי ליצור קישורי חיפוש לאתרי החנויות</span>
-                )}
               </div>
             </div>
           )}
@@ -350,14 +440,10 @@ export function SearchPage() {
           <RecordGrid
             records={result?.records ?? []}
             loading={loading}
-            emptyMessage={
-              selectedStoresWithoutLocalCatalog.length > 0
-                ? `לא נמצאו תוצאות בקטלוג המקומי עבור "${filters.query}". נסו חיפוש ישיר באתרי החנויות למעלה.`
-                : `לא נמצאו תוצאות עבור "${filters.query}"`
-            }
+            emptyMessage={`לא נמצאו תוצאות עבור "${filters.query}"`}
           />
 
-          {result && (
+          {result && result.totalPages > 1 && (
             <Pagination
               page={result.page}
               totalPages={result.totalPages}

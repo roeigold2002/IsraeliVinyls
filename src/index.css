@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #0f0f1a;
-  --color-bg-secondary: #1a1a2e;
-  --color-bg-card: #16213e;
-  --color-bg-card-hover: #1c2a4a;
+  --color-bg-primary: #0b0b14;
+  --color-bg-secondary: #111122;
+  --color-bg-card: #14142a;
+  --color-bg-card-hover: #1a1a35;
   --color-accent: #e94560;
   --color-accent-hover: #ff6b81;
-  --color-accent-muted: #e9456033;
-  --color-text-primary: #eee;
-  --color-text-secondary: #a0a0b8;
-  --color-text-muted: #6b6b80;
-  --color-border: #2a2a40;
-  --color-border-light: #3a3a55;
+  --color-accent-muted: #e9456022;
+  --color-text-primary: #f0f0f8;
+  --color-text-secondary: #9090b0;
+  --color-text-muted: #58587a;
+  --color-border: #1e1e36;
+  --color-border-light: #2a2a48;
   --color-success: #2ecc71;
   --color-warning: #f39c12;
   --color-error: #e74c3c;
@@ -38,10 +38,11 @@ body {
   margin: 0;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -49,12 +50,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 4px;
+  background: var(--color-border-light);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-border-light);
+  background: var(--color-text-muted);
 }
 
 @keyframes spin-slow {
@@ -63,18 +64,23 @@ body {
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px #e9456033; }
-  50% { box-shadow: 0 0 40px #e9456055; }
+  0%, 100% { box-shadow: 0 0 24px #e9456030; }
+  50% { box-shadow: 0 0 48px #e9456055; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
 }
 
 .animate-spin-slow {
@@ -93,6 +99,17 @@ body {
   animation: pulse-glow 3s ease-in-out infinite;
 }
 
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-card) 0%,
+    var(--color-bg-card-hover) 50%,
+    var(--color-bg-card) 100%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
 .stagger-1 { animation-delay: 0.05s; }
 .stagger-2 { animation-delay: 0.1s; }
 .stagger-3 { animation-delay: 0.15s; }
@@ -108,4 +125,21 @@ body {
 
 input::placeholder {
   font-family: var(--font-family-hebrew);
+}
+
+.glass {
+  background: rgba(20, 20, 42, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.glow-accent {
+  box-shadow: 0 0 30px rgba(233, 69, 96, 0.2);
+}
+
+.price-badge {
+  background: linear-gradient(135deg, #e94560, #c73652);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

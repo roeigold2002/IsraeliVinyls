@@ -1,9 +1,9 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Store, Heart, Disc3, Hop as Home } from 'lucide-react'
+import { Store, Heart, Disc3, Search } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { path: '/', label: 'ראשי', icon: Home },
-  { path: '/stores', label: 'חנויות וסטטיסטיקה', icon: Store },
+  { path: '/', label: 'חיפוש', icon: Search },
+  { path: '/stores', label: 'חנויות', icon: Store },
   { path: '/wishlist', label: 'מועדפים', icon: Heart },
 ]
 
@@ -12,15 +12,18 @@ export function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-50 bg-bg-secondary/90 backdrop-blur-md border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group">
-            <Disc3
-              size={32}
-              className="text-accent group-hover:animate-spin-slow transition-colors"
-            />
+      <header className="sticky top-0 z-50 glass border-b border-border/60">
+        <div className="max-w-7xl mx-auto px-4 h-15 flex items-center justify-between" style={{ height: '60px' }}>
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="relative">
+              <Disc3
+                size={30}
+                className="text-accent group-hover:animate-spin-slow transition-colors"
+              />
+              <div className="absolute inset-0 rounded-full bg-accent/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-text-primary leading-tight">
+              <span className="text-base font-bold text-text-primary leading-tight tracking-tight">
                 חנות הביניים
               </span>
               <span className="text-[10px] text-text-muted leading-tight">
@@ -29,7 +32,7 @@ export function Layout() {
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-0.5">
             {NAV_ITEMS.map(({ path, label, icon: Icon }) => {
               const isActive =
                 path === '/'
@@ -39,13 +42,13 @@ export function Layout() {
                 <Link
                   key={path}
                   to={path}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isActive
                       ? 'bg-accent/15 text-accent'
-                      : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-white/4'
                   }`}
                 >
-                  <Icon size={16} />
+                  <Icon size={15} />
                   {label}
                 </Link>
               )
@@ -62,10 +65,10 @@ export function Layout() {
                 <Link
                   key={path}
                   to={path}
-                  className={`p-2.5 rounded-lg transition-all ${
+                  className={`p-2.5 rounded-xl transition-all ${
                     isActive
                       ? 'bg-accent/15 text-accent'
-                      : 'text-text-secondary hover:text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
                   }`}
                 >
                   <Icon size={18} />
@@ -80,16 +83,16 @@ export function Layout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-border bg-bg-secondary/50 py-8">
+      <footer className="border-t border-border/60 bg-bg-secondary/40 py-8">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Disc3 size={20} className="text-accent" />
-            <span className="font-bold text-text-primary">חנות הביניים</span>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Disc3 size={18} className="text-accent animate-spin-slow" />
+            <span className="font-bold text-text-primary text-sm">חנות הביניים</span>
           </div>
-          <p className="text-sm text-text-muted">
+          <p className="text-xs text-text-muted">
             משווים מחירי תקליטים מ-19 חנויות וויניל בישראל
           </p>
-          <p className="text-xs text-text-muted mt-2">
+          <p className="text-[11px] text-text-muted/60 mt-1">
             המחירים מתעדכנים מדי יום. המחירים עשויים להשתנות.
           </p>
         </div>

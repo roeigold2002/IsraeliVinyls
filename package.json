@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node server/api.cjs & vite",
     "export:snapshot": "python -m scripts.export_snapshot || python3 -m scripts.export_snapshot",
     "ingest:all": "python -m scripts.ingest_all_stores || python3 -m scripts.ingest_all_stores",
     "verify:coverage": "python -m scripts.verify_store_coverage || python3 -m scripts.verify_store_coverage",
