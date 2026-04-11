@@ -2,13 +2,17 @@
   command = "npm run build"
   publish = "dist"
 
+[functions]
+  directory = "netlify/functions"
+  included_files = ["netlify/data/**"]
+
 [build.environment]
   NODE_VERSION = "20"
 
 [[redirects]]
   from = "/api/*"
-  to = "/api/:splat"
-  status = 404
+  to = "/.netlify/functions/api/:splat"
+  status = 200
   force = true
 
 [[redirects]]

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "export:snapshot": "python scripts/export_snapshot.py || python3 scripts/export_snapshot.py",
+    "build": "npm run export:snapshot && tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
