@@ -1,9 +1,8 @@
 [build]
-  command = "npm run build:web"
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
-  PYTHON_VERSION = "3.11"
   NODE_VERSION = "20"
 
 [[redirects]]
