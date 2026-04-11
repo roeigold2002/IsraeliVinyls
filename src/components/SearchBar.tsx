@@ -40,7 +40,12 @@ export function SearchBar({ initialQuery = '', large, autoFocus, onSearch }: Pro
     if (onSearch) {
       onSearch(query)
     } else {
-      navigate(`/search?q=${encodeURIComponent(query)}`)
+      const trimmed = query.trim()
+      if (!trimmed) {
+        navigate('/')
+      } else {
+        navigate(`/?q=${encodeURIComponent(trimmed)}`)
+      }
     }
   }
 

@@ -1,7 +1,11 @@
 import type { SortOption } from './types'
+import { STORE_VISUAL_MAP } from './storeCatalog'
 
 export const DEFAULT_COVER =
-  'https://dummyimage.com/600x600/16213e/e94560&text=VINYL'
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#16213e'/><stop offset='100%' stop-color='#0f3460'/></linearGradient></defs><rect width='600' height='600' fill='url(#g)'/><circle cx='300' cy='300' r='170' fill='none' stroke='#e94560' stroke-width='24'/><circle cx='300' cy='300' r='35' fill='#e94560'/><text x='300' y='520' fill='#ffffff' font-size='48' text-anchor='middle' font-family='Arial, sans-serif' letter-spacing='6'>VINYL</text></svg>"
+  )
 
 export const FORMATS = ['Vinyl', 'LP', 'EP', '7"', '12"', 'CD', 'Cassette']
 
@@ -12,17 +16,6 @@ export const SORT_OPTIONS: Array<{ value: SortOption; label: string }> = [
 ]
 
 export const STORE_MAP: Record<string, { emoji: string; color: string }> = {
-  Beatnik: { emoji: '🎸', color: '#e94560' },
-  Shablool: { emoji: '🎷', color: '#0abde3' },
-  'Taklit House': { emoji: '💿', color: '#2ecc71' },
-  'Third Ear': { emoji: '🎵', color: '#f39c12' },
-  'Disc Center': { emoji: '📀', color: '#9b59b6' },
-  Tav8: { emoji: '🎶', color: '#1abc9c' },
-  'Giora Records': { emoji: '🎼', color: '#3498db' },
-  HaSivoov: { emoji: '🌀', color: '#fd79a8' },
-  'The Vinyl Room': { emoji: '🪩', color: '#f0c040' },
-  'My Records': { emoji: '📚', color: '#00b894' },
-  'Vinyl Stock': { emoji: '📦', color: '#e67e22' },
-  'Rolling Dise': { emoji: '🎯', color: '#6c5ce7' },
+  ...STORE_VISUAL_MAP,
   Discogs: { emoji: '🌍', color: '#2980b9' },
 }

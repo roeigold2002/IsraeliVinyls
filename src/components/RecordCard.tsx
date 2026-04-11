@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 import { Heart, ExternalLink } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { VinylRecord } from '../lib/types'
 import { isInWishlist, toggleWishlist } from '../lib/wishlist'
 import { DEFAULT_COVER } from '../lib/constants'
+import { hydrateCoverForRecord, shouldHydrateCover } from '../lib/coverHydration'
 
 interface Props {
   record: VinylRecord
@@ -13,6 +14,33 @@ interface Props {
 export function RecordCard({ record, index = 0 }: Props) {
   const [inWishlist, setInWishlist] = useState(() => isInWishlist(record.id))
   const [imgError, setImgError] = useState(false)
+  const [hydratedCover, setHydratedCover] = useState<string | null>(null)
+
+  useEffect(() => {
+    setHydratedCover(null)
+    setImgError(false)
+  }, [record.id, record.cover_url])
+
+  useEffect(() => {
+    let cancelled = false
+
+    if (!record.id || !shouldHydrateCover(record.cover_url)) {
+      return () => {
+        cancelled = true
+      }
+    }
+
+    hydrateCoverForRecord(record.id).then((cover) => {
+      if (cancelled || !cover) {
+        return
+      }
+      setHydratedCover(cover)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [record.id, record.cover_url])
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -21,7 +49,11 @@ export function RecordCard({ record, index = 0 }: Props) {
     setInWishlist(result)
   }
 
-  const coverSrc = imgError || !record.cover_url ? DEFAULT_COVER : record.cover_url
+  const coverCandidate = hydratedCover || record.cover_url
+  const coverSrc = !imgError && coverCandidate && !shouldHydrateCover(coverCandidate)
+    ? coverCandidate
+    : DEFAULT_COVER
+  const isOutOfStock = record.in_stock === false
 
   return (
     <div
@@ -53,13 +85,19 @@ export function RecordCard({ record, index = 0 }: Props) {
             <Heart size={16} fill={inWishlist ? 'currentColor' : 'none'} />
           </button>
 
+          {isOutOfStock && (
+            <div className="absolute top-3 right-3 bg-red-500/90 text-white text-[10px] px-2.5 py-1 rounded-full">
+              אזל מהמלאי
+            </div>
+          )}
+
           {record.store && (
             <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {record.store.logo_emoji} {record.store.name_he}
             </div>
           )}
 
-          {record.product_url && (
+          {record.product_url && !isOutOfStock && (
             <a
               href={record.product_url}
               target="_blank"

@@ -1,28 +1,54 @@
 import type { SearchFilters, SearchResult, Store, VinylRecord, SortOption } from './types'
 import { STORE_MAP } from './constants'
+import { STORE_CATALOG, getStoreById, getStoreByName, getStoreFilterNameById } from './storeCatalog'
 
-const API_BASE = (
-  import.meta.env.VITE_API_BASE_URL ||
-  import.meta.env.VITE_API_URL ||
-  ''
-).replace(/\/$/, '')
+const API_BASE_STORAGE_KEY = 'projectv_api_base_url'
 
-const STORE_ID_TO_NAME: Record<string, string> = {
-  beatnik: 'Beatnik',
-  shablool: 'Shablool',
-  taklit_house: 'Taklit House',
-  third_ear: 'Third Ear',
-  disc_center: 'Disc Center',
-  tav8: 'Tav8',
-  giora_records: 'Giora Records',
-  hasivoov: 'HaSivoov',
-  vinyl_room: 'The Vinyl Room',
-  my_records: 'My Records',
-  vinyl_stock: 'Vinyl Stock',
-  rolling_dice: 'Rolling Dise',
-  rolling_dise: 'Rolling Dise',
-  discogs: 'Discogs',
+function normalizeApiBase(value: string | null | undefined): string {
+  if (!value) return ''
+  return value.trim().replace(/\/$/, '')
 }
+
+function getRuntimeApiOverride(): string {
+  if (typeof window === 'undefined') return ''
+
+  const queryValue = new URLSearchParams(window.location.search).get('api')
+  if (queryValue) {
+    const normalized = normalizeApiBase(queryValue)
+    try {
+      window.localStorage.setItem(API_BASE_STORAGE_KEY, normalized)
+    } catch {
+      // Ignore storage write errors and keep the override for this request.
+    }
+    return normalized
+  }
+
+  try {
+    const saved = window.localStorage.getItem(API_BASE_STORAGE_KEY)
+    return normalizeApiBase(saved)
+  } catch {
+    return ''
+  }
+}
+
+function getApiBase(): string {
+  const runtimeOverride = getRuntimeApiOverride()
+  if (runtimeOverride) return runtimeOverride
+  return normalizeApiBase(import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '')
+}
+
+type ApiStoreSummary = {
+  name: string
+  record_count: number
+  unique_artists?: number
+  genres_represented?: number
+  priced_records?: number
+  avg_price?: number
+  min_price?: number
+  max_price?: number
+}
+
+const storeFilterNameById = new Map<string, string>()
 
 function storeIdFromName(name: string): string {
   return name
@@ -31,8 +57,22 @@ function storeIdFromName(name: string): string {
     .replace(/^_+|_+$/g, '')
 }
 
+function normalizeStoreLookup(value: string): string {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/["'`’]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+}
+
+function rememberStoreFilterName(storeId: string, filterName: string): void {
+  if (!storeId || !filterName) return
+  storeFilterNameById.set(storeId, filterName)
+}
+
 async function fetchJson<T>(path: string): Promise<T> {
-  const requestUrl = `${API_BASE}${path}`
+  const requestUrl = `${getApiBase()}${path}`
   const res = await fetch(requestUrl)
 
   const contentType = res.headers.get('content-type') || ''
@@ -49,7 +89,7 @@ async function fetchJson<T>(path: string): Promise<T> {
     const body = await res.text()
     if (body.trimStart().startsWith('<!DOCTYPE') || body.trimStart().startsWith('<html')) {
       throw new Error(
-        `API returned HTML for ${path}. Set VITE_API_BASE_URL (or VITE_API_URL) to your backend API origin, for example https://your-backend.example.com`
+        `API returned HTML for ${path}. Configure VITE_API_BASE_URL (or VITE_API_URL) to your backend origin, or open the site with ?api=https://your-backend.example.com`
       )
     }
     throw new Error(`API response for ${path} is not JSON (content-type: ${contentType || 'unknown'})`)
@@ -58,20 +98,119 @@ async function fetchJson<T>(path: string): Promise<T> {
   return (await res.json()) as T
 }
 
-function toStore(name: string, recordCount = 0, avgPrice = 0): Store {
-  const known = STORE_MAP[name]
+function toStore(
+  name: string,
+  recordCount = 0,
+  avgPrice = 0,
+  sourceName?: string,
+  stats?: {
+    unique_artists?: number
+    genres_represented?: number
+    priced_records?: number
+    min_price?: number
+    max_price?: number
+  }
+): Store {
+  const source = sourceName || name
+  const catalogStore = getStoreByName(source) || getStoreByName(name)
+  const known = STORE_MAP[catalogStore?.name || source] || STORE_MAP[source] || STORE_MAP[name]
+  const id = catalogStore?.id || storeIdFromName(source)
+  const filterName = catalogStore?.store_filter_name || catalogStore?.snapshot_names?.[0] || source
+
+  rememberStoreFilterName(id, filterName)
+
   return {
-    id: storeIdFromName(name),
-    name,
-    name_he: name,
-    logo_emoji: known?.emoji || '🎵',
-    city: 'Israel',
-    platform: 'Web',
-    url: '#',
-    color: known?.color,
+    id,
+    name: catalogStore?.name || name,
+    name_he: catalogStore?.name_he || name,
+    logo_emoji: catalogStore?.emoji || known?.emoji || '🎵',
+    city: catalogStore?.city || 'Israel',
+    platform: catalogStore?.platform || 'Web',
+    url: catalogStore?.url || '#',
+    color: catalogStore?.color || known?.color,
     record_count: recordCount,
     avg_price: Math.round(avgPrice),
+    priced_records: Number(stats?.priced_records || 0),
+    unique_artists: Number(stats?.unique_artists || 0),
+    genres_represented: Number(stats?.genres_represented || 0),
+    min_price: Number(stats?.min_price || 0),
+    max_price: Number(stats?.max_price || 0),
   }
+}
+
+function mergeStoresWithCatalog(stores: ApiStoreSummary[]): Store[] {
+  const merged = new Map<string, Store>()
+
+  for (const catalogStore of STORE_CATALOG) {
+    const base = toStore(catalogStore.name, 0, 0, catalogStore.name)
+    merged.set(base.id, base)
+  }
+
+  for (const store of stores) {
+    const sourceName = String(store.name || '').trim()
+    if (!sourceName) continue
+
+    const recordCount = Number(store.record_count || 0)
+    const mappedStore = toStore(sourceName, recordCount, Number(store.avg_price || 0), sourceName, {
+      unique_artists: Number(store.unique_artists || 0),
+      genres_represented: Number(store.genres_represented || 0),
+      priced_records: Number(store.priced_records || 0),
+      min_price: Number(store.min_price || 0),
+      max_price: Number(store.max_price || 0),
+    })
+    const previous = merged.get(mappedStore.id)
+
+    merged.set(mappedStore.id, {
+      ...(previous || mappedStore),
+      ...mappedStore,
+      record_count: recordCount,
+    })
+  }
+
+  return [...merged.values()].sort((a, b) => {
+    if (b.record_count !== a.record_count) {
+      return b.record_count - a.record_count
+    }
+    return a.name.localeCompare(b.name)
+  })
+}
+
+function buildStoreMatchKeys(store: Store): Set<string> {
+  const catalogStore = getStoreById(store.id)
+  const labels = [
+    store.name,
+    store.name_he,
+    ...(catalogStore?.aliases || []),
+    ...(catalogStore?.snapshot_names || []),
+  ]
+
+  return new Set(labels.map((value) => normalizeStoreLookup(value)).filter(Boolean))
+}
+
+function parseInStockValue(value: unknown): boolean | null {
+  if (value === true || value === false) {
+    return value
+  }
+
+  if (value === null || value === undefined || value === '') {
+    return null
+  }
+
+  if (typeof value === 'number') {
+    if (value === 1) return true
+    if (value === 0) return false
+    return null
+  }
+
+  const lowered = String(value).trim().toLowerCase()
+  if (lowered === 'true' || lowered === '1' || lowered === 'yes') {
+    return true
+  }
+  if (lowered === 'false' || lowered === '0' || lowered === 'no') {
+    return false
+  }
+
+  return null
 }
 
 function mapRecord(raw: Record<string, unknown>): VinylRecord {
@@ -91,6 +230,7 @@ function mapRecord(raw: Record<string, unknown>): VinylRecord {
     product_url: (raw.product_url as string) || null,
     store_url: (raw.store_url as string) || null,
     store_name: storeName,
+    in_stock: parseInStockValue(raw.in_stock),
     store: toStore(storeName),
   }
 }
@@ -105,6 +245,14 @@ function sortRecords(records: VinylRecord[], sortBy: SortOption): VinylRecord[] 
   return copy
 }
 
+function prioritizeDisplayRecords(records: VinylRecord[]): VinylRecord[] {
+  const withPriceAndCover = records.filter((r) => r.price > 0 && Boolean(r.cover_url))
+  const withCoverOnly = records.filter((r) => r.price <= 0 && Boolean(r.cover_url))
+  const withPriceOnly = records.filter((r) => r.price > 0 && !r.cover_url)
+  const remaining = records.filter((r) => r.price <= 0 && !r.cover_url)
+  return [...withPriceAndCover, ...withCoverOnly, ...withPriceOnly, ...remaining]
+}
+
 export async function searchRecords(filters: SearchFilters): Promise<SearchResult> {
   const params = new URLSearchParams()
   params.set('page', String(filters.page || 1))
@@ -112,10 +260,14 @@ export async function searchRecords(filters: SearchFilters): Promise<SearchResul
 
   if (filters.query) params.set('q', filters.query)
   if (filters.genres[0]) params.set('genre', filters.genres[0])
+  if (filters.onlyInStock) params.set('in_stock', '1')
 
   const selectedStoreId = filters.storeIds[0]
   if (selectedStoreId) {
-    const mappedStore = STORE_ID_TO_NAME[selectedStoreId] || selectedStoreId
+    const mappedStore =
+      getStoreFilterNameById(selectedStoreId) ||
+      storeFilterNameById.get(selectedStoreId) ||
+      selectedStoreId
     params.set('store_filter', mappedStore)
   }
 
@@ -131,6 +283,10 @@ export async function searchRecords(filters: SearchFilters): Promise<SearchResul
   if (filters.formats.length > 0) {
     const accepted = new Set(filters.formats.map((f) => f.toLowerCase()))
     records = records.filter((r) => (r.format || '').toLowerCase() && accepted.has((r.format || '').toLowerCase()))
+  }
+
+  if (filters.onlyInStock) {
+    records = records.filter((r) => r.in_stock === true)
   }
 
   if (filters.priceMin !== null) records = records.filter((r) => r.price >= (filters.priceMin || 0))
@@ -149,8 +305,8 @@ export async function searchRecords(filters: SearchFilters): Promise<SearchResul
 }
 
 export async function fetchStores(): Promise<Store[]> {
-  const raw = await fetchJson<{ stores: Array<{ name: string; record_count: number }> }>('/api/stores')
-  return (raw.stores || []).map((store) => toStore(store.name, Number(store.record_count || 0), 0))
+  const raw = await fetchJson<{ stores: ApiStoreSummary[] }>('/api/stores')
+  return mergeStoresWithCatalog(raw.stores || [])
 }
 
 export async function fetchGenres(): Promise<string[]> {
@@ -159,16 +315,36 @@ export async function fetchGenres(): Promise<string[]> {
 }
 
 export async function fetchFeaturedRecords(): Promise<VinylRecord[]> {
-  const raw = await fetchJson<{ records: Record<string, unknown>[] }>('/api/search?page=1&per_page=18')
-  return (raw.records || []).map(mapRecord).slice(0, 12)
+  const raw = await fetchJson<{ records: Record<string, unknown>[] }>('/api/search?page=1&per_page=60')
+  const mapped = (raw.records || []).map(mapRecord)
+  return prioritizeDisplayRecords(mapped).slice(0, 12)
 }
 
 export async function fetchCheapestRecords(): Promise<VinylRecord[]> {
-  const raw = await fetchJson<{ records: Record<string, unknown>[] }>('/api/search?page=1&per_page=120')
-  return (raw.records || []).map(mapRecord).sort((a, b) => a.price - b.price).slice(0, 12)
+  const raw = await fetchJson<{ records: Record<string, unknown>[] }>('/api/search?page=1&per_page=160')
+  const mapped = (raw.records || []).map(mapRecord)
+  const priced = mapped.filter((r) => r.price > 0)
+
+  if (priced.length > 0) {
+    const sorted = [...priced].sort((a, b) => a.price - b.price)
+    const withCover = sorted.filter((r) => Boolean(r.cover_url))
+    const withoutCover = sorted.filter((r) => !r.cover_url)
+    return [...withCover, ...withoutCover].slice(0, 12)
+  }
+
+  return prioritizeDisplayRecords(mapped).slice(0, 12)
 }
 
 export async function fetchRecordById(id: string): Promise<VinylRecord | null> {
+  try {
+    const direct = await fetchJson<{ record?: Record<string, unknown> }>(`/api/record?id=${encodeURIComponent(id)}`)
+    if (direct.record) {
+      return mapRecord(direct.record)
+    }
+  } catch {
+    // Fallback for older deployments where /api/record may be unavailable.
+  }
+
   const pagesToCheck = 12
   for (let page = 1; page <= pagesToCheck; page += 1) {
     const raw = await fetchJson<{ records: Record<string, unknown>[] }>('/api/all-records?page=' + page + '&per_page=500')
@@ -221,7 +397,7 @@ export async function fetchStats(): Promise<{
       genres: Record<string, number>
       store_count: number
     }>('/api/database-info'),
-    fetchJson<{ stores: Array<{ name: string; record_count: number }> }>('/api/stores'),
+    fetchJson<{ stores: ApiStoreSummary[] }>('/api/stores'),
     fetchJson<{ records: Record<string, unknown>[] }>('/api/all-records?page=1&per_page=1000'),
   ])
 
@@ -239,15 +415,23 @@ export async function fetchStats(): Promise<{
     decadeCounts[key] = (decadeCounts[key] || 0) + 1
   })
 
-  const storeStats = (stores.stores || []).map((store) => {
-    const storeRecords = records.filter((r) => r.store_name === store.name && r.price > 0)
+  const mergedStores = mergeStoresWithCatalog(stores.stores || [])
+
+  const storeStats = mergedStores.map((store) => {
+    const matchKeys = buildStoreMatchKeys(store)
+    const storeRecords = records.filter((r) => {
+      const storeName = normalizeStoreLookup(r.store_name || '')
+      return matchKeys.has(storeName) && r.price > 0
+    })
+
     const storeAvg = storeRecords.length
       ? Math.round(storeRecords.reduce((sum, r) => sum + r.price, 0) / storeRecords.length)
       : 0
+
     return {
-      id: storeIdFromName(store.name),
+      id: store.id,
       name: store.name,
-      name_he: store.name,
+      name_he: store.name_he,
       record_count: Number(store.record_count || 0),
       avg_price: storeAvg,
     }
@@ -255,7 +439,7 @@ export async function fetchStats(): Promise<{
 
   return {
     totalRecords: Number(dbInfo.total_records || 0),
-    totalStores: Number(dbInfo.store_count || 0),
+    totalStores: mergedStores.length,
     avgPrice,
     genreCounts: dbInfo.genres || {},
     decadeCounts,

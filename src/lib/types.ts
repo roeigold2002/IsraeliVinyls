@@ -11,6 +11,11 @@ export interface Store {
   color?: string
   record_count: number
   avg_price: number
+  priced_records: number
+  unique_artists: number
+  genres_represented: number
+  min_price: number
+  max_price: number
 }
 
 export interface VinylRecord {
@@ -27,6 +32,7 @@ export interface VinylRecord {
   product_url?: string | null
   store_url?: string | null
   store_name?: string
+  in_stock?: boolean | null
   store?: Store
 }
 
@@ -35,6 +41,7 @@ export interface SearchFilters {
   storeIds: string[]
   genres: string[]
   formats: string[]
+  onlyInStock: boolean
   priceMin: number | null
   priceMax: number | null
   yearMin: number | null

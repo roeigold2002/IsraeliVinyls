@@ -1,11 +1,9 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Search, Store, Heart, ChartBar as BarChart3, Disc3, Hop as Home } from 'lucide-react'
+import { Store, Heart, Disc3, Hop as Home } from 'lucide-react'
 
 const NAV_ITEMS = [
   { path: '/', label: 'ראשי', icon: Home },
-  { path: '/search', label: 'חיפוש', icon: Search },
-  { path: '/stores', label: 'חנויות', icon: Store },
-  { path: '/stats', label: 'סטטיסטיקה', icon: BarChart3 },
+  { path: '/stores', label: 'חנויות וסטטיסטיקה', icon: Store },
   { path: '/wishlist', label: 'מועדפים', icon: Heart },
 ]
 
@@ -89,7 +87,7 @@ export function Layout() {
             <span className="font-bold text-text-primary">חנות הביניים</span>
           </div>
           <p className="text-sm text-text-muted">
-            משווים מחירי תקליטים מ-12 חנויות וויניל בישראל
+            משווים מחירי תקליטים מ-19 חנויות וויניל בישראל
           </p>
           <p className="text-xs text-text-muted mt-2">
             המחירים מתעדכנים מדי יום. המחירים עשויים להשתנות.

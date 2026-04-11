@@ -74,7 +74,7 @@ export function WishlistPage() {
             לחצו על הלב בכרטיס תקליט כדי לשמור אותו כאן
           </p>
           <Link
-            to="/search"
+            to="/"
             className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 rounded-xl font-medium transition-all"
           >
             <Search size={18} />

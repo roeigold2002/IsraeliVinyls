@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,6 +24,40 @@ DEFAULT_DB_CANDIDATES = [
 ]
 
 HEBREW_CHARS = set("אבגדהוזחטיכלמנסעפצקרשתןםןףץ")
+
+OUT_OF_STOCK_MARKERS_HE = (
+    "לא במלאי",
+    "אזל מהמלאי",
+    "אזל מהמלאי?",
+    "אזל מהמלאי!",
+    "אזל מהמלאי.",
+    "אזל מהמלאיעדכנו אותי כשחזר למלאי",
+    "אזל מהמלאי עדכנו אותי כשחזר למלאי",
+    "עדכנו אותי כשחזר למלאי",
+    "אזל מהמלאי/",
+    "אזל מהמלאי\u200f",
+    "אזל מהמלאי\u200e",
+    "אזל מהמלאי\u202c",
+)
+
+OUT_OF_STOCK_MARKERS_EN = (
+    "out of stock",
+    "sold out",
+    "currently unavailable",
+    "not available",
+    "notify me when available",
+    "back in stock notification",
+)
+
+IN_STOCK_MARKERS_HE = (
+    "במלאי",
+    "זמין",
+)
+
+IN_STOCK_MARKERS_EN = (
+    "in stock",
+    "available now",
+)
 
 
 def pick_database() -> Path | None:
@@ -88,6 +123,32 @@ def normalize_album_for_dedupe(album: str) -> str:
     return normalized.strip()
 
 
+def infer_in_stock(*values: Any) -> bool | None:
+    parts = [str(value).strip() for value in values if value is not None and str(value).strip()]
+    if not parts:
+        return None
+
+    combined = " | ".join(parts)
+    lowered = combined.lower()
+
+    if any(marker in combined for marker in OUT_OF_STOCK_MARKERS_HE):
+        return False
+    if any(marker in lowered for marker in OUT_OF_STOCK_MARKERS_EN):
+        return False
+
+    if re.search(r"\b\d+\s*במלאי\b", combined):
+        return True
+    if re.search(r"\b\d+\s*in\s*stock\b", lowered):
+        return True
+
+    if any(marker in combined for marker in IN_STOCK_MARKERS_HE):
+        return True
+    if any(marker in lowered for marker in IN_STOCK_MARKERS_EN):
+        return True
+
+    return None
+
+
 def load_records(db_path: Path) -> list[dict[str, Any]]:
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
@@ -118,14 +179,17 @@ def load_records(db_path: Path) -> list[dict[str, Any]]:
 
     records: list[dict[str, Any]] = []
     for row in rows:
+        artist = (row["artist"] or "").strip()
+        album = (row["album"] or "").strip()
+        condition = (row["condition"] or "").strip() or None
         records.append(
             {
                 "id": str(row["id"]),
-                "artist": (row["artist"] or "").strip(),
-                "album": (row["album"] or "").strip(),
+                "artist": artist,
+                "album": album,
                 "genre": (row["genre"] or "").strip() or None,
                 "format": (row["format"] or "").strip() or None,
-                "condition": (row["condition"] or "").strip() or None,
+                "condition": condition,
                 "year": parse_year(row["year"]),
                 "price": parse_price(row["price"]),
                 "store_name": (row["store_name"] or "Unknown").strip() or "Unknown",
@@ -133,6 +197,7 @@ def load_records(db_path: Path) -> list[dict[str, Any]]:
                 "product_url": (row["product_url"] or "").strip() or None,
                 "currency": (row["currency"] or "ILS").strip() or "ILS",
                 "cover_url": (row["cover_url"] or "").strip() or None,
+                "in_stock": infer_in_stock(artist, album, condition),
             }
         )
 
@@ -163,12 +228,17 @@ def build_stores(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
         store_name = record.get("store_name", "Unknown") or "Unknown"
         genre = record.get("genre")
         artist = record.get("artist")
+        price = float(record.get("price") or 0)
 
         if store_name not in grouped:
             grouped[store_name] = {
                 "record_count": 0,
                 "artists": set(),
                 "genres": set(),
+                "priced_records": 0,
+                "price_sum": 0.0,
+                "min_price": None,
+                "max_price": None,
             }
 
         grouped[store_name]["record_count"] += 1
@@ -176,15 +246,30 @@ def build_stores(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
             grouped[store_name]["artists"].add(artist)
         if genre:
             grouped[store_name]["genres"].add(genre)
+        if price > 0:
+            grouped[store_name]["priced_records"] += 1
+            grouped[store_name]["price_sum"] += price
+            current_min = grouped[store_name]["min_price"]
+            current_max = grouped[store_name]["max_price"]
+            grouped[store_name]["min_price"] = price if current_min is None else min(current_min, price)
+            grouped[store_name]["max_price"] = price if current_max is None else max(current_max, price)
 
     stores_payload = []
     for store_name, stats in grouped.items():
+        priced_records = int(stats["priced_records"])
+        avg_price = round(float(stats["price_sum"]) / priced_records, 2) if priced_records else 0
+        min_price = round(float(stats["min_price"]), 2) if stats["min_price"] is not None else 0
+        max_price = round(float(stats["max_price"]), 2) if stats["max_price"] is not None else 0
         stores_payload.append(
             {
                 "name": store_name,
                 "record_count": int(stats["record_count"]),
                 "unique_artists": len(stats["artists"]),
                 "genres_represented": len(stats["genres"]),
+                "priced_records": priced_records,
+                "avg_price": avg_price,
+                "min_price": min_price,
+                "max_price": max_price,
             }
         )
 
@@ -205,6 +290,9 @@ def build_database_info(records: list[dict[str, Any]]) -> dict[str, Any]:
     covers = 0
     with_genre = 0
     with_year = 0
+    in_stock = 0
+    out_of_stock = 0
+    unknown_stock = 0
 
     for record in records:
         store_name = record.get("store_name", "Unknown") or "Unknown"
@@ -221,6 +309,16 @@ def build_database_info(records: list[dict[str, Any]]) -> dict[str, Any]:
         if record.get("year") is not None:
             with_year += 1
 
+        stock_value = record.get("in_stock")
+        if stock_value is True:
+            in_stock += 1
+        elif stock_value is False:
+            out_of_stock += 1
+        else:
+            unknown_stock += 1
+
+    known_stock = in_stock + out_of_stock
+
     return {
         "total_records": total,
         "stores": dict(sorted(store_counts.items(), key=lambda item: item[1], reverse=True)),
@@ -234,6 +332,11 @@ def build_database_info(records: list[dict[str, Any]]) -> dict[str, Any]:
             "coverage_percent_genres": round((100.0 * with_genre / total), 1) if total else 0,
             "records_with_year": with_year,
             "coverage_percent_years": round((100.0 * with_year / total), 1) if total else 0,
+            "records_in_stock": in_stock,
+            "records_out_of_stock": out_of_stock,
+            "records_stock_unknown": unknown_stock,
+            "records_with_known_stock": known_stock,
+            "coverage_percent_stock_known": round((100.0 * known_stock / total), 1) if total else 0,
         },
     }
 

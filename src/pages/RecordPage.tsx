@@ -69,7 +69,7 @@ export function RecordPage() {
       <div className="max-w-5xl mx-auto px-4 py-20 text-center">
         <Disc3 size={64} className="text-text-muted mx-auto mb-4 opacity-30" />
         <p className="text-text-secondary text-lg">התקליט לא נמצא</p>
-        <Link to="/search" className="text-accent hover:text-accent-hover text-sm mt-4 inline-block">
+        <Link to="/" className="text-accent hover:text-accent-hover text-sm mt-4 inline-block">
           חזרה לחיפוש
         </Link>
       </div>
@@ -77,6 +77,7 @@ export function RecordPage() {
   }
 
   const coverSrc = imgError || !record.cover_url ? DEFAULT_COVER : record.cover_url
+  const isOutOfStock = record.in_stock === false
 
   const priceComparison = similar.filter(
     s =>
@@ -88,7 +89,7 @@ export function RecordPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <Link
-        to="/search"
+        to="/"
         className="inline-flex items-center gap-2 text-text-muted hover:text-text-primary text-sm mb-8 transition-colors"
       >
         <ArrowRight size={16} />
@@ -113,7 +114,7 @@ export function RecordPage() {
               {record.album}
             </h1>
             <Link
-              to={`/search?q=${encodeURIComponent(record.artist)}`}
+              to={`/?q=${encodeURIComponent(record.artist)}`}
               className="text-xl text-accent hover:text-accent-hover transition-colors latin-text"
             >
               {record.artist}
@@ -138,6 +139,16 @@ export function RecordPage() {
                   <span className="text-text-primary latin-text">{record.format}</span>
                 </div>
               )}
+              {record.in_stock === true && (
+                <div className="flex items-center gap-2 bg-green-500/15 rounded-lg px-3 py-2 text-sm text-green-300">
+                  במלאי
+                </div>
+              )}
+              {isOutOfStock && (
+                <div className="flex items-center gap-2 bg-red-500/15 rounded-lg px-3 py-2 text-sm text-red-300">
+                  אזל מהמלאי
+                </div>
+              )}
               <div className="flex items-center gap-2 bg-white/5 rounded-lg px-3 py-2 text-sm">
                 <Tag size={14} className="text-text-muted" />
                 <span className="text-text-primary">{record.condition}</span>
@@ -146,7 +157,7 @@ export function RecordPage() {
 
             {record.store && (
               <Link
-                to={`/search?store=${record.store.id}`}
+                to={`/?store=${record.store.id}`}
                 className="flex items-center gap-3 mt-6 bg-white/5 rounded-xl p-4 hover:bg-white/8 transition-colors"
               >
                 <span className="text-2xl">{record.store.logo_emoji}</span>
@@ -168,7 +179,14 @@ export function RecordPage() {
               {record.price > 0 ? `${record.price}₪` : 'צרו קשר'}
             </div>
             <div className="flex gap-3">
-              {record.product_url && (
+              {isOutOfStock ? (
+                <button
+                  disabled
+                  className="flex-1 flex items-center justify-center gap-2 bg-red-500/20 border border-red-500/40 text-red-200 font-medium py-3 rounded-xl cursor-not-allowed"
+                >
+                  אזל מהמלאי
+                </button>
+              ) : record.product_url ? (
                 <a
                   href={record.product_url}
                   target="_blank"
@@ -178,7 +196,7 @@ export function RecordPage() {
                   <ExternalLink size={18} />
                   קנה עכשיו
                 </a>
-              )}
+              ) : null}
               <button
                 onClick={handleWishlist}
                 className={`px-5 py-3 rounded-xl border transition-all duration-200 ${

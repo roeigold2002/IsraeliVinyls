@@ -88,11 +88,19 @@ const GENRE_COLORS: Record<string, string> = {
 export function StatsPage() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchStats()
-      .then(setStats)
-      .catch(console.error)
+      .then((data) => {
+        setStats(data)
+        setLoadError(null)
+      })
+      .catch((error) => {
+        const message = error instanceof Error ? error.message : 'Failed to load stats'
+        setLoadError(message)
+        console.error(error)
+      })
       .finally(() => setLoading(false))
   }, [])
 
@@ -112,6 +120,20 @@ export function StatsPage() {
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="bg-bg-card rounded-2xl p-6 border border-border animate-pulse h-80" />
           ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (!stats && loadError) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex items-center gap-3 mb-8">
+          <BarChart3 size={24} className="text-accent" />
+          <h1 className="text-2xl font-bold text-text-primary">סטטיסטיקות</h1>
+        </div>
+        <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          שגיאה בטעינת הנתונים: {loadError}
         </div>
       </div>
     )
@@ -157,7 +179,7 @@ export function StatsPage() {
         />
         <StatCard
           icon={<Store size={22} />}
-          label="חנויות פעילות"
+          label="חנויות באתר"
           value={stats.totalStores}
         />
         <StatCard
@@ -224,7 +246,7 @@ export function StatsPage() {
                 return (
                   <Link
                     key={store.id}
-                    to={`/search?store=${store.id}`}
+                    to={`/?store=${store.id}`}
                     className="flex items-center justify-between p-3 rounded-xl hover:bg-bg-card-hover transition-colors group"
                   >
                     <div className="flex items-center gap-3">
