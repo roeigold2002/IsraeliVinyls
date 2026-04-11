@@ -1,6 +1,6 @@
 import type { VinylRecord } from '../lib/types'
 import { RecordCard } from './RecordCard'
-import { Disc3, SearchX } from 'lucide-react'
+import { SearchX } from 'lucide-react'
 
 interface Props {
   records: VinylRecord[]

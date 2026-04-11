@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, SlidersHorizontal, X, TrendingUp, Zap, Music2, Star } from 'lucide-react'
+import { SlidersHorizontal, X, TrendingUp, Zap, Music2, Star } from 'lucide-react'
 import { SearchBar } from '../components/SearchBar'
 import { RecordGrid } from '../components/RecordGrid'
 import { Pagination } from '../components/Pagination'
