@@ -20,7 +20,7 @@ import { DEFAULT_COVER } from '../lib/constants'
 import type { VinylRecord } from '../lib/types'
 
 function formatPrice(price: number): string {
-  if (price <= 0) return 'צרו קשר'
+  if (price <= 0) return ''
   return `₪${price.toLocaleString('he-IL')}`
 }
 
@@ -104,6 +104,7 @@ export function RecordPage() {
   const coverSrc = imgError || !record.cover_url ? DEFAULT_COVER : record.cover_url
   const isOutOfStock = record.in_stock === false
   const hasPrice = record.price > 0
+  const displayYear = record.year && record.year > 100 ? record.year : null
 
   const priceComparison = similar.filter(
     s =>
@@ -152,10 +153,10 @@ export function RecordPage() {
             </button>
 
             <div className="flex flex-wrap gap-2 mt-6">
-              {record.year && (
+              {displayYear && (
                 <div className="flex items-center gap-1.5 bg-white/5 rounded-lg px-3 py-1.5 text-sm border border-border/50">
                   <Calendar size={13} className="text-text-muted" />
-                  <span className="text-text-primary latin-text font-medium">{record.year}</span>
+                  <span className="text-text-primary latin-text font-medium">{displayYear}</span>
                 </div>
               )}
               {record.genre && (
@@ -211,10 +212,17 @@ export function RecordPage() {
 
           <div className="mt-8 pt-6 border-t border-border/60">
             <div className="mb-5">
-              <div className={`text-4xl font-black mb-1 ${hasPrice ? 'text-accent' : 'text-text-muted text-2xl'}`}>
-                {formatPrice(record.price)}
-              </div>
-              {hasPrice && <div className="text-xs text-text-muted">המחיר עשוי להשתנות. לחצו לרכישה באתר החנות.</div>}
+              {hasPrice ? (
+                <>
+                  <div className="text-4xl font-black text-accent mb-1">{formatPrice(record.price)}</div>
+                  <div className="text-xs text-text-muted">המחיר עשוי להשתנות. לחצו לרכישה באתר החנות.</div>
+                </>
+              ) : (
+                <div className="flex items-center gap-2 text-sm text-text-secondary">
+                  <ShoppingCart size={15} className="text-text-muted" />
+                  <span>המחיר מוצג באתר החנות — לחצו על הכפתור למטה</span>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3">
@@ -233,7 +241,8 @@ export function RecordPage() {
                   className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-accent/20 hover:shadow-accent/40 text-sm"
                 >
                   <ShoppingCart size={17} />
-                  קנה עכשיו
+                  {hasPrice ? 'קנה עכשיו' : 'ראה מחיר וקנה באתר החנות'}
+                  <ExternalLink size={14} />
                 </a>
               ) : (
                 <div className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-border text-text-secondary py-3.5 rounded-xl text-sm cursor-default">

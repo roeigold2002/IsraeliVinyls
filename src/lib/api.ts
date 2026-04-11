@@ -71,31 +71,50 @@ function rememberStoreFilterName(storeId: string, filterName: string): void {
   storeFilterNameById.set(storeId, filterName)
 }
 
-async function fetchJson<T>(path: string): Promise<T> {
+async function fetchJson<T>(path: string, retries = 3, delayMs = 800): Promise<T> {
   const requestUrl = `${getApiBase()}${path}`
-  const res = await fetch(requestUrl)
+  let lastError: Error | null = null
 
-  const contentType = res.headers.get('content-type') || ''
-  const isJson = contentType.includes('application/json')
-
-  if (!res.ok) {
-    const details = isJson
-      ? JSON.stringify(await res.json())
-      : (await res.text()).slice(0, 120)
-    throw new Error(`API request failed (${res.status}) for ${path}. ${details}`)
-  }
-
-  if (!isJson) {
-    const body = await res.text()
-    if (body.trimStart().startsWith('<!DOCTYPE') || body.trimStart().startsWith('<html')) {
-      throw new Error(
-        `API returned HTML for ${path}. Configure VITE_API_BASE_URL (or VITE_API_URL) to your backend origin, or open the site with ?api=https://your-backend.example.com`
-      )
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    if (attempt > 0) {
+      await new Promise(resolve => setTimeout(resolve, delayMs * attempt))
     }
-    throw new Error(`API response for ${path} is not JSON (content-type: ${contentType || 'unknown'})`)
+
+    try {
+      const res = await fetch(requestUrl)
+
+      const contentType = res.headers.get('content-type') || ''
+      const isJson = contentType.includes('application/json')
+
+      if (!res.ok) {
+        const details = isJson
+          ? JSON.stringify(await res.json())
+          : (await res.text()).slice(0, 120)
+        throw new Error(`API request failed (${res.status}) for ${path}. ${details}`)
+      }
+
+      if (!isJson) {
+        const body = await res.text()
+        if (body.trimStart().startsWith('<!DOCTYPE') || body.trimStart().startsWith('<html')) {
+          throw new Error(
+            `API returned HTML for ${path}. Configure VITE_API_BASE_URL (or VITE_API_URL) to your backend origin, or open the site with ?api=https://your-backend.example.com`
+          )
+        }
+        throw new Error(`API response for ${path} is not JSON (content-type: ${contentType || 'unknown'})`)
+      }
+
+      return (await res.json()) as T
+    } catch (err) {
+      lastError = err as Error
+      // Only retry network-level errors (Failed to fetch), not API errors
+      if (err instanceof Error && err.message.includes('API request failed')) {
+        throw err
+      }
+      if (attempt === retries) throw lastError
+    }
   }
 
-  return (await res.json()) as T
+  throw lastError!
 }
 
 function toStore(
