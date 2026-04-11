@@ -1,7 +1,11 @@
 import type { SearchFilters, SearchResult, Store, VinylRecord, SortOption } from './types'
 import { STORE_MAP } from './constants'
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+const API_BASE = (
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_API_URL ||
+  ''
+).replace(/\/$/, '')
 
 const STORE_ID_TO_NAME: Record<string, string> = {
   beatnik: 'Beatnik',
@@ -28,10 +32,29 @@ function storeIdFromName(name: string): string {
 }
 
 async function fetchJson<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`)
+  const requestUrl = `${API_BASE}${path}`
+  const res = await fetch(requestUrl)
+
+  const contentType = res.headers.get('content-type') || ''
+  const isJson = contentType.includes('application/json')
+
   if (!res.ok) {
-    throw new Error(`API request failed (${res.status}) for ${path}`)
+    const details = isJson
+      ? JSON.stringify(await res.json())
+      : (await res.text()).slice(0, 120)
+    throw new Error(`API request failed (${res.status}) for ${path}. ${details}`)
   }
+
+  if (!isJson) {
+    const body = await res.text()
+    if (body.trimStart().startsWith('<!DOCTYPE') || body.trimStart().startsWith('<html')) {
+      throw new Error(
+        `API returned HTML for ${path}. Set VITE_API_BASE_URL (or VITE_API_URL) to your backend API origin, for example https://your-backend.example.com`
+      )
+    }
+    throw new Error(`API response for ${path} is not JSON (content-type: ${contentType || 'unknown'})`)
+  }
+
   return (await res.json()) as T
 }
 
