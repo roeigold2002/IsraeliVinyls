@@ -1,8 +1,29 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Store, ExternalLink, MapPin, Disc3, TrendingDown, TrendingUp, BarChart3, Users } from 'lucide-react'
-import { fetchStores } from '../lib/api'
+import { fetchSnapshotMeta, fetchStores } from '../lib/api'
 import type { Store as StoreType } from '../lib/types'
+
+interface SnapshotMeta {
+  generated_at: string | null
+  freshness_hours: number | null
+  is_stale: boolean | null
+  stale_after_hours: number
+  pricing_integrity: {
+    target_percent: number
+    enabled_store_count: number
+    enabled_coverage_percent: number
+    meets_target: boolean
+    stores_below_target: string[]
+    stores_missing_prices: string[]
+  } | null
+  connectivity: {
+    enabled_stores: number
+    blocked_stores: number
+    pending_stores: number
+    blocked_store_names: string[]
+  } | null
+}
 
 function StatCard({ icon: Icon, label, value, colorClass }: {
   icon: React.ElementType
@@ -35,26 +56,42 @@ function PriceBar({ value, max }: { value: number; max: number }) {
 
 export function StoresPage() {
   const [stores, setStores] = useState<StoreType[]>([])
+  const [snapshotMeta, setSnapshotMeta] = useState<SnapshotMeta | null>(null)
   const [loading, setLoading] = useState(true)
   const [sortBy, setSortBy] = useState<'records' | 'price_asc' | 'price_desc'>('records')
 
   useEffect(() => {
-    fetchStores()
-      .then(setStores)
+    Promise.all([
+      fetchStores(),
+      fetchSnapshotMeta().catch(() => null),
+    ])
+      .then(([storeRows, meta]) => {
+        setStores(storeRows)
+        setSnapshotMeta(meta)
+      })
       .finally(() => setLoading(false))
   }, [])
 
   const totalRecords = stores.reduce((sum, s) => sum + s.record_count, 0)
-  const activeStores = stores.filter((s) => s.record_count > 0)
-  const totalPricedRecords = stores.reduce((sum, s) => sum + (s.priced_records || 0), 0)
-  const weightedPriceTotal = stores.reduce((sum, s) => sum + (s.avg_price || 0) * (s.priced_records || 0), 0)
-  const globalAvgPrice = totalPricedRecords > 0
-    ? Math.round(weightedPriceTotal / totalPricedRecords)
-    : 0
+  const activeStores = stores.filter((s) => s.record_count > 0 && s.connectivity_status !== 'blocked')
+  const enabledStores = stores.filter((s) => s.connectivity_status !== 'blocked')
+  const enabledCoverage = (() => {
+    const enabledRecords = enabledStores.reduce((sum, s) => sum + (s.record_count || 0), 0)
+    const enabledPriced = enabledStores.reduce((sum, s) => sum + (s.priced_records || 0), 0)
+    return enabledRecords > 0 ? Math.round((enabledPriced / enabledRecords) * 1000) / 10 : 0
+  })()
 
   const maxAvgPrice = Math.max(...stores.map(s => s.avg_price || 0))
 
+  const connectivityRank = (store: StoreType) => {
+    if (store.connectivity_status === 'blocked') return 2
+    if (store.connectivity_status === 'pending') return 1
+    return 0
+  }
+
   const sortedStores = [...stores].sort((a, b) => {
+    const statusDiff = connectivityRank(a) - connectivityRank(b)
+    if (statusDiff !== 0) return statusDiff
     if (sortBy === 'records') return b.record_count - a.record_count
     if (sortBy === 'price_asc') return (a.avg_price || 0) - (b.avg_price || 0)
     if (sortBy === 'price_desc') return (b.avg_price || 0) - (a.avg_price || 0)
@@ -65,8 +102,12 @@ export function StoresPage() {
     { icon: Store, label: 'חנויות זמינות', value: stores.length, colorClass: 'bg-accent/15 text-accent' },
     { icon: Disc3, label: 'חנויות פעילות', value: activeStores.length, colorClass: 'bg-success/15 text-success' },
     { icon: BarChart3, label: 'סה"כ תקליטים', value: totalRecords.toLocaleString('he-IL'), colorClass: 'bg-teal/15 text-teal' },
-    { icon: TrendingUp, label: 'מחיר ממוצע', value: globalAvgPrice > 0 ? `${globalAvgPrice}₪` : '—', colorClass: 'bg-warning/15 text-warning' },
+    { icon: TrendingUp, label: 'כיסוי מחירים (חנויות פעילות)', value: `${enabledCoverage}%`, colorClass: 'bg-warning/15 text-warning' },
   ]
+
+  const generatedAtLabel = snapshotMeta?.generated_at
+    ? new Date(snapshotMeta.generated_at).toLocaleString('he-IL')
+    : 'לא ידוע'
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -80,6 +121,21 @@ export function StoresPage() {
             <p className="text-sm text-text-muted">נתונים עדכניים מהסנאפשוט האחרון</p>
           </div>
         </div>
+
+        {snapshotMeta && (
+          <div className={`mt-4 rounded-xl border px-4 py-3 text-sm ${
+            snapshotMeta.is_stale ? 'border-warning/35 bg-warning/10 text-warning' : 'border-success/30 bg-success/10 text-success'
+          }`}>
+            <div className="font-semibold">
+              {snapshotMeta.pricing_integrity?.meets_target
+                ? 'יעד כיסוי מחירים הושג עבור חנויות פעילות'
+                : 'כיסוי מחירים מתחת ליעד עבור חלק מהחנויות הפעילות'}
+            </div>
+            <div className="text-text-secondary mt-1">
+              כיסוי נוכחי: {snapshotMeta.pricing_integrity?.enabled_coverage_percent ?? enabledCoverage}% · יעד: {snapshotMeta.pricing_integrity?.target_percent ?? 95}% · עודכן: {generatedAtLabel}
+            </div>
+          </div>
+        )}
       </div>
 
       {loading ? (
@@ -162,6 +218,25 @@ export function StoresPage() {
                   <span className="latin-text">{store.platform}</span>
                 </div>
 
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {store.connectivity_status === 'blocked' ? (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-500/12 text-red-300 border border-red-500/35">חסום אוטומציה</span>
+                  ) : store.connectivity_status === 'pending' ? (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-warning/12 text-warning border border-warning/35">ממתין קישוריות</span>
+                  ) : (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-success/12 text-success border border-success/35">פעיל</span>
+                  )}
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full border ${
+                    store.pricing_status === 'healthy'
+                      ? 'bg-success/12 text-success border-success/35'
+                      : store.pricing_status === 'missing' || store.pricing_status === 'degraded'
+                        ? 'bg-warning/12 text-warning border-warning/35'
+                        : 'bg-white/8 text-text-muted border-border'
+                  }`}>
+                    כיסוי מחיר {store.pricing_coverage_percent ?? 0}%
+                  </span>
+                </div>
+
                 <div className="grid grid-cols-2 gap-2.5 mb-4">
                   <div className="bg-white/4 rounded-xl p-3 text-center">
                     <div className="text-lg font-bold text-text-primary tabular-nums">
@@ -201,12 +276,18 @@ export function StoresPage() {
                   </div>
                 )}
 
-                <Link
-                  to={`/?q=&store=${store.id}`}
-                  className="block w-full text-center bg-white/4 hover:bg-accent/12 text-text-secondary hover:text-accent py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border border-transparent hover:border-accent/20"
-                >
-                  {store.record_count > 0 ? '🎵 צפה בתקליטים' : '↗ חפש באתר'}
-                </Link>
+                {store.connectivity_status === 'blocked' ? (
+                  <div className="block w-full text-center bg-red-500/8 text-red-300 py-2.5 rounded-xl text-sm font-medium border border-red-500/25 cursor-not-allowed">
+                    חנות חסומה כרגע
+                  </div>
+                ) : (
+                  <Link
+                    to={`/?store=${store.id}`}
+                    className="block w-full text-center bg-white/4 hover:bg-accent/12 text-text-secondary hover:text-accent py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border border-transparent hover:border-accent/20"
+                  >
+                    {store.record_count > 0 ? '🎵 צפה בתקליטים' : '↗ חפש באתר'}
+                  </Link>
+                )}
               </div>
             ))}
           </div>

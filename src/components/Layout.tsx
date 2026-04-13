@@ -1,9 +1,10 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Store, Heart, Disc3, Search } from 'lucide-react'
+import { Store, Heart, Disc3, Search, BarChart3 } from 'lucide-react'
 
 const NAV_ITEMS = [
   { path: '/', label: 'חיפוש', icon: Search },
   { path: '/stores', label: 'חנויות', icon: Store },
+  { path: '/stats', label: 'סטטיסטיקה', icon: BarChart3 },
   { path: '/wishlist', label: 'מועדפים', icon: Heart },
 ]
 

@@ -16,6 +16,10 @@ export interface Store {
   genres_represented: number
   min_price: number
   max_price: number
+  pricing_coverage_percent?: number
+  pricing_status?: 'healthy' | 'degraded' | 'missing' | 'blocked' | 'no_data'
+  connectivity_status?: 'enabled' | 'blocked' | 'pending'
+  connectivity_note?: string
 }
 
 export interface VinylRecord {

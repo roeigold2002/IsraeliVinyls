@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Heart, Search, Trash2, Music } from 'lucide-react'
-import { getWishlist } from '../lib/wishlist'
+import { clearWishlist, getWishlist, subscribeWishlist } from '../lib/wishlist'
 import { fetchRecordsByIds } from '../lib/api'
 import { RecordGrid } from '../components/RecordGrid'
 import type { VinylRecord } from '../lib/types'
@@ -31,13 +31,13 @@ export function WishlistPage() {
   useEffect(() => { load() }, [])
 
   useEffect(() => {
-    const handleStorage = () => load()
-    window.addEventListener('storage', handleStorage)
-    return () => window.removeEventListener('storage', handleStorage)
+    return subscribeWishlist(() => {
+      void load()
+    })
   }, [])
 
   const clearAll = () => {
-    localStorage.removeItem('vinyl-wishlist')
+    clearWishlist()
     setRecords([])
   }
 

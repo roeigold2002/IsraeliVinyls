@@ -19,6 +19,8 @@ const ENRICH_HEADERS = {
 
 let snapshotCache = null;
 const enrichCache = new Map();
+const linkHealthCache = new Map();
+const LINK_HEALTH_TTL_MS = 15 * 60 * 1000;
 
 function readJsonFile(fileName) {
   const fullPath = path.join(DATA_DIR, fileName);
@@ -38,6 +40,8 @@ function loadSnapshot() {
   const stores = readJsonFile("stores.json");
   const genres = readJsonFile("genres.json");
   const databaseInfo = readJsonFile("database_info.json");
+  const snapshotMetaPath = path.join(DATA_DIR, "snapshot_meta.json");
+  const snapshotMeta = fs.existsSync(snapshotMetaPath) ? readJsonFile("snapshot_meta.json") : {};
 
   snapshotCache = {
     records,
@@ -45,9 +49,45 @@ function loadSnapshot() {
     stores,
     genres,
     databaseInfo,
+    snapshotMeta,
   };
 
   return snapshotCache;
+}
+
+function buildSnapshotMeta(snapshot) {
+  const meta = snapshot.snapshotMeta || {};
+  const generatedAt = typeof meta.generated_at === "string" ? meta.generated_at : null;
+  const staleAfterHours = 24;
+
+  let freshnessHours = null;
+  if (generatedAt) {
+    const parsed = Date.parse(generatedAt);
+    if (!Number.isNaN(parsed)) {
+      freshnessHours = Number(((Date.now() - parsed) / (1000 * 60 * 60)).toFixed(2));
+    }
+  }
+
+  const isStale = freshnessHours === null ? null : freshnessHours > staleAfterHours;
+  const dataQuality = snapshot.databaseInfo?.data_quality || {};
+
+  return {
+    ...meta,
+    generated_at: generatedAt,
+    records: Number(meta.records || snapshot.records.length || 0),
+    search_records: Number(meta.search_records || snapshot.searchRecords.length || 0),
+    stores: Number(meta.stores || snapshot.stores.length || 0),
+    genres: Number(meta.genres || snapshot.genres.length || 0),
+    freshness_hours: freshnessHours,
+    stale_after_hours: staleAfterHours,
+    is_stale: isStale,
+    pricing_integrity: meta.pricing_integrity || snapshot.databaseInfo?.pricing_integrity || null,
+    connectivity: meta.connectivity || snapshot.databaseInfo?.connectivity || null,
+    asset_integrity: meta.asset_integrity || {
+      records_with_cover: Number(dataQuality.records_with_cover || 0),
+      coverage_percent_covers: Number(dataQuality.coverage_percent_covers || 0),
+    },
+  };
 }
 
 function response(statusCode, payload) {
@@ -74,6 +114,106 @@ function parseIntParam(value, fallback, keyName) {
   return parsed;
 }
 
+function isSafeOutboundUrl(candidate) {
+  try {
+    const parsed = new URL(String(candidate || ""));
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return false;
+    }
+
+    const host = parsed.hostname.toLowerCase();
+    if (
+      host === "localhost" ||
+      host === "127.0.0.1" ||
+      host === "::1" ||
+      host.endsWith(".local") ||
+      /^10\./.test(host) ||
+      /^192\.168\./.test(host) ||
+      /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(host)
+    ) {
+      return false;
+    }
+
+    return true;
+  } catch (_error) {
+    return false;
+  }
+}
+
+async function probeUrl(url, timeoutMs = 4500) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    let res = await fetch(url, {
+      method: "HEAD",
+      redirect: "follow",
+      signal: controller.signal,
+      headers: ENRICH_HEADERS,
+    });
+
+    if (res.status === 405 || res.status === 403 || res.status === 401) {
+      res = await fetch(url, {
+        method: "GET",
+        redirect: "follow",
+        signal: controller.signal,
+        headers: ENRICH_HEADERS,
+      });
+    }
+
+    const finalUrl = res && res.url ? String(res.url) : url;
+    const status = Number.isFinite(Number(res.status)) ? Number(res.status) : null;
+    const ok = Boolean(res.ok);
+
+    return {
+      ok,
+      status,
+      final_url: finalUrl,
+      checked_at: new Date().toISOString(),
+      cached: false,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      status: null,
+      final_url: null,
+      checked_at: new Date().toISOString(),
+      cached: false,
+      error: error instanceof Error ? error.message : "link_probe_failed",
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function handleLinkHealth(params) {
+  const targetUrl = (params.get("url") || "").trim();
+  if (!targetUrl) {
+    return response(400, { error: "Missing url parameter" });
+  }
+
+  if (!isSafeOutboundUrl(targetUrl)) {
+    return response(400, { error: "URL is not allowed" });
+  }
+
+  const cacheKey = targetUrl.toLowerCase();
+  const cached = linkHealthCache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) {
+    return response(200, {
+      ...cached.payload,
+      cached: true,
+    });
+  }
+
+  const payload = await probeUrl(targetUrl);
+  linkHealthCache.set(cacheKey, {
+    payload,
+    expiresAt: Date.now() + LINK_HEALTH_TTL_MS,
+  });
+
+  return response(200, payload);
+}
+
 function clampPerPage(perPage) {
   if (perPage < 1 || perPage > 500) {
     return 50;
@@ -83,6 +223,18 @@ function clampPerPage(perPage) {
 
 function toLowerSafe(value) {
   return String(value || "").toLowerCase();
+}
+
+function parseMultiValueParam(params, key) {
+  const rawValues = params.getAll(key);
+  if (!rawValues || rawValues.length === 0) {
+    return [];
+  }
+
+  return rawValues
+    .flatMap((value) => String(value || "").split(","))
+    .map((value) => value.trim())
+    .filter(Boolean);
 }
 
 function normalizeInStock(value) {
@@ -886,15 +1038,15 @@ function applySearchFiltering(records, params) {
   let filtered = records;
 
   const q = (params.get("q") || "").trim();
-  const genre = (params.get("genre") || "").trim();
+  const genres = parseMultiValueParam(params, "genre");
   const source = (params.get("source") || "").trim();
-  const storeFilter = (params.get("store_filter") || "").trim();
+  const storeFilters = parseMultiValueParam(params, "store_filter");
   const inStockParam = (params.get("in_stock") || "").trim().toLowerCase();
-  const formatParam = (params.get("format") || "").trim();
-  const priceMin = parseFloat(params.get("price_min") || "");
-  const priceMax = parseFloat(params.get("price_max") || "");
-  const yearMin = parseInt(params.get("year_min") || "", 10);
-  const yearMax = parseInt(params.get("year_max") || "", 10);
+  const formats = parseMultiValueParam(params, "format");
+  const priceMin = parseFloat(params.get("price_min") || params.get("pmin") || "");
+  const priceMax = parseFloat(params.get("price_max") || params.get("pmax") || "");
+  const yearMin = parseInt(params.get("year_min") || params.get("ymin") || "", 10);
+  const yearMax = parseInt(params.get("year_max") || params.get("ymax") || "", 10);
 
   if (q) {
     const needle = q.toLowerCase();
@@ -903,13 +1055,17 @@ function applySearchFiltering(records, params) {
     });
   }
 
-  if (genre) {
-    const genreNeedle = genre.toLowerCase();
-    filtered = filtered.filter((item) => toLowerSafe(item.genre).includes(genreNeedle));
+  if (genres.length > 0) {
+    const genreNeedles = genres.map((value) => value.toLowerCase());
+    filtered = filtered.filter((item) => {
+      const genreValue = toLowerSafe(item.genre);
+      return genreNeedles.some((needle) => genreValue.includes(needle));
+    });
   }
 
-  if (storeFilter) {
-    filtered = filtered.filter((item) => String(item.store_name || "") === storeFilter);
+  if (storeFilters.length > 0) {
+    const allowedStores = new Set(storeFilters.map((value) => value.toLowerCase()));
+    filtered = filtered.filter((item) => allowedStores.has(String(item.store_name || "").toLowerCase()));
   } else if (source === "Discogs") {
     filtered = filtered.filter((item) => String(item.store_name || "") === "Discogs");
   } else if (source === "local") {
@@ -922,9 +1078,9 @@ function applySearchFiltering(records, params) {
     filtered = filtered.filter((item) => normalizeInStock(item.in_stock) === false);
   }
 
-  if (formatParam) {
-    const fmtLower = formatParam.toLowerCase();
-    filtered = filtered.filter((item) => (item.format || "").toLowerCase() === fmtLower);
+  if (formats.length > 0) {
+    const allowedFormats = new Set(formats.map((value) => value.toLowerCase()));
+    filtered = filtered.filter((item) => allowedFormats.has((item.format || "").toLowerCase()));
   }
 
   if (!isNaN(priceMin)) {
@@ -1202,6 +1358,14 @@ exports.handler = async (event) => {
       return response(200, snapshot.databaseInfo);
     }
 
+    if (endpoint === "snapshot-meta") {
+      return response(200, buildSnapshotMeta(snapshot));
+    }
+
+    if (endpoint === "link-health") {
+      return await handleLinkHealth(params);
+    }
+
     if (endpoint === "record") {
       return await handleRecord(snapshot, params);
     }
@@ -1225,4 +1389,14 @@ exports.handler = async (event) => {
       details: error instanceof Error ? error.message : String(error),
     });
   }
+};
+
+exports.__testables = {
+  parseMultiValueParam,
+  normalizeInStock,
+  parseNumericPrice,
+  applySearchFiltering,
+  applySorting,
+  isSafeOutboundUrl,
+  buildSnapshotMeta,
 };

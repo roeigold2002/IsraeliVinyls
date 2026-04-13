@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Heart, ExternalLink, ShoppingBag, Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { VinylRecord } from '../lib/types'
@@ -7,6 +7,7 @@ import { DEFAULT_COVER } from '../lib/constants'
 import { fetchItunesCoverForRecord } from '../lib/itunesCover'
 import { getStoreByName } from '../lib/storeCatalog'
 import { enqueuePriceFetch } from '../lib/priceQueue'
+import { hydrateCoverForRecord, shouldHydrateCover } from '../lib/coverHydration'
 
 interface Props {
   record: VinylRecord
@@ -27,6 +28,7 @@ function isRealCoverUrl(url: string | null | undefined): boolean {
 
 export function RecordCard({ record, index = 0 }: Props) {
   const navigate = useNavigate()
+  const location = useLocation()
   const [inWishlist, setInWishlist] = useState(() => isInWishlist(record.id))
   const [imgError, setImgError] = useState(false)
   const [imgLoaded, setImgLoaded] = useState(false)
@@ -41,26 +43,40 @@ export function RecordCard({ record, index = 0 }: Props) {
     setImgError(false)
     setImgLoaded(false)
 
-    if (isRealCoverUrl(record.cover_url)) {
-      setCover(record.cover_url ?? null)
-      return
+    let cancelled = false
+
+    const loadCover = async () => {
+      if (isRealCoverUrl(record.cover_url)) {
+        setCover(record.cover_url ?? null)
+        return
+      }
+
+      if (shouldHydrateCover(record.cover_url)) {
+        const hydratedCover = await hydrateCoverForRecord(record.id)
+        if (!cancelled && hydratedCover) {
+          setCover(hydratedCover)
+          return
+        }
+      }
+
+      const artist = record.artist || ''
+      const album = record.album || ''
+      if (artist || album) {
+        const fallbackCover = await fetchItunesCoverForRecord(artist, album)
+        if (!cancelled && fallbackCover) {
+          setCover(fallbackCover)
+        }
+      }
     }
 
-    let cancelled = false
-    const artist = record.artist || ''
-    const album = record.album || ''
-    if (artist || album) {
-      fetchItunesCoverForRecord(artist, album).then(url => {
-        if (!cancelled && url) setCover(url)
-      })
-    }
+    void loadCover()
     return () => { cancelled = true }
   }, [record.id, record.artist, record.album, record.cover_url])
 
   // Live price: queue a background fetch per record
   useEffect(() => {
     setLivePrice(record.price || 0)
-    setLiveProductUrl(record.product_url)
+    setLiveProductUrl(record.product_url ?? undefined)
 
     // Only fetch live price if we don't already have one
     if (record.price && record.price > 0) return
@@ -84,8 +100,9 @@ export function RecordCard({ record, index = 0 }: Props) {
 
   const handleOpenStore = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (liveProductUrl) {
-      window.open(liveProductUrl, '_blank', 'noopener,noreferrer')
+    const outboundUrl = liveProductUrl || record.store_url
+    if (outboundUrl) {
+      window.open(outboundUrl, '_blank', 'noopener,noreferrer')
     }
   }
 
@@ -97,6 +114,10 @@ export function RecordCard({ record, index = 0 }: Props) {
   const storeEmoji = record.store?.logo_emoji || catalogStore?.emoji || '🎵'
   const storeName = record.store?.name_he || record.store_name || ''
 
+  const detailState = {
+    fromPath: `${location.pathname}${location.search}`,
+  }
+
   return (
     <div
       className="animate-fade-in opacity-0 group"
@@ -107,10 +128,10 @@ export function RecordCard({ record, index = 0 }: Props) {
         {/* Cover image */}
         <div
           className="relative aspect-square overflow-hidden bg-bg-secondary cursor-pointer"
-          onClick={() => navigate(`/record/${record.id}`)}
+          onClick={() => navigate(`/record/${record.id}`, { state: detailState })}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && navigate(`/record/${record.id}`)}
+          onKeyDown={(e) => e.key === 'Enter' && navigate(`/record/${record.id}`, { state: detailState })}
           aria-label={`${record.artist} - ${record.album}`}
         >
           {!imgLoaded && <div className="absolute inset-0 shimmer" />}
@@ -148,10 +169,10 @@ export function RecordCard({ record, index = 0 }: Props) {
         <div className="p-3 flex flex-col flex-1">
           <div
             className="cursor-pointer flex-1 mb-2"
-            onClick={() => navigate(`/record/${record.id}`)}
+            onClick={() => navigate(`/record/${record.id}`, { state: detailState })}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && navigate(`/record/${record.id}`)}
+            onKeyDown={(e) => e.key === 'Enter' && navigate(`/record/${record.id}`, { state: detailState })}
           >
             <h3 className="font-semibold text-text-primary text-[13px] leading-snug line-clamp-1 latin-text">
               {record.artist || '—'}
@@ -196,7 +217,7 @@ export function RecordCard({ record, index = 0 }: Props) {
               )}
             </div>
 
-            {liveProductUrl && (
+            {(liveProductUrl || record.store_url) && (
               <button
                 onClick={handleOpenStore}
                 title="פתח בחנות"
@@ -209,7 +230,7 @@ export function RecordCard({ record, index = 0 }: Props) {
                 }`}
               >
                 <ShoppingBag size={11} />
-                <span>לחנות</span>
+                <span>{liveProductUrl ? 'לחנות' : 'חנות'}</span>
                 <ExternalLink size={9} />
               </button>
             )}

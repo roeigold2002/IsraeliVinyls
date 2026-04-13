@@ -1,0 +1,126 @@
+name: Staged Rollout Burn-In
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_candidate:
+        description: Build and deploy a candidate with Netlify before burn-in
+        required: false
+        default: false
+        type: boolean
+      candidate_url:
+        description: Existing candidate URL (required when deploy_candidate=false)
+        required: false
+        default: ''
+      max_cycles:
+        description: Maximum hardening cycles to run
+        required: false
+        default: '3'
+      required_greens:
+        description: Required consecutive green cycles
+        required: false
+        default: '2'
+      continue_on_failure:
+        description: Continue cycling after a failed stage (diagnostic mode)
+        required: false
+        default: false
+        type: boolean
+      rollback_command:
+        description: Optional rollback command run when rollback criteria is breached
+        required: false
+        default: ''
+
+jobs:
+  staged-rollout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    env:
+      CI: 'true'
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Resolve candidate URL
+        id: resolve_candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ inputs.deploy_candidate }}" = "true" ]; then
+            if [ -z "${NETLIFY_AUTH_TOKEN:-}" ] || [ -z "${NETLIFY_SITE_ID:-}" ]; then
+              echo "NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID secrets are required when deploy_candidate=true" >&2
+              exit 1
+            fi
+
+            npx netlify deploy --build --json > netlify-deploy.json
+
+            CANDIDATE_URL=$(node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('netlify-deploy.json','utf8'));const u=j.deploy_url||j.deploy_url_ssl||j.url||'';if(!u){process.exit(1)};process.stdout.write(u)")
+
+            if [ -z "$CANDIDATE_URL" ]; then
+              echo "Failed to resolve candidate URL from netlify deploy output" >&2
+              exit 1
+            fi
+
+            echo "candidate_url=$CANDIDATE_URL" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          CANDIDATE_URL="${{ inputs.candidate_url }}"
+          if [ -z "$CANDIDATE_URL" ]; then
+            echo "candidate_url is required when deploy_candidate=false" >&2
+            exit 1
+          fi
+
+          echo "candidate_url=$CANDIDATE_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Run staged rollout and burn-in hardening
+        shell: bash
+        env:
+          ROLLOUT_ROLLBACK_COMMAND: ${{ inputs.rollback_command }}
+        run: |
+          set -euo pipefail
+
+          if [ "${{ inputs.continue_on_failure }}" = "true" ]; then
+            node scripts/staged_rollout.cjs \
+              --base-url "${{ steps.resolve_candidate.outputs.candidate_url }}" \
+              --policy rollout/rollout-policy.json \
+              --max-cycles "${{ inputs.max_cycles }}" \
+              --required-greens "${{ inputs.required_greens }}" \
+              --continue-on-failure
+            exit 0
+          fi
+
+          node scripts/staged_rollout.cjs \
+            --base-url "${{ steps.resolve_candidate.outputs.candidate_url }}" \
+            --policy rollout/rollout-policy.json \
+            --max-cycles "${{ inputs.max_cycles }}" \
+            --required-greens "${{ inputs.required_greens }}"
+
+      - name: Upload rollout reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staged-rollout-reports
+          path: rollout/reports/
+          if-no-files-found: ignore

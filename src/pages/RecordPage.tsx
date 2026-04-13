@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import {
   ArrowRight,
   Heart,
@@ -14,11 +14,16 @@ import {
   ChevronUp,
 } from 'lucide-react'
 import { fetchRecordById, fetchSimilarRecords } from '../lib/api'
+import { verifyProductLink } from '../lib/api'
 import { isInWishlist, toggleWishlist } from '../lib/wishlist'
 import { RecordGrid } from '../components/RecordGrid'
 import { DEFAULT_COVER } from '../lib/constants'
 import { fetchItunesCoverForRecord } from '../lib/itunesCover'
 import type { VinylRecord } from '../lib/types'
+import { hydrateCoverForRecord, shouldHydrateCover } from '../lib/coverHydration'
+import { buildStoreSearchUrl } from '../lib/storeCatalog'
+
+type LinkState = 'unknown' | 'checking' | 'healthy' | 'stale'
 
 function formatPrice(price: number): string {
   if (price <= 0) return ''
@@ -28,6 +33,7 @@ function formatPrice(price: number): string {
 export function RecordPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
   const [record, setRecord] = useState<VinylRecord | null>(null)
   const [similar, setSimilar] = useState<VinylRecord[]>([])
   const [loading, setLoading] = useState(true)
@@ -36,6 +42,8 @@ export function RecordPage() {
   const [imgLoaded, setImgLoaded] = useState(false)
   const [showAllSimilar, setShowAllSimilar] = useState(false)
   const [itunesCover, setItunesCover] = useState<string | null>(null)
+  const [linkState, setLinkState] = useState<LinkState>('unknown')
+  const [linkError, setLinkError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!id) return
@@ -43,25 +51,84 @@ export function RecordPage() {
     setImgError(false)
     setImgLoaded(false)
     setItunesCover(null)
+    let cancelled = false
 
     fetchRecordById(id)
       .then(r => {
+        if (cancelled) return
         setRecord(r)
         setInWishlist(isInWishlist(id))
         if (r) {
-          fetchSimilarRecords(r).then(setSimilar)
+          fetchSimilarRecords(r).then((items) => {
+            if (!cancelled) setSimilar(items)
+          })
+
           // Fetch iTunes cover as fallback
           const isRealCover = r.cover_url && /^https?:\/\//i.test(r.cover_url) &&
             !r.cover_url.startsWith('data:image/svg+xml')
+
           if (!isRealCover && (r.artist || r.album)) {
-            fetchItunesCoverForRecord(r.artist || '', r.album || '').then(url => {
-              if (url) setItunesCover(url)
-            })
+            const resolveCover = async () => {
+              if (shouldHydrateCover(r.cover_url)) {
+                const hydratedCover = await hydrateCoverForRecord(r.id)
+                if (!cancelled && hydratedCover) {
+                  setRecord((prev) => (prev && prev.id === r.id ? { ...prev, cover_url: hydratedCover } : prev))
+                  return
+                }
+              }
+
+              const fallbackCover = await fetchItunesCoverForRecord(r.artist || '', r.album || '')
+              if (!cancelled && fallbackCover) {
+                setItunesCover(fallbackCover)
+              }
+            }
+
+            void resolveCover()
           }
         }
       })
-      .finally(() => setLoading(false))
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
   }, [id])
+
+  useEffect(() => {
+    if (!record?.product_url) {
+      setLinkState('unknown')
+      setLinkError(null)
+      return
+    }
+
+    let cancelled = false
+    setLinkState('checking')
+    setLinkError(null)
+
+    verifyProductLink(record.product_url)
+      .then((result) => {
+        if (cancelled) return
+        if (result.ok) {
+          setLinkState('healthy')
+          setLinkError(null)
+        } else {
+          setLinkState('stale')
+          setLinkError(result.error || (result.status ? `HTTP ${result.status}` : 'קישור לא זמין'))
+        }
+      })
+      .catch((error) => {
+        if (cancelled) return
+        // Fail-open on checker errors to avoid blocking purchase journey.
+        setLinkState('healthy')
+        setLinkError(error instanceof Error ? error.message : null)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [record?.product_url])
 
   const handleWishlist = () => {
     if (!id) return
@@ -119,6 +186,26 @@ export function RecordPage() {
   const isOutOfStock = record.in_stock === false
   const hasPrice = record.price > 0
   const displayYear = record.year && record.year > 100 ? record.year : null
+  const sourcePath = typeof location.state === 'object' && location.state && 'fromPath' in location.state
+    ? String((location.state as { fromPath?: string }).fromPath || '')
+    : ''
+
+  const safeBackTarget = sourcePath.startsWith('/') ? sourcePath : '/'
+  const directStoreSearchUrl = useMemo(() => {
+    const storeKey = record.store?.id || record.store_name || ''
+    const query = `${record.artist || ''} ${record.album || ''}`.trim()
+    return buildStoreSearchUrl(storeKey, query)
+  }, [record.store?.id, record.store_name, record.artist, record.album])
+
+  const fallbackOutboundUrl = directStoreSearchUrl || record.store_url || null
+
+  const handleBack = () => {
+    if (safeBackTarget) {
+      navigate(safeBackTarget)
+      return
+    }
+    navigate('/')
+  }
 
   const priceComparison = similar.filter(
     s =>
@@ -132,7 +219,7 @@ export function RecordPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <button
-        onClick={() => navigate(-1)}
+        onClick={handleBack}
         className="inline-flex items-center gap-2 text-text-muted hover:text-text-primary text-sm mb-8 transition-colors group"
       >
         <ArrowRight size={16} className="group-hover:-translate-x-0.5 transition-transform" />
@@ -205,7 +292,7 @@ export function RecordPage() {
 
             {record.store && (
               <Link
-                to={`/?q=&store=${record.store.id}`}
+                to={`/?store=${record.store.id}`}
                 className="flex items-center gap-3 mt-6 bg-white/4 rounded-xl p-4 hover:bg-white/6 transition-colors border border-border/50 hover:border-border-light group"
               >
                 <span className="text-3xl group-hover:scale-110 transition-transform">{record.store.logo_emoji}</span>
@@ -237,6 +324,13 @@ export function RecordPage() {
                   <span>המחיר מוצג באתר החנות — לחצו על הכפתור למטה</span>
                 </div>
               )}
+
+              {!isOutOfStock && linkState === 'stale' && (
+                <div className="mt-3 rounded-lg border border-warning/35 bg-warning/10 px-3 py-2 text-xs text-warning">
+                  קישור הרכישה הישיר אינו זמין כרגע. ניתן לעבור לחיפוש בחנות.
+                  {linkError ? <span className="text-text-muted mr-1">({linkError})</span> : null}
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3">
@@ -248,14 +342,52 @@ export function RecordPage() {
                   אזל מהמלאי
                 </button>
               ) : record.product_url ? (
+                linkState === 'stale' && fallbackOutboundUrl ? (
+                  <>
+                    <a
+                      href={fallbackOutboundUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-2 bg-warning hover:brightness-105 text-bg-primary font-semibold py-3.5 rounded-xl transition-all duration-200 text-sm"
+                    >
+                      <ShoppingCart size={17} />
+                      פתח חיפוש חלופי בחנות
+                      <ExternalLink size={14} />
+                    </a>
+                    <a
+                      href={record.product_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 bg-white/5 border border-border text-text-secondary hover:text-text-primary py-3.5 px-4 rounded-xl transition-all duration-200 text-sm"
+                    >
+                      נסה קישור ישיר
+                    </a>
+                  </>
+                ) : (
+                  <a
+                    href={record.product_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-accent/20 hover:shadow-accent/40 text-sm"
+                  >
+                    <ShoppingCart size={17} />
+                    {linkState === 'checking'
+                      ? 'מאמת קישור רכישה...'
+                      : hasPrice
+                        ? 'קנה עכשיו'
+                        : 'ראה מחיר וקנה באתר החנות'}
+                    <ExternalLink size={14} />
+                  </a>
+                )
+              ) : fallbackOutboundUrl ? (
                 <a
-                  href={record.product_url}
+                  href={fallbackOutboundUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-accent/20 hover:shadow-accent/40 text-sm"
                 >
                   <ShoppingCart size={17} />
-                  {hasPrice ? 'קנה עכשיו' : 'ראה מחיר וקנה באתר החנות'}
+                  פתח חיפוש בחנות
                   <ExternalLink size={14} />
                 </a>
               ) : (

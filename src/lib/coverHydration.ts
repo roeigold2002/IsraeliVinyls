@@ -3,7 +3,15 @@ import { DEFAULT_COVER } from './constants'
 
 const MAX_CONCURRENT_REQUESTS = 4
 
-const resolvedCoverCache = new Map<string, string | null>()
+interface CoverCacheEntry {
+  value: string | null
+  expiresAt: number
+}
+
+const SUCCESS_CACHE_TTL_MS = 12 * 60 * 60 * 1000
+const FAILURE_CACHE_TTL_MS = 60 * 60 * 1000
+
+const resolvedCoverCache = new Map<string, CoverCacheEntry>()
 const inflight = new Map<string, Promise<string | null>>()
 const queue: Array<{ id: string; resolve: (value: string | null) => void }> = []
 
@@ -19,6 +27,23 @@ function isRealCover(url: string | null | undefined): url is string {
   return false
 }
 
+function readCachedCover(id: string): string | null | undefined {
+  const cached = resolvedCoverCache.get(id)
+  if (!cached) return undefined
+  if (cached.expiresAt <= Date.now()) {
+    resolvedCoverCache.delete(id)
+    return undefined
+  }
+  return cached.value
+}
+
+function rememberCover(id: string, value: string | null): void {
+  resolvedCoverCache.set(id, {
+    value,
+    expiresAt: Date.now() + (value ? SUCCESS_CACHE_TTL_MS : FAILURE_CACHE_TTL_MS),
+  })
+}
+
 function pumpQueue() {
   while (activeRequests < MAX_CONCURRENT_REQUESTS && queue.length > 0) {
     const next = queue.shift()
@@ -29,11 +54,11 @@ function pumpQueue() {
     void fetchRecordById(next.id)
       .then((record) => {
         const cover = isRealCover(record?.cover_url) ? record.cover_url : null
-        resolvedCoverCache.set(next.id, cover)
+        rememberCover(next.id, cover)
         next.resolve(cover)
       })
       .catch(() => {
-        resolvedCoverCache.set(next.id, null)
+        rememberCover(next.id, null)
         next.resolve(null)
       })
       .finally(() => {
@@ -54,7 +79,10 @@ export function hydrateCoverForRecord(id: string): Promise<string | null> {
   }
 
   if (resolvedCoverCache.has(id)) {
-    return Promise.resolve(resolvedCoverCache.get(id) ?? null)
+    const cached = readCachedCover(id)
+    if (cached !== undefined) {
+      return Promise.resolve(cached)
+    }
   }
 
   const pending = inflight.get(id)

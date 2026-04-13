@@ -1,0 +1,49 @@
+{
+  "slo": {
+    "availability_target_percent": 99.9,
+    "max_p95_latency_ms": 1800,
+    "max_failure_rate_percent": 0.5,
+    "max_error_budget_burn_percent": 50
+  },
+  "failure_budget": {
+    "window_minutes": 60,
+    "notes": "Error budget burn percent is measured against availability_target_percent over the sampled burn-in window."
+  },
+  "rollback_criteria": {
+    "max_failure_rate_percent": 1.0,
+    "max_p95_latency_ms": 2500,
+    "max_consecutive_failed_probes": 1
+  },
+  "stages": [
+    {
+      "name": "canary",
+      "probes": 6,
+      "interval_ms": 10000,
+      "request_timeout_ms": 5000
+    },
+    {
+      "name": "ramp-25",
+      "probes": 8,
+      "interval_ms": 12000,
+      "request_timeout_ms": 5500
+    },
+    {
+      "name": "ramp-50",
+      "probes": 10,
+      "interval_ms": 15000,
+      "request_timeout_ms": 6000
+    },
+    {
+      "name": "burn-in",
+      "probes": 20,
+      "interval_ms": 30000,
+      "request_timeout_ms": 7000
+    }
+  ],
+  "hardening": {
+    "qa_command": "npm run qa:gate",
+    "max_cycles": 4,
+    "required_consecutive_green_cycles": 3,
+    "continue_on_failure": false
+  }
+}

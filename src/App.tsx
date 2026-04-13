@@ -2,6 +2,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { SearchPage } from './pages/SearchPage'
 import { StoresPage } from './pages/StoresPage'
+import { StatsPage } from './pages/StatsPage'
 import { RecordPage } from './pages/RecordPage'
 import { WishlistPage } from './pages/WishlistPage'
 
@@ -17,9 +18,9 @@ export function App() {
         <Route path="/" element={<SearchPage />} />
         <Route path="/search" element={<LegacySearchRedirect />} />
         <Route path="/stores" element={<StoresPage />} />
+        <Route path="/stats" element={<StatsPage />} />
         <Route path="/record/:id" element={<RecordPage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
-        <Route path="/stats" element={<Navigate to="/stores" replace />} />
       </Route>
     </Routes>
   )

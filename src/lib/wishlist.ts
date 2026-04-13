@@ -1,6 +1,7 @@
 import type { WishlistItem } from './types'
 
 const KEY = 'vinyl-wishlist'
+const WISHLIST_EVENT = 'vinyl-wishlist-changed'
 
 function safeParse(raw: string | null): WishlistItem[] {
   if (!raw) return []
@@ -19,11 +20,24 @@ function safeParse(raw: string | null): WishlistItem[] {
 }
 
 function save(items: WishlistItem[]) {
-  localStorage.setItem(KEY, JSON.stringify(items))
+  try {
+    localStorage.setItem(KEY, JSON.stringify(items))
+  } catch {
+    // Ignore storage write failures (private mode / quota exceeded).
+  }
+
+  // Notify same-tab listeners; storage event only fires cross-tab.
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(WISHLIST_EVENT))
+  }
 }
 
 export function getWishlist(): WishlistItem[] {
-  return safeParse(localStorage.getItem(KEY))
+  try {
+    return safeParse(localStorage.getItem(KEY))
+  } catch {
+    return []
+  }
 }
 
 export function isInWishlist(recordId: string): boolean {
@@ -41,4 +55,30 @@ export function toggleWishlist(recordId: string): boolean {
   list.unshift({ recordId, addedAt: new Date().toISOString() })
   save(list)
   return true
+}
+
+export function clearWishlist(): void {
+  save([])
+}
+
+export function subscribeWishlist(onChange: () => void): () => void {
+  if (typeof window === 'undefined') {
+    return () => {}
+  }
+
+  const handleStorage = (event: StorageEvent) => {
+    if (!event.key || event.key === KEY) {
+      onChange()
+    }
+  }
+
+  const handleCustom = () => onChange()
+
+  window.addEventListener('storage', handleStorage)
+  window.addEventListener(WISHLIST_EVENT, handleCustom)
+
+  return () => {
+    window.removeEventListener('storage', handleStorage)
+    window.removeEventListener(WISHLIST_EVENT, handleCustom)
+  }
 }

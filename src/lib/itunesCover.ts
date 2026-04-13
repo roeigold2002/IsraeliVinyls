@@ -1,8 +1,51 @@
-const cache = new Map<string, string | null>()
+interface CoverCacheEntry {
+  value: string | null
+  expiresAt: number
+}
+
+const SUCCESS_CACHE_TTL_MS = 12 * 60 * 60 * 1000
+const FAILURE_CACHE_TTL_MS = 60 * 60 * 1000
+
+const cache = new Map<string, CoverCacheEntry>()
 const inflight = new Map<string, Promise<string | null>>()
 const queue: Array<{ key: string; term: string; resolve: (v: string | null) => void }> = []
 let active = 0
 const MAX_CONCURRENT = 3
+
+function getCachedValue(key: string): string | null | undefined {
+  const cached = cache.get(key)
+  if (!cached) return undefined
+  if (cached.expiresAt <= Date.now()) {
+    cache.delete(key)
+    return undefined
+  }
+  return cached.value
+}
+
+function rememberCover(key: string, value: string | null): void {
+  cache.set(key, {
+    value,
+    expiresAt: Date.now() + (value ? SUCCESS_CACHE_TTL_MS : FAILURE_CACHE_TTL_MS),
+  })
+}
+
+function normalizeArtworkUrl(url: string | undefined): string | null {
+  if (!url) return null
+  const upgraded = url
+    .replace('100x100bb', '600x600bb')
+    .replace('/100x100/', '/600x600/')
+    .replace(/^http:\/\//i, 'https://')
+  return /^https?:\/\//i.test(upgraded) ? upgraded : null
+}
+
+function fetchWithTimeout(url: string, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+
+  return fetch(url, { signal: controller.signal }).finally(() => {
+    clearTimeout(timeout)
+  })
+}
 
 function pump() {
   while (active < MAX_CONCURRENT && queue.length > 0) {
@@ -12,18 +55,15 @@ function pump() {
     const url =
       `https://itunes.apple.com/search?term=${encodeURIComponent(next.term)}&media=music&entity=album&limit=3&country=il`
 
-    fetch(url, { signal: AbortSignal.timeout(6000) })
+    fetchWithTimeout(url, 6000)
       .then(r => r.json())
       .then((data: { results?: Array<{ artworkUrl100?: string }> }) => {
-        const artwork = data.results?.[0]?.artworkUrl100
-        const cover = artwork
-          ? artwork.replace('100x100bb', '600x600bb').replace('/100x100/', '/600x600/')
-          : null
-        cache.set(next.key, cover)
+        const cover = normalizeArtworkUrl(data.results?.[0]?.artworkUrl100)
+        rememberCover(next.key, cover)
         next.resolve(cover)
       })
       .catch(() => {
-        cache.set(next.key, null)
+        rememberCover(next.key, null)
         next.resolve(null)
       })
       .finally(() => {
@@ -62,7 +102,8 @@ export function fetchItunesCoverForRecord(
 
   const key = term.toLowerCase()
 
-  if (cache.has(key)) return Promise.resolve(cache.get(key) ?? null)
+  const cached = getCachedValue(key)
+  if (cached !== undefined) return Promise.resolve(cached)
   const pending = inflight.get(key)
   if (pending) return pending
 

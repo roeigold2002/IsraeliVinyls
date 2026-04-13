@@ -15,6 +15,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from scripts.store_registry import get_all_stores
+
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = ROOT_DIR / "netlify" / "data"
@@ -22,6 +24,8 @@ DEFAULT_DB_CANDIDATES = [
     ROOT_DIR / "music_stores.db",
     ROOT_DIR / "vinyl_records.db",
 ]
+
+PRICING_COMPLETENESS_TARGET = 95.0
 
 HEBREW_CHARS = set("אבגדהוזחטיכלמנסעפצקרשתןםןףץ")
 
@@ -277,6 +281,110 @@ def build_stores(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return stores_payload
 
 
+def enrich_store_health(
+    stores_payload: list[dict[str, Any]],
+    *,
+    expected_stores: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    stores_by_name = {
+        str(item.get("name") or ""): dict(item)
+        for item in stores_payload
+        if item.get("name")
+    }
+
+    for config in expected_stores:
+        store_name = str(config.get("store_name") or "").strip()
+        if not store_name:
+            continue
+
+        current = stores_by_name.get(store_name)
+        if current is None:
+            current = {
+                "name": store_name,
+                "record_count": 0,
+                "unique_artists": 0,
+                "genres_represented": 0,
+                "priced_records": 0,
+                "avg_price": 0,
+                "min_price": 0,
+                "max_price": 0,
+            }
+            stores_by_name[store_name] = current
+
+        record_count = int(current.get("record_count") or 0)
+        priced_records = int(current.get("priced_records") or 0)
+        enabled = bool(config.get("enabled", True))
+
+        coverage = round((100.0 * priced_records / record_count), 1) if record_count else 0.0
+        if not enabled:
+            connectivity_status = "blocked"
+            pricing_status = "blocked"
+        elif record_count <= 0:
+            connectivity_status = "pending"
+            pricing_status = "no_data"
+        elif priced_records <= 0:
+            connectivity_status = "enabled"
+            pricing_status = "missing"
+        elif coverage >= PRICING_COMPLETENESS_TARGET:
+            connectivity_status = "enabled"
+            pricing_status = "healthy"
+        else:
+            connectivity_status = "enabled"
+            pricing_status = "degraded"
+
+        current["connectivity_status"] = connectivity_status
+        current["connectivity_note"] = str(config.get("connectivity_note") or "")
+        current["pricing_coverage_percent"] = coverage
+        current["pricing_status"] = pricing_status
+
+    enriched = list(stores_by_name.values())
+    enriched.sort(key=lambda item: int(item.get("record_count") or 0), reverse=True)
+    return enriched
+
+
+def build_connectivity_summary(stores_payload: list[dict[str, Any]]) -> dict[str, Any]:
+    blocked = [store for store in stores_payload if store.get("connectivity_status") == "blocked"]
+    enabled = [store for store in stores_payload if store.get("connectivity_status") == "enabled"]
+    pending = [store for store in stores_payload if store.get("connectivity_status") == "pending"]
+
+    return {
+        "enabled_stores": len(enabled),
+        "blocked_stores": len(blocked),
+        "pending_stores": len(pending),
+        "blocked_store_names": [store.get("name") for store in blocked],
+    }
+
+
+def build_pricing_integrity(stores_payload: list[dict[str, Any]]) -> dict[str, Any]:
+    enabled = [store for store in stores_payload if store.get("connectivity_status") != "blocked"]
+    enabled_records = sum(int(store.get("record_count") or 0) for store in enabled)
+    enabled_priced = sum(int(store.get("priced_records") or 0) for store in enabled)
+
+    enabled_coverage = round((100.0 * enabled_priced / enabled_records), 1) if enabled_records else 0.0
+    below_target = [
+        str(store.get("name") or "")
+        for store in enabled
+        if int(store.get("record_count") or 0) > 0
+        and float(store.get("pricing_coverage_percent") or 0.0) < PRICING_COMPLETENESS_TARGET
+    ]
+    missing_prices = [
+        str(store.get("name") or "")
+        for store in enabled
+        if int(store.get("record_count") or 0) > 0 and int(store.get("priced_records") or 0) <= 0
+    ]
+
+    return {
+        "target_percent": PRICING_COMPLETENESS_TARGET,
+        "enabled_store_count": len(enabled),
+        "enabled_records": enabled_records,
+        "enabled_priced_records": enabled_priced,
+        "enabled_coverage_percent": enabled_coverage,
+        "meets_target": enabled_coverage >= PRICING_COMPLETENESS_TARGET,
+        "stores_below_target": below_target,
+        "stores_missing_prices": missing_prices,
+    }
+
+
 def build_genres(records: list[dict[str, Any]]) -> list[str]:
     genres = sorted({r["genre"] for r in records if r.get("genre")})
     return genres
@@ -347,8 +455,25 @@ def write_json(path: Path, payload: Any) -> None:
         json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
 
 
+def read_existing_json(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def snapshot_store_configs() -> list[dict[str, Any]]:
+    return [
+        {
+            "id": config.id,
+            "store_name": config.store_name,
+            "enabled": config.enabled,
+            "connectivity_note": config.connectivity_note,
+        }
+        for config in get_all_stores()
+    ]
+
+
 def main() -> None:
     db_path = pick_database()
+    store_configs = snapshot_store_configs()
 
     if db_path is None:
         required_files = [
@@ -370,14 +495,62 @@ def main() -> None:
                 f"No SQLite database found ({checked}) and missing pre-generated snapshot files: {missing_list}"
             )
 
-        print("No SQLite database found; using pre-generated snapshot files from netlify/data")
+        records = read_existing_json(OUTPUT_DIR / "records.json")
+        search_records = (
+            read_existing_json(OUTPUT_DIR / "search_records.json")
+            if (OUTPUT_DIR / "search_records.json").exists()
+            else records
+        )
+        stores_raw = read_existing_json(OUTPUT_DIR / "stores.json")
+        genres = read_existing_json(OUTPUT_DIR / "genres.json")
+        database_info = read_existing_json(OUTPUT_DIR / "database_info.json")
+
+        stores = enrich_store_health(stores_raw, expected_stores=store_configs)
+        pricing_integrity = build_pricing_integrity(stores)
+        connectivity = build_connectivity_summary(stores)
+
+        if isinstance(database_info, dict):
+            database_info["pricing_integrity"] = pricing_integrity
+            database_info["connectivity"] = connectivity
+
+        write_json(OUTPUT_DIR / "stores.json", stores)
+        write_json(OUTPUT_DIR / "database_info.json", database_info)
+        write_json(
+            OUTPUT_DIR / "snapshot_meta.json",
+            {
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "source_db": "snapshot-files",
+                "records": len(records),
+                "search_records": len(search_records),
+                "stores": len(stores),
+                "genres": len(genres),
+                "pricing_integrity": pricing_integrity,
+                "connectivity": connectivity,
+                "asset_integrity": {
+                    "records_with_cover": int(database_info.get("data_quality", {}).get("records_with_cover", 0))
+                    if isinstance(database_info, dict)
+                    else 0,
+                    "coverage_percent_covers": float(
+                        database_info.get("data_quality", {}).get("coverage_percent_covers", 0)
+                    )
+                    if isinstance(database_info, dict)
+                    else 0,
+                },
+            },
+        )
+
+        print("No SQLite database found; refreshed snapshot metadata from netlify/data")
         return
 
     records = load_records(db_path)
     search_records = build_search_records(records)
-    stores = build_stores(records)
+    stores = enrich_store_health(build_stores(records), expected_stores=store_configs)
     genres = build_genres(records)
     database_info = build_database_info(records)
+    pricing_integrity = build_pricing_integrity(stores)
+    connectivity = build_connectivity_summary(stores)
+    database_info["pricing_integrity"] = pricing_integrity
+    database_info["connectivity"] = connectivity
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -395,6 +568,12 @@ def main() -> None:
             "search_records": len(search_records),
             "stores": len(stores),
             "genres": len(genres),
+            "pricing_integrity": pricing_integrity,
+            "connectivity": connectivity,
+            "asset_integrity": {
+                "records_with_cover": database_info["data_quality"]["records_with_cover"],
+                "coverage_percent_covers": database_info["data_quality"]["coverage_percent_covers"],
+            },
         },
     )
 

@@ -57,6 +57,12 @@ node_modules/
 *.log
 logs/
 
+# Test artifacts
+playwright-report/
+test-results/
+.playwright/
+rollout/reports/
+
 # Temporary files
 *.tmp
 .cache/

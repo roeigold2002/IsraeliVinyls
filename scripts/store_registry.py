@@ -41,6 +41,8 @@ class StoreConfig:
     aliases: tuple[str, ...] = field(default_factory=tuple)
     use_browser_fallback: bool = True
     use_proxy_fallback: bool = True
+    enabled: bool = True
+    connectivity_note: str = ""
 
 
 STORE_CONFIGS: tuple[StoreConfig, ...] = (
@@ -59,6 +61,8 @@ STORE_CONFIGS: tuple[StoreConfig, ...] = (
         id="giora_records",
         store_name="Giora",
         website="https://www.giorarecords.co.il/",
+        enabled=False,
+        connectivity_note="Blocks automated requests",
     ),
     StoreConfig(
         id="tav8",
@@ -94,6 +98,8 @@ STORE_CONFIGS: tuple[StoreConfig, ...] = (
         id="third_ear",
         store_name="Third Ear",
         website="https://third-ear.com/",
+        enabled=False,
+        connectivity_note="Blocks automated requests",
     ),
     StoreConfig(
         id="hod_hamahat",
@@ -109,6 +115,8 @@ STORE_CONFIGS: tuple[StoreConfig, ...] = (
         id="disc_center",
         store_name="Disc Center",
         website="https://www.disccenter.co.il/",
+        enabled=False,
+        connectivity_note="Search path failures / bot protection",
     ),
     StoreConfig(
         id="taklit_house",
@@ -119,6 +127,8 @@ STORE_CONFIGS: tuple[StoreConfig, ...] = (
         id="shablool",
         store_name="Shablool",
         website="https://shabloolrecords.co.il/",
+        enabled=False,
+        connectivity_note="Blocks automated requests",
     ),
     StoreConfig(
         id="bside_haifa",
@@ -144,6 +154,8 @@ STORE_CONFIGS: tuple[StoreConfig, ...] = (
         id="my_records",
         store_name="My Records",
         website="https://www.my-records.co.il/",
+        enabled=False,
+        connectivity_note="Blocks automated requests",
     ),
     StoreConfig(
         id="rolling_dise",
@@ -154,6 +166,8 @@ STORE_CONFIGS: tuple[StoreConfig, ...] = (
         id="hasivoov",
         store_name="HaSivoov",
         website="https://hasivoov.co.il/",
+        enabled=False,
+        connectivity_note="Blocks automated requests",
     ),
     StoreConfig(
         id="h2shop",

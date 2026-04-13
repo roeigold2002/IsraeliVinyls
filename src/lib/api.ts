@@ -1,4 +1,4 @@
-import type { SearchFilters, SearchResult, Store, VinylRecord, SortOption } from './types'
+import type { SearchFilters, SearchResult, Store, VinylRecord } from './types'
 import { STORE_MAP } from './constants'
 import { STORE_CATALOG, getStoreById, getStoreByName, getStoreFilterNameById } from './storeCatalog'
 
@@ -46,6 +46,10 @@ type ApiStoreSummary = {
   avg_price?: number
   min_price?: number
   max_price?: number
+  pricing_coverage_percent?: number
+  pricing_status?: 'healthy' | 'degraded' | 'missing' | 'blocked' | 'no_data'
+  connectivity_status?: 'enabled' | 'blocked' | 'pending'
+  connectivity_note?: string
 }
 
 const storeFilterNameById = new Map<string, string>()
@@ -128,6 +132,10 @@ function toStore(
     priced_records?: number
     min_price?: number
     max_price?: number
+    pricing_coverage_percent?: number
+    pricing_status?: 'healthy' | 'degraded' | 'missing' | 'blocked' | 'no_data'
+    connectivity_status?: 'enabled' | 'blocked' | 'pending'
+    connectivity_note?: string
   }
 ): Store {
   const source = sourceName || name
@@ -154,6 +162,10 @@ function toStore(
     genres_represented: Number(stats?.genres_represented || 0),
     min_price: Number(stats?.min_price || 0),
     max_price: Number(stats?.max_price || 0),
+    pricing_coverage_percent: Number(stats?.pricing_coverage_percent || 0),
+    pricing_status: stats?.pricing_status || 'no_data',
+    connectivity_status: stats?.connectivity_status || 'enabled',
+    connectivity_note: stats?.connectivity_note || '',
   }
 }
 
@@ -176,6 +188,10 @@ function mergeStoresWithCatalog(stores: ApiStoreSummary[]): Store[] {
       priced_records: Number(store.priced_records || 0),
       min_price: Number(store.min_price || 0),
       max_price: Number(store.max_price || 0),
+      pricing_coverage_percent: Number(store.pricing_coverage_percent || 0),
+      pricing_status: store.pricing_status,
+      connectivity_status: store.connectivity_status,
+      connectivity_note: store.connectivity_note,
     })
     const previous = merged.get(mappedStore.id)
 
@@ -254,16 +270,6 @@ function mapRecord(raw: Record<string, unknown>): VinylRecord {
   }
 }
 
-function sortRecords(records: VinylRecord[], sortBy: SortOption): VinylRecord[] {
-  const copy = [...records]
-  if (sortBy === 'price_asc') {
-    copy.sort((a, b) => a.price - b.price)
-  } else if (sortBy === 'price_desc') {
-    copy.sort((a, b) => b.price - a.price)
-  }
-  return copy
-}
-
 function prioritizeDisplayRecords(records: VinylRecord[]): VinylRecord[] {
   const withPriceAndCover = records.filter((r) => r.price > 0 && Boolean(r.cover_url))
   const withCoverOnly = records.filter((r) => r.price <= 0 && Boolean(r.cover_url))
@@ -278,17 +284,28 @@ export async function searchRecords(filters: SearchFilters): Promise<SearchResul
   params.set('per_page', '50')
 
   if (filters.query) params.set('q', filters.query)
-  if (filters.genres[0]) params.set('genre', filters.genres[0])
+  filters.genres.filter(Boolean).forEach((genre) => params.append('genre', genre))
+  filters.formats.filter(Boolean).forEach((format) => params.append('format', format))
   if (filters.onlyInStock) params.set('in_stock', '1')
+  if (filters.priceMin !== null) params.set('price_min', String(filters.priceMin))
+  if (filters.priceMax !== null) params.set('price_max', String(filters.priceMax))
+  if (filters.yearMin !== null) params.set('year_min', String(filters.yearMin))
+  if (filters.yearMax !== null) params.set('year_max', String(filters.yearMax))
+  if (filters.sortBy) params.set('sort', filters.sortBy)
 
-  const selectedStoreId = filters.storeIds[0]
-  if (selectedStoreId) {
-    const mappedStore =
-      getStoreFilterNameById(selectedStoreId) ||
-      storeFilterNameById.get(selectedStoreId) ||
-      selectedStoreId
-    params.set('store_filter', mappedStore)
-  }
+  const selectedStores = filters.storeIds
+    .map(
+      (storeId) =>
+        getStoreFilterNameById(storeId) ||
+        storeFilterNameById.get(storeId) ||
+        storeId
+    )
+    .filter((storeName): storeName is string => Boolean(storeName))
+
+  const uniqueStoreFilters = [...new Set(selectedStores)]
+  uniqueStoreFilters.forEach((storeName) => {
+    params.append('store_filter', storeName)
+  })
 
   const raw = await fetchJson<{
     records: Record<string, unknown>[]
@@ -297,23 +314,7 @@ export async function searchRecords(filters: SearchFilters): Promise<SearchResul
     total_pages: number
   }>(`/api/search?${params.toString()}`)
 
-  let records = raw.records.map(mapRecord)
-
-  if (filters.formats.length > 0) {
-    const accepted = new Set(filters.formats.map((f) => f.toLowerCase()))
-    records = records.filter((r) => (r.format || '').toLowerCase() && accepted.has((r.format || '').toLowerCase()))
-  }
-
-  if (filters.onlyInStock) {
-    records = records.filter((r) => r.in_stock === true)
-  }
-
-  if (filters.priceMin !== null) records = records.filter((r) => r.price >= (filters.priceMin || 0))
-  if (filters.priceMax !== null) records = records.filter((r) => r.price <= (filters.priceMax || 0))
-  if (filters.yearMin !== null) records = records.filter((r) => (r.year || 0) >= (filters.yearMin || 0))
-  if (filters.yearMax !== null) records = records.filter((r) => (r.year || 0) <= (filters.yearMax || 0))
-
-  records = sortRecords(records, filters.sortBy)
+  const records = raw.records.map(mapRecord)
 
   return {
     records,
@@ -326,6 +327,44 @@ export async function searchRecords(filters: SearchFilters): Promise<SearchResul
 export async function fetchStores(): Promise<Store[]> {
   const raw = await fetchJson<{ stores: ApiStoreSummary[] }>('/api/stores')
   return mergeStoresWithCatalog(raw.stores || [])
+}
+
+export async function fetchSnapshotMeta(): Promise<{
+  generated_at: string | null
+  freshness_hours: number | null
+  is_stale: boolean | null
+  stale_after_hours: number
+  pricing_integrity: {
+    target_percent: number
+    enabled_store_count: number
+    enabled_coverage_percent: number
+    meets_target: boolean
+    stores_below_target: string[]
+    stores_missing_prices: string[]
+  } | null
+  connectivity: {
+    enabled_stores: number
+    blocked_stores: number
+    pending_stores: number
+    blocked_store_names: string[]
+  } | null
+  asset_integrity: {
+    records_with_cover: number
+    coverage_percent_covers: number
+  }
+}> {
+  return fetchJson('/api/snapshot-meta')
+}
+
+export async function verifyProductLink(url: string): Promise<{
+  ok: boolean
+  status: number | null
+  final_url: string | null
+  checked_at: string
+  cached: boolean
+  error?: string
+}> {
+  return fetchJson(`/api/link-health?url=${encodeURIComponent(url)}`, 1, 400)
 }
 
 export async function fetchGenres(): Promise<string[]> {

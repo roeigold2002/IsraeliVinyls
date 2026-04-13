@@ -118,10 +118,19 @@ export function SearchPage() {
   )
 
   const filters = getFilters()
-  const hasQuery = filters.query.trim().length > 0
+  const hasSearchIntent =
+    filters.query.trim().length > 0 ||
+    filters.storeIds.length > 0 ||
+    filters.genres.length > 0 ||
+    filters.formats.length > 0 ||
+    filters.onlyInStock ||
+    filters.priceMin !== null ||
+    filters.priceMax !== null ||
+    filters.yearMin !== null ||
+    filters.yearMax !== null
 
   useEffect(() => {
-    if (!hasQuery) return
+    if (!hasSearchIntent) return
     if (stores.length > 0 && genres.length > 0) return
 
     Promise.all([fetchStores(), fetchGenres()])
@@ -133,10 +142,10 @@ export function SearchPage() {
         setLoadError(err instanceof Error ? err.message : 'Failed to load filters')
         console.error(err)
       })
-  }, [hasQuery, stores.length, genres.length])
+  }, [hasSearchIntent, stores.length, genres.length])
 
   useEffect(() => {
-    if (!hasQuery) {
+    if (!hasSearchIntent) {
       setResult(null)
       setLoadError(null)
       setLoading(false)
@@ -159,7 +168,7 @@ export function SearchPage() {
     }
 
     load()
-  }, [getFilters, hasQuery])
+  }, [getFilters, hasSearchIntent])
 
   const updateParam = (key: string, value: string | null, options?: { resetPage?: boolean }) => {
     const params = new URLSearchParams(searchParams)
@@ -213,7 +222,9 @@ export function SearchPage() {
     filters.formats.length > 0 ||
     filters.onlyInStock ||
     filters.priceMin !== null ||
-    filters.priceMax !== null
+    filters.priceMax !== null ||
+    filters.yearMin !== null ||
+    filters.yearMax !== null
 
   const activeFilterCount =
     filters.storeIds.length +
@@ -221,11 +232,17 @@ export function SearchPage() {
     filters.formats.length +
     (filters.onlyInStock ? 1 : 0) +
     (filters.priceMin !== null ? 1 : 0) +
-    (filters.priceMax !== null ? 1 : 0)
+    (filters.priceMax !== null ? 1 : 0) +
+    (filters.yearMin !== null ? 1 : 0) +
+    (filters.yearMax !== null ? 1 : 0)
+
+  const emptyMessage = filters.query
+    ? `לא נמצאו תוצאות עבור "${filters.query}"`
+    : 'לא נמצאו תוצאות לפי הסינון שנבחר'
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      {!hasQuery ? (
+      {!hasSearchIntent ? (
         <HomeView onSearch={handleQuickSearch} />
       ) : (
         <>
@@ -310,20 +327,28 @@ export function SearchPage() {
                 <div>
                   <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">חנויות</label>
                   <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
-                    {stores.map((s) => (
-                      <button
-                        key={s.id}
-                        onClick={() => toggleArrayParam('store', s.id)}
-                        className={`text-[11px] px-2.5 py-1 rounded-full transition-all border ${
-                          filters.storeIds.includes(s.id)
-                            ? 'bg-accent text-white border-accent'
-                            : 'bg-white/4 text-text-secondary border-transparent hover:text-text-primary hover:bg-white/8'
-                        }`}
-                      >
-                        {s.logo_emoji} {s.name_he}
-                        {s.record_count === 0 ? ' ↗' : ''}
-                      </button>
-                    ))}
+                    {stores.map((s) => {
+                      const isBlocked = s.connectivity_status === 'blocked'
+                      return (
+                        <button
+                          key={s.id}
+                          onClick={() => {
+                            if (!isBlocked) toggleArrayParam('store', s.id)
+                          }}
+                          disabled={isBlocked}
+                          className={`text-[11px] px-2.5 py-1 rounded-full transition-all border ${
+                            isBlocked
+                              ? 'bg-red-500/10 text-red-300 border-red-500/30 cursor-not-allowed'
+                              : filters.storeIds.includes(s.id)
+                                ? 'bg-accent text-white border-accent'
+                                : 'bg-white/4 text-text-secondary border-transparent hover:text-text-primary hover:bg-white/8'
+                          }`}
+                        >
+                          {s.logo_emoji} {s.name_he}
+                          {isBlocked ? ' (חסום)' : s.record_count === 0 ? ' ↗' : ''}
+                        </button>
+                      )
+                    })}
                     {stores.length === 0 && (
                       <div className="text-xs text-text-muted">טוען חנויות...</div>
                     )}
@@ -440,7 +465,7 @@ export function SearchPage() {
           <RecordGrid
             records={result?.records ?? []}
             loading={loading}
-            emptyMessage={`לא נמצאו תוצאות עבור "${filters.query}"`}
+            emptyMessage={emptyMessage}
           />
 
           {result && result.totalPages > 1 && (
