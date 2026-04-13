@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router-dom'
-import { Heart, ExternalLink, ShoppingBag } from 'lucide-react'
+import { Heart, ExternalLink, ShoppingBag, Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { VinylRecord } from '../lib/types'
 import { isInWishlist, toggleWishlist } from '../lib/wishlist'
 import { DEFAULT_COVER } from '../lib/constants'
 import { fetchItunesCoverForRecord } from '../lib/itunesCover'
 import { getStoreByName } from '../lib/storeCatalog'
+import { enqueuePriceFetch } from '../lib/priceQueue'
 
 interface Props {
   record: VinylRecord
@@ -30,19 +31,21 @@ export function RecordCard({ record, index = 0 }: Props) {
   const [imgError, setImgError] = useState(false)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [cover, setCover] = useState<string | null>(null)
+  const [livePrice, setLivePrice] = useState<number>(record.price || 0)
+  const [liveProductUrl, setLiveProductUrl] = useState<string | undefined>(record.product_url ?? undefined)
+  const [priceLoading, setPriceLoading] = useState(false)
 
+  // Cover art: real URL → iTunes → default
   useEffect(() => {
     setCover(null)
     setImgError(false)
     setImgLoaded(false)
 
-    // Use the record's own cover if it's a real URL
     if (isRealCoverUrl(record.cover_url)) {
-      setCover(record.cover_url!)
+      setCover(record.cover_url ?? null)
       return
     }
 
-    // Fall back to iTunes for fast cover loading
     let cancelled = false
     const artist = record.artist || ''
     const album = record.album || ''
@@ -51,9 +54,28 @@ export function RecordCard({ record, index = 0 }: Props) {
         if (!cancelled && url) setCover(url)
       })
     }
-
     return () => { cancelled = true }
   }, [record.id, record.artist, record.album, record.cover_url])
+
+  // Live price: queue a background fetch per record
+  useEffect(() => {
+    setLivePrice(record.price || 0)
+    setLiveProductUrl(record.product_url)
+
+    // Only fetch live price if we don't already have one
+    if (record.price && record.price > 0) return
+
+    setPriceLoading(true)
+    const cancel = enqueuePriceFetch(record.id, (price, productUrl) => {
+      setLivePrice(price)
+      if (productUrl) setLiveProductUrl(productUrl)
+      setPriceLoading(false)
+    })
+    return () => {
+      cancel()
+      setPriceLoading(false)
+    }
+  }, [record.id, record.price, record.product_url])
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -62,14 +84,14 @@ export function RecordCard({ record, index = 0 }: Props) {
 
   const handleOpenStore = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (record.product_url) {
-      window.open(record.product_url, '_blank', 'noopener,noreferrer')
+    if (liveProductUrl) {
+      window.open(liveProductUrl, '_blank', 'noopener,noreferrer')
     }
   }
 
   const coverSrc = !imgError && cover ? cover : DEFAULT_COVER
   const isOutOfStock = record.in_stock === false
-  const hasPrice = record.price > 0
+  const hasPrice = livePrice > 0
 
   const catalogStore = record.store_name ? getStoreByName(record.store_name) : undefined
   const storeEmoji = record.store?.logo_emoji || catalogStore?.emoji || '🎵'
@@ -157,10 +179,15 @@ export function RecordCard({ record, index = 0 }: Props) {
 
           {/* Price + Store button */}
           <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/50">
-            <div className="min-w-0">
+            <div className="min-w-0 flex items-center gap-1.5">
               {hasPrice ? (
                 <span className="text-accent font-bold text-base leading-none">
-                  {formatPrice(record.price)}
+                  {formatPrice(livePrice)}
+                </span>
+              ) : priceLoading ? (
+                <span className="flex items-center gap-1 text-text-muted text-[11px]">
+                  <Loader2 size={11} className="animate-spin" />
+                  <span>מחיר...</span>
                 </span>
               ) : (
                 <span className="text-text-muted text-[11px] truncate block">
@@ -169,7 +196,7 @@ export function RecordCard({ record, index = 0 }: Props) {
               )}
             </div>
 
-            {record.product_url && (
+            {liveProductUrl && (
               <button
                 onClick={handleOpenStore}
                 title="פתח בחנות"
