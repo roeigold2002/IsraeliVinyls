@@ -890,6 +890,11 @@ function applySearchFiltering(records, params) {
   const source = (params.get("source") || "").trim();
   const storeFilter = (params.get("store_filter") || "").trim();
   const inStockParam = (params.get("in_stock") || "").trim().toLowerCase();
+  const formatParam = (params.get("format") || "").trim();
+  const priceMin = parseFloat(params.get("price_min") || "");
+  const priceMax = parseFloat(params.get("price_max") || "");
+  const yearMin = parseInt(params.get("year_min") || "", 10);
+  const yearMax = parseInt(params.get("year_max") || "", 10);
 
   if (q) {
     const needle = q.toLowerCase();
@@ -917,7 +922,46 @@ function applySearchFiltering(records, params) {
     filtered = filtered.filter((item) => normalizeInStock(item.in_stock) === false);
   }
 
+  if (formatParam) {
+    const fmtLower = formatParam.toLowerCase();
+    filtered = filtered.filter((item) => (item.format || "").toLowerCase() === fmtLower);
+  }
+
+  if (!isNaN(priceMin)) {
+    filtered = filtered.filter((item) => Number(item.price || 0) >= priceMin);
+  }
+
+  if (!isNaN(priceMax) && priceMax > 0) {
+    filtered = filtered.filter((item) => Number(item.price || 0) <= priceMax);
+  }
+
+  if (!isNaN(yearMin) && yearMin > 0) {
+    filtered = filtered.filter((item) => Number(item.year || 0) >= yearMin);
+  }
+
+  if (!isNaN(yearMax) && yearMax > 0) {
+    filtered = filtered.filter((item) => Number(item.year || 0) <= yearMax);
+  }
+
   return filtered;
+}
+
+function applySorting(records, params) {
+  const sort = (params.get("sort") || params.get("sort_by") || "").toLowerCase();
+  if (sort === "price_asc") {
+    return [...records].sort((a, b) => {
+      const pa = Number(a.price || 0);
+      const pb = Number(b.price || 0);
+      if (pa === pb) return 0;
+      if (pa === 0) return 1;
+      if (pb === 0) return -1;
+      return pa - pb;
+    });
+  }
+  if (sort === "price_desc") {
+    return [...records].sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+  }
+  return records; // default: keep insertion order (newest first in data)
 }
 
 function getApiPath(event) {
@@ -1009,7 +1053,7 @@ async function handleSearch(snapshot, params) {
   }
   perPage = clampPerPage(perPage);
 
-  const filtered = applySearchFiltering(snapshot.searchRecords, params);
+  const filtered = applySorting(applySearchFiltering(snapshot.searchRecords, params), params);
   const total = filtered.length;
   const offset = (page - 1) * perPage;
   const pageItems = filtered.slice(offset, offset + perPage);

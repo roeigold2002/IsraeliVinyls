@@ -340,17 +340,12 @@ export async function fetchFeaturedRecords(): Promise<VinylRecord[]> {
 }
 
 export async function fetchCheapestRecords(): Promise<VinylRecord[]> {
-  const raw = await fetchJson<{ records: Record<string, unknown>[] }>('/api/search?page=1&per_page=160')
+  // Server sorts by price ascending, priced records bubble to top
+  const raw = await fetchJson<{ records: Record<string, unknown>[] }>('/api/search?sort=price_asc&per_page=20')
   const mapped = (raw.records || []).map(mapRecord)
   const priced = mapped.filter((r) => r.price > 0)
-
-  if (priced.length > 0) {
-    const sorted = [...priced].sort((a, b) => a.price - b.price)
-    const withCover = sorted.filter((r) => Boolean(r.cover_url))
-    const withoutCover = sorted.filter((r) => !r.cover_url)
-    return [...withCover, ...withoutCover].slice(0, 12)
-  }
-
+  if (priced.length > 0) return priced.slice(0, 12)
+  // Fallback if no priced records found
   return prioritizeDisplayRecords(mapped).slice(0, 12)
 }
 

@@ -17,6 +17,7 @@ import { fetchRecordById, fetchSimilarRecords } from '../lib/api'
 import { isInWishlist, toggleWishlist } from '../lib/wishlist'
 import { RecordGrid } from '../components/RecordGrid'
 import { DEFAULT_COVER } from '../lib/constants'
+import { fetchItunesCoverForRecord } from '../lib/itunesCover'
 import type { VinylRecord } from '../lib/types'
 
 function formatPrice(price: number): string {
@@ -34,12 +35,14 @@ export function RecordPage() {
   const [imgError, setImgError] = useState(false)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [showAllSimilar, setShowAllSimilar] = useState(false)
+  const [itunesCover, setItunesCover] = useState<string | null>(null)
 
   useEffect(() => {
     if (!id) return
     setLoading(true)
     setImgError(false)
     setImgLoaded(false)
+    setItunesCover(null)
 
     fetchRecordById(id)
       .then(r => {
@@ -47,6 +50,14 @@ export function RecordPage() {
         setInWishlist(isInWishlist(id))
         if (r) {
           fetchSimilarRecords(r).then(setSimilar)
+          // Fetch iTunes cover as fallback
+          const isRealCover = r.cover_url && /^https?:\/\//i.test(r.cover_url) &&
+            !r.cover_url.startsWith('data:image/svg+xml')
+          if (!isRealCover && (r.artist || r.album)) {
+            fetchItunesCoverForRecord(r.artist || '', r.album || '').then(url => {
+              if (url) setItunesCover(url)
+            })
+          }
         }
       })
       .finally(() => setLoading(false))
@@ -101,7 +112,10 @@ export function RecordPage() {
     )
   }
 
-  const coverSrc = imgError || !record.cover_url ? DEFAULT_COVER : record.cover_url
+  const hasStoreCover = record.cover_url && /^https?:\/\//i.test(record.cover_url) && !record.cover_url.startsWith('data:image/svg')
+  const coverSrc = imgError
+    ? (itunesCover || DEFAULT_COVER)
+    : (hasStoreCover ? record.cover_url! : (itunesCover || DEFAULT_COVER))
   const isOutOfStock = record.in_stock === false
   const hasPrice = record.price > 0
   const displayYear = record.year && record.year > 100 ? record.year : null
