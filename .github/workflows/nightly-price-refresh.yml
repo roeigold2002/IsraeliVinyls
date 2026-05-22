@@ -1,0 +1,70 @@
+name: Nightly Price Refresh
+
+on:
+  schedule:
+    # Runs every night at 02:00 UTC (4 AM Israel time)
+    - cron: "0 2 * * *"
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  refresh-prices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Fetch live prices from stores
+        run: |
+          node scripts/remediate_prices.cjs \
+            --concurrency 50 \
+            --timeout-ms 3500 \
+            --retries 1 \
+            --save-every 500
+        timeout-minutes: 100
+
+      - name: Rebuild stats
+        run: node scripts/rebuild_stats.cjs
+
+      - name: Verify integrity
+        run: |
+          node scripts/verify_record_integrity.cjs
+          node scripts/verify_api_contract.cjs
+
+      - name: Commit updated price data
+        run: |
+          git config user.name "Deployment Bot"
+          git config user.email "noreply@github.com"
+          git add netlify/data/records.json \
+                  netlify/data/search_records.json \
+                  netlify/data/record_integrity.json \
+                  netlify/data/database_info.json \
+                  netlify/data/snapshot_meta.json \
+                  netlify/data/genres.json \
+                  netlify/data/stores.json \
+                  netlify/data/price_remediation_report.json || true
+          git diff --cached --quiet || \
+            git commit -m "chore: nightly price refresh"
+          git push
+
+      - name: Trigger Netlify deploy
+        if: success()
+        run: |
+          curl -s -X POST "${{ secrets.NETLIFY_BUILD_HOOK_URL }}" | \
+            python3 -c "import sys,json; d=json.load(sys.stdin); print('Deploy triggered:', d.get('build_id','ok'))"
+        continue-on-error: true
