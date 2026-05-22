@@ -820,6 +820,12 @@ def preserve_enrichment_fields(
             if old.get("price_source"):
                 rec["price_source"] = old["price_source"]
 
+        # Preserve live-checked in_stock and checked_at — set by remediate_prices, not in DB
+        if rec.get("in_stock") is None and old.get("in_stock") is not None:
+            rec["in_stock"] = old["in_stock"]
+        if old.get("checked_at"):
+            rec["checked_at"] = old["checked_at"]
+
     return new_records + restored, stats
 
 
