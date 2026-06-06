@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-05-21T11:30:19.762Z",
+  "unique_combos": 44316,
+  "processed": 44316,
+  "genre_filled": 33199,
+  "year_filled": 20863,
+  "cover_filled": 24338,
+  "api_hits": 11723,
+  "api_misses": 32593,
+  "finished_at": "2026-05-21T12:43:06.866Z"
+}

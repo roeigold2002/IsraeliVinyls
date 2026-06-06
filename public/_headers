@@ -1,0 +1,20 @@
+/api/stores
+  Cache-Control: public, max-age=86400
+
+/api/genres
+  Cache-Control: public, max-age=86400
+
+/api/database-info
+  Cache-Control: public, max-age=3600
+
+/api/*
+  Cache-Control: public, max-age=60
+
+/index.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable

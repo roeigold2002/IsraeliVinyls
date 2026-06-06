@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import {
   ArrowRight,
@@ -19,6 +19,7 @@ import { isInWishlist, toggleWishlist } from '../lib/wishlist'
 import { RecordGrid } from '../components/RecordGrid'
 import { DEFAULT_COVER } from '../lib/constants'
 import { fetchItunesCoverForRecord } from '../lib/itunesCover'
+import { enqueuePriceFetch } from '../lib/priceQueue'
 import type { VinylRecord } from '../lib/types'
 import { hydrateCoverForRecord, shouldHydrateCover } from '../lib/coverHydration'
 import { buildStoreSearchUrl } from '../lib/storeCatalog'
@@ -34,6 +35,9 @@ export function RecordPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const location = useLocation()
+
+  useEffect(() => { window.scrollTo(0, 0) }, [id])
+
   const [record, setRecord] = useState<VinylRecord | null>(null)
   const [similar, setSimilar] = useState<VinylRecord[]>([])
   const [loading, setLoading] = useState(true)
@@ -44,6 +48,8 @@ export function RecordPage() {
   const [itunesCover, setItunesCover] = useState<string | null>(null)
   const [linkState, setLinkState] = useState<LinkState>('unknown')
   const [linkError, setLinkError] = useState<string | null>(null)
+  const [livePrice, setLivePrice] = useState<number>(0)
+  const [priceLoading, setPriceLoading] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -51,24 +57,28 @@ export function RecordPage() {
     setImgError(false)
     setImgLoaded(false)
     setItunesCover(null)
+    setLivePrice(0)
+    setPriceLoading(false)
+
+    const controller = new AbortController()
     let cancelled = false
 
-    fetchRecordById(id)
-      .then(r => {
+    const load = async () => {
+      try {
+        const r = await fetchRecordById(id, controller.signal)
         if (cancelled) return
+
         setRecord(r)
+        setLivePrice(Number(r?.price || 0))
         setInWishlist(isInWishlist(id))
-        if (r) {
-          fetchSimilarRecords(r).then((items) => {
-            if (!cancelled) setSimilar(items)
-          })
 
-          // Fetch iTunes cover as fallback
-          const isRealCover = r.cover_url && /^https?:\/\//i.test(r.cover_url) &&
-            !r.cover_url.startsWith('data:image/svg+xml')
+        if (!r) return
 
-          if (!isRealCover && (r.artist || r.album)) {
-            const resolveCover = async () => {
+        const isRealCover = r.cover_url && /^https?:\/\//i.test(r.cover_url) &&
+          !r.cover_url.startsWith('data:image/svg+xml')
+
+        const coverTask = (!isRealCover && (r.artist || r.album))
+          ? (async () => {
               if (shouldHydrateCover(r.cover_url)) {
                 const hydratedCover = await hydrateCoverForRecord(r.id)
                 if (!cancelled && hydratedCover) {
@@ -76,23 +86,30 @@ export function RecordPage() {
                   return
                 }
               }
-
               const fallbackCover = await fetchItunesCoverForRecord(r.artist || '', r.album || '')
-              if (!cancelled && fallbackCover) {
-                setItunesCover(fallbackCover)
-              }
-            }
+              if (!cancelled && fallbackCover) setItunesCover(fallbackCover)
+            })()
+          : Promise.resolve()
 
-            void resolveCover()
-          }
-        }
-      })
-      .finally(() => {
+        await Promise.allSettled([
+          fetchSimilarRecords(r, controller.signal).then((items) => {
+            if (!cancelled) setSimilar(items)
+          }),
+          coverTask,
+        ])
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return
+        console.error(err)
+      } finally {
         if (!cancelled) setLoading(false)
-      })
+      }
+    }
+
+    void load()
 
     return () => {
       cancelled = true
+      controller.abort()
     }
   }, [id])
 
@@ -129,6 +146,43 @@ export function RecordPage() {
       cancelled = true
     }
   }, [record?.product_url])
+
+  useEffect(() => {
+    if (!record?.id) {
+      setPriceLoading(false)
+      return
+    }
+
+    setLivePrice(Number(record.price || 0))
+    setPriceLoading(true)
+    let cancelled = false
+
+    const cancel = enqueuePriceFetch(record.id, (price, productUrl, inStock) => {
+      if (cancelled) return
+
+      if (Number.isFinite(price) && price > 0) {
+        setLivePrice(price)
+      } else {
+        setLivePrice((prev) => (prev > 0 ? prev : 0))
+      }
+
+      if (productUrl && productUrl !== record.product_url) {
+        setRecord((prev) => (prev && prev.id === record.id ? { ...prev, product_url: productUrl } : prev))
+      }
+
+      if (inStock === true || inStock === false) {
+        setRecord((prev) => (prev && prev.id === record.id ? { ...prev, in_stock: inStock } : prev))
+      }
+
+      setPriceLoading(false)
+    })
+
+    return () => {
+      cancelled = true
+      cancel()
+      setPriceLoading(false)
+    }
+  }, [record?.id, record?.price])
 
   const handleWishlist = () => {
     if (!id) return
@@ -184,18 +238,17 @@ export function RecordPage() {
     ? (itunesCover || DEFAULT_COVER)
     : (hasStoreCover ? record.cover_url! : (itunesCover || DEFAULT_COVER))
   const isOutOfStock = record.in_stock === false
-  const hasPrice = record.price > 0
+  const displayPrice = livePrice > 0 ? livePrice : Number(record.price || 0)
+  const hasPrice = displayPrice > 0
   const displayYear = record.year && record.year > 100 ? record.year : null
   const sourcePath = typeof location.state === 'object' && location.state && 'fromPath' in location.state
     ? String((location.state as { fromPath?: string }).fromPath || '')
     : ''
 
   const safeBackTarget = sourcePath.startsWith('/') ? sourcePath : '/'
-  const directStoreSearchUrl = useMemo(() => {
-    const storeKey = record.store?.id || record.store_name || ''
-    const query = `${record.artist || ''} ${record.album || ''}`.trim()
-    return buildStoreSearchUrl(storeKey, query)
-  }, [record.store?.id, record.store_name, record.artist, record.album])
+  const storeKey = record.store?.id || record.store_name || ''
+  const storeSearchQuery = `${record.artist || ''} ${record.album || ''}`.trim()
+  const directStoreSearchUrl = buildStoreSearchUrl(storeKey, storeSearchQuery)
 
   const fallbackOutboundUrl = directStoreSearchUrl || record.store_url || null
 
@@ -315,13 +368,14 @@ export function RecordPage() {
             <div className="mb-5">
               {hasPrice ? (
                 <>
-                  <div className="text-4xl font-black text-accent mb-1">{formatPrice(record.price)}</div>
+                  <div className="text-4xl font-black text-accent mb-1">{formatPrice(displayPrice)}</div>
                   <div className="text-xs text-text-muted">המחיר עשוי להשתנות. לחצו לרכישה באתר החנות.</div>
+                  {priceLoading ? <div className="text-xs text-text-muted mt-1">מחיר מתעדכן...</div> : null}
                 </>
               ) : (
                 <div className="flex items-center gap-2 text-sm text-text-secondary">
                   <ShoppingCart size={15} className="text-text-muted" />
-                  <span>המחיר מוצג באתר החנות — לחצו על הכפתור למטה</span>
+                  <span>{priceLoading ? 'בודק מחיר עדכני...' : 'המחיר מוצג באתר החנות — לחצו על הכפתור למטה'}</span>
                 </div>
               )}
 
@@ -342,43 +396,22 @@ export function RecordPage() {
                   אזל מהמלאי
                 </button>
               ) : record.product_url ? (
-                linkState === 'stale' && fallbackOutboundUrl ? (
-                  <>
-                    <a
-                      href={fallbackOutboundUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 bg-warning hover:brightness-105 text-bg-primary font-semibold py-3.5 rounded-xl transition-all duration-200 text-sm"
-                    >
-                      <ShoppingCart size={17} />
-                      פתח חיפוש חלופי בחנות
-                      <ExternalLink size={14} />
-                    </a>
-                    <a
-                      href={record.product_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 bg-white/5 border border-border text-text-secondary hover:text-text-primary py-3.5 px-4 rounded-xl transition-all duration-200 text-sm"
-                    >
-                      נסה קישור ישיר
-                    </a>
-                  </>
-                ) : (
-                  <a
-                    href={record.product_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-accent/20 hover:shadow-accent/40 text-sm"
-                  >
-                    <ShoppingCart size={17} />
-                    {linkState === 'checking'
-                      ? 'מאמת קישור רכישה...'
+                <a
+                  href={linkState === 'stale' && fallbackOutboundUrl ? fallbackOutboundUrl : record.product_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-accent/20 hover:shadow-accent/40 text-sm"
+                >
+                  <ShoppingCart size={17} />
+                  {linkState === 'checking'
+                    ? 'מאמת קישור...'
+                    : linkState === 'stale'
+                      ? 'פתח בחנות'
                       : hasPrice
                         ? 'קנה עכשיו'
-                        : 'ראה מחיר וקנה באתר החנות'}
-                    <ExternalLink size={14} />
-                  </a>
-                )
+                        : 'פתח בחנות'}
+                  <ExternalLink size={14} />
+                </a>
               ) : fallbackOutboundUrl ? (
                 <a
                   href={fallbackOutboundUrl}
@@ -437,12 +470,12 @@ export function RecordPage() {
                     </span>
                   </td>
                   <td className="py-3.5 px-4 text-sm text-text-secondary latin-text">{record.format}</td>
-                  <td className="py-3.5 px-4 text-accent font-bold text-base">{formatPrice(record.price)}</td>
+                  <td className="py-3.5 px-4 text-accent font-bold text-base">{formatPrice(displayPrice)}</td>
                   <td className="py-3.5 px-4 text-xs text-accent font-medium">צופה כעת</td>
                 </tr>
                 {priceComparison.map(r => {
-                  const isCheaper = r.price > 0 && record.price > 0 && r.price < record.price
-                  const isMoreExpensive = r.price > 0 && record.price > 0 && r.price > record.price
+                  const isCheaper = r.price > 0 && displayPrice > 0 && r.price < displayPrice
+                  const isMoreExpensive = r.price > 0 && displayPrice > 0 && r.price > displayPrice
                   return (
                     <tr key={r.id} className="border-b border-border/30 hover:bg-white/2 transition-colors">
                       <td className="py-3.5 px-4">

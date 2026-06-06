@@ -1,0 +1,73 @@
+{
+  "generated_at": "2026-05-22T07:23:05.147Z",
+  "stores": {
+    "Rock Store 1970": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=20061, rate=1.00)"
+    },
+    "Third Ear": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=14786, rate=1.00)"
+    },
+    "Beatnik": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=10111, rate=1.00)"
+    },
+    "Vinylia Records": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=7782, rate=1.00)"
+    },
+    "Hod Hamahat": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=6664, rate=1.00)"
+    },
+    "The Vinyl Room": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=5858, rate=1.00)"
+    },
+    "HaSivoov": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=5401, rate=1.00)"
+    },
+    "Giora": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=3837, rate=1.00)"
+    },
+    "Shablool": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=3246, rate=1.00)"
+    },
+    "Holit Records": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=2326, rate=1.00)"
+    },
+    "Rolling Dise": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=1971, rate=1.00)"
+    },
+    "H2Shop": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=1531, rate=1.00)"
+    },
+    "Tav8": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=1528, rate=1.00)"
+    },
+    "B-Side Haifa": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=591, rate=1.00)"
+    },
+    "Disc Center": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=304, rate=1.00)"
+    },
+    "Vinyl Stock": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=289, rate=1.00)"
+    },
+    "Taklit House": {
+      "enabled": true,
+      "connectivity_note": "Auto-enabled by price remediation worker (local extraction fallback, price_fixed=244, rate=1.00)"
+    }
+  }
+}

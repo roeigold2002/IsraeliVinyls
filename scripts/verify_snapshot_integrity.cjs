@@ -34,12 +34,64 @@ function check() {
   const stores = readJson("stores.json");
   const dbInfo = readJson("database_info.json");
   const snapshotMeta = readJson("snapshot_meta.json");
+  const recordIntegrity = readJson("record_integrity.json");
 
   if (!Array.isArray(records)) fail("records.json must be an array");
   if (!Array.isArray(searchRecords)) fail("search_records.json must be an array");
   if (!Array.isArray(stores)) fail("stores.json must be an array");
   if (!dbInfo || typeof dbInfo !== "object") fail("database_info.json must be an object");
   if (!snapshotMeta || typeof snapshotMeta !== "object") fail("snapshot_meta.json must be an object");
+  if (!recordIntegrity || typeof recordIntegrity !== "object") fail("record_integrity.json must be an object");
+
+  const integritySummary =
+    recordIntegrity.summary && typeof recordIntegrity.summary === "object"
+      ? recordIntegrity.summary
+      : fail("record_integrity.json missing summary object");
+
+  const renderableIds = Array.isArray(recordIntegrity.renderable_ids)
+    ? recordIntegrity.renderable_ids.map((id) => String(id))
+    : fail("record_integrity.renderable_ids must be an array");
+  const quarantinedIds = Array.isArray(recordIntegrity.quarantined_ids)
+    ? recordIntegrity.quarantined_ids.map((id) => String(id))
+    : fail("record_integrity.quarantined_ids must be an array");
+
+  const totalFromIntegrity = asNumber(integritySummary.total_records);
+  if (totalFromIntegrity !== records.length) {
+    fail(
+      `record_integrity total_records (${totalFromIntegrity}) does not match records.json length (${records.length})`,
+    );
+  }
+
+  if (renderableIds.length + quarantinedIds.length !== records.length) {
+    fail(
+      `record_integrity IDs mismatch: renderable (${renderableIds.length}) + quarantined (${quarantinedIds.length}) != records (${records.length})`,
+    );
+  }
+
+  const renderableSet = new Set(renderableIds);
+  const quarantinedSet = new Set(quarantinedIds);
+  if (renderableSet.size !== renderableIds.length) {
+    fail("record_integrity.renderable_ids contains duplicate ids");
+  }
+  if (quarantinedSet.size !== quarantinedIds.length) {
+    fail("record_integrity.quarantined_ids contains duplicate ids");
+  }
+  for (const id of renderableSet) {
+    if (quarantinedSet.has(id)) {
+      fail(`record id ${id} appears in both renderable_ids and quarantined_ids`);
+    }
+  }
+
+  if (asNumber(integritySummary.renderable_records) !== renderableIds.length) {
+    fail(
+      `record_integrity summary renderable_records (${integritySummary.renderable_records}) does not match renderable_ids length (${renderableIds.length})`,
+    );
+  }
+  if (asNumber(integritySummary.quarantined_records) !== quarantinedIds.length) {
+    fail(
+      `record_integrity summary quarantined_records (${integritySummary.quarantined_records}) does not match quarantined_ids length (${quarantinedIds.length})`,
+    );
+  }
 
   const totalRecords = asNumber(dbInfo.total_records);
   if (totalRecords !== records.length) {
@@ -115,6 +167,7 @@ function check() {
 
   const failOnStale = process.env.QA_FAIL_ON_STALE === "1";
   const failOnPricingTarget = process.env.QA_FAIL_ON_PRICING_TARGET === "1";
+  const failOnNonBlockedQuarantine = process.env.QA_FAIL_ON_NON_BLOCKED_QUARANTINE === "1";
 
   if (failOnStale && snapshotMeta.is_stale === true) {
     fail(`Snapshot is stale (freshness_hours=${snapshotMeta.freshness_hours}, stale_after_hours=${snapshotMeta.stale_after_hours})`);
@@ -123,6 +176,12 @@ function check() {
   if (failOnPricingTarget && pricingIntegrity.meets_target === false) {
     fail(
       `Pricing integrity target not met (coverage=${pricingIntegrity.enabled_coverage_percent} target=${pricingIntegrity.target_percent})`,
+    );
+  }
+
+  if (failOnNonBlockedQuarantine && asNumber(integritySummary.non_blocked_quarantined_records) > 0) {
+    fail(
+      `Integrity policy failed: non_blocked_quarantined_records=${integritySummary.non_blocked_quarantined_records}`,
     );
   }
 
@@ -135,6 +194,7 @@ function check() {
         stores: stores.length,
         stale: snapshotMeta.is_stale,
         pricing_coverage_percent: pricingIntegrity.enabled_coverage_percent ?? null,
+        renderable_coverage_percent: integritySummary.renderable_coverage_percent ?? null,
       },
       null,
       2,

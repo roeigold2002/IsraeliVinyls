@@ -11,6 +11,17 @@ import subprocess
 from typing import Any
 
 
+def _env_truthy(value: str | None, default: bool = False) -> bool:
+    if value is None:
+        return default
+    normalized = value.strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
 @dataclass
 class SchedulerService:
     root: Path
@@ -94,12 +105,60 @@ class SchedulerService:
                 "verify": verify_result,
             }
 
+        trueup_result = None
+        if _env_truthy(os.environ.get("TRUEUP_AFTER_DAILY"), True):
+            trueup_result = self.incremental_data_trueup()
+            if trueup_result["exit_code"] != 0:
+                return {
+                    "status": "failed",
+                    "step": "trueup",
+                    "ingest": ingest_result,
+                    "export": export_result,
+                    "verify": verify_result,
+                    "trueup": trueup_result,
+                }
+
         return {
             "status": "ok",
             "ingest": ingest_result,
             "export": export_result,
             "verify": verify_result,
+            "trueup": trueup_result,
         }
+
+    def incremental_data_trueup(self) -> dict[str, Any]:
+        node_bin = os.environ.get("NODE_BIN", "node")
+        cmd = [
+            node_bin,
+            "scripts/trueup_worker.cjs",
+            "--batch-size",
+            os.environ.get("TRUEUP_BATCH_SIZE", "180"),
+            "--concurrency",
+            os.environ.get("TRUEUP_CONCURRENCY", "6"),
+            "--timeout-ms",
+            os.environ.get("TRUEUP_TIMEOUT_MS", "5000"),
+            "--retries",
+            os.environ.get("TRUEUP_RETRIES", "1"),
+            "--max-attempts",
+            os.environ.get("TRUEUP_MAX_ATTEMPTS", "6"),
+            "--retry-base-ms",
+            os.environ.get("TRUEUP_RETRY_BASE_MS", "20000"),
+            "--save-every",
+            os.environ.get("TRUEUP_SAVE_EVERY", "60"),
+        ]
+
+        if _env_truthy(os.environ.get("TRUEUP_REBUILD_QUEUE"), False):
+            cmd.append("--rebuild-queue")
+        if _env_truthy(os.environ.get("TRUEUP_USE_HEADLESS"), True):
+            cmd.extend(["--max-headless", os.environ.get("TRUEUP_MAX_HEADLESS", "8")])
+        else:
+            cmd.append("--no-headless")
+        if _env_truthy(os.environ.get("TRUEUP_REFRESH_SNAPSHOT"), False):
+            cmd.append("--refresh-snapshot")
+        if not _env_truthy(os.environ.get("TRUEUP_AUDIT_ALL_PRICES"), True):
+            cmd.append("--no-audit-all-prices")
+
+        return self._run(cmd)
 
 
 scheduler_service = SchedulerService(root=Path(__file__).resolve().parent)

@@ -21,9 +21,9 @@ DEFAULT_HEADERS = {
     "accept-language": "en-US,en;q=0.9,he;q=0.8",
 }
 
-DEFAULT_MAX_PAGES_PER_STORE = 35
+DEFAULT_MAX_PAGES_PER_STORE = 5000
 DEFAULT_MAX_CRAWL_DEPTH = 2
-DEFAULT_MAX_LINKS_PER_PAGE = 40
+DEFAULT_MAX_LINKS_PER_PAGE = 60
 DEFAULT_MAX_QUEUE_SIZE_FACTOR = 6
 
 TRACKING_QUERY_KEYS = {
@@ -202,6 +202,22 @@ def _build_seed_urls(store: StoreConfig, query_terms: Iterable[str]) -> list[str
     return deduped
 
 
+_PAGINATION_RE = re.compile(r"/page/\d+", re.IGNORECASE)
+
+
+def _is_pagination_link(url: str) -> bool:
+    parsed = urlparse(url)
+    path = parsed.path or ""
+    query = (parsed.query or "").lower()
+    if _PAGINATION_RE.search(path):
+        return True
+    if "paged=" in query:
+        return True
+    if re.search(r"(?<!\w)page=\d", query):
+        return True
+    return False
+
+
 def _proxy_options(proxy_url: str | None) -> dict[str, str] | None:
     if not proxy_url:
         return None
@@ -244,7 +260,9 @@ def _crawl_urls(
                 continue
             if len(queue) >= max_queue_size:
                 break
-            queue.append((link, depth + 1))
+            # Pagination links keep current depth so chains follow to completion
+            link_depth = depth if _is_pagination_link(link) else depth + 1
+            queue.append((link, link_depth))
 
     return pages, errors
 

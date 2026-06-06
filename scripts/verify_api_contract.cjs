@@ -23,7 +23,12 @@ function makeEvent(pathname, params = new URLSearchParams()) {
 }
 
 async function callApi(endpoint, params = new URLSearchParams()) {
-  const event = makeEvent(`/api/${endpoint}`, params);
+  const safeParams = new URLSearchParams(params);
+  if (endpoint === "search" && !safeParams.has("enrich") && !safeParams.has("no_enrich")) {
+    safeParams.set("no_enrich", "1");
+  }
+
+  const event = makeEvent(`/api/${endpoint}`, safeParams);
   const result = await handler(event);
   const body = JSON.parse(result.body || "{}");
 
@@ -127,6 +132,21 @@ async function main() {
   assert("pricing_integrity" in snapshotMeta, "snapshot-meta missing pricing_integrity");
   assert("connectivity" in snapshotMeta, "snapshot-meta missing connectivity");
   assert("asset_integrity" in snapshotMeta, "snapshot-meta missing asset_integrity");
+  assert("record_integrity" in snapshotMeta, "snapshot-meta missing record_integrity");
+
+  const quarantineSummary = await callApi("quarantine-summary");
+  assert(quarantineSummary && typeof quarantineSummary === "object", "quarantine-summary must return object");
+
+  const quarantinedSampleIds = Array.isArray(snapshotMeta.record_integrity?.quarantined_sample_ids)
+    ? snapshotMeta.record_integrity.quarantined_sample_ids
+    : [];
+  if (quarantinedSampleIds.length > 0) {
+    const quarantinedRecordResponse = await callRawApi(
+      "record",
+      new URLSearchParams([["id", String(quarantinedSampleIds[0])]]),
+    );
+    assert.equal(quarantinedRecordResponse.statusCode, 404, "quarantined record must not be renderable");
+  }
 
   const invalidLink = await callRawApi(
     "link-health",

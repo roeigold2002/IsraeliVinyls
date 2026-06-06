@@ -1,4 +1,4 @@
-export type SortOption = 'newest' | 'price_asc' | 'price_desc'
+export type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'year_desc' | 'year_asc' | 'in_stock' | 'relevance'
 
 export interface Store {
   id: string
@@ -52,13 +52,17 @@ export interface SearchFilters {
   yearMax: number | null
   sortBy: SortOption
   page: number
+  perPage: number
 }
 
 export interface SearchResult {
   records: VinylRecord[]
   total: number
   page: number
+  perPage: number
   totalPages: number
+  hasNext: boolean
+  hasPrev: boolean
 }
 
 export interface WishlistItem {

@@ -54,7 +54,10 @@ app = Flask(__name__)
 if CORS_AVAILABLE:
     CORS(app, resources={
         r"/api/*": {
-            "origins": os.environ.get('CORS_ALLOWED_ORIGINS', '*').split(','),
+            "origins": os.environ.get(
+                'CORS_ALLOWED_ORIGINS',
+                'https://israeli-vinyls-projectv.netlify.app,http://localhost:5000,http://127.0.0.1:5000,http://localhost:5173,http://127.0.0.1:5173'
+            ).split(','),
             "methods": ["GET", "POST", "OPTIONS"],
             "allow_headers": ["Content-Type"]
         }
@@ -270,6 +273,8 @@ scheduler = None
 scheduler_state = {
     "last_run": None,
     "last_result": None,
+    "last_trueup_run": None,
+    "last_trueup_result": None,
     "status": "not_started"
 }
 
@@ -706,6 +711,7 @@ def _initialize_scheduler():
         from scheduler_service import scheduler_service
         
         scheduler = BackgroundScheduler()
+        trueup_interval_minutes = max(5, int(os.environ.get("TRUEUP_INTERVAL_MINUTES", "30")))
         
         # Schedule daily task at 2 AM
         scheduler.add_job(
@@ -717,11 +723,22 @@ def _initialize_scheduler():
             name="Daily Database Growth",
             replace_existing=True
         )
+
+        scheduler.add_job(
+            func=_run_incremental_trueup,
+            trigger="interval",
+            minutes=trueup_interval_minutes,
+            id="incremental_trueup_job",
+            name="Incremental Data True-Up",
+            replace_existing=True
+        )
         
         scheduler.start()
         scheduler_state["status"] = "running"
         
-        print("[SCHEDULER] ✓ Background scheduler initialized - daily growth at 2 AM")
+        print(
+            f"[SCHEDULER] ✓ Background scheduler initialized - daily growth at 2 AM, true-up every {trueup_interval_minutes}m"
+        )
     
     except ImportError:
         print("[SCHEDULER] ⚠️  scheduler_service module not found - background scheduling disabled")
@@ -748,6 +765,26 @@ def _run_scheduled_growth():
         scheduler_state["status"] = "error"
         scheduler_state["last_error"] = str(e)
         print(f"[SCHEDULER] ✗ Job failed: {str(e)}")
+
+
+def _run_incremental_trueup():
+    """Run incremental data true-up in the background."""
+    global scheduler_state
+
+    try:
+        from scheduler_service import scheduler_service
+
+        result = scheduler_service.incremental_data_trueup()
+        scheduler_state["last_trueup_run"] = datetime.now().isoformat()
+        scheduler_state["last_trueup_result"] = result
+        scheduler_state["status"] = "running"
+
+        print("[SCHEDULER] ✓ Incremental true-up job completed")
+
+    except Exception as e:
+        scheduler_state["status"] = "error"
+        scheduler_state["last_error"] = str(e)
+        print(f"[SCHEDULER] ✗ True-up job failed: {str(e)}")
 
 
 def get_db():

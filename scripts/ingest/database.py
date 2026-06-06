@@ -48,9 +48,36 @@ class DatabaseWriter:
                 )
                 """
             )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS records (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    artist TEXT,
+                    album TEXT,
+                    genre TEXT,
+                    year TEXT,
+                    store_name TEXT,
+                    price TEXT,
+                    currency TEXT DEFAULT 'ILS',
+                    format TEXT,
+                    condition TEXT,
+                    store_url TEXT,
+                    product_url TEXT,
+                    cover_url TEXT,
+                    in_stock INTEGER DEFAULT NULL
+                )
+                """
+            )
             conn.commit()
         finally:
             conn.close()
+
+    def _ensure_in_stock_column(self, conn: "sqlite3.Connection") -> None:
+        try:
+            conn.execute("ALTER TABLE records ADD COLUMN in_stock INTEGER DEFAULT NULL")
+            conn.commit()
+        except Exception:
+            pass  # column already exists
 
     def replace_store_records(
         self,
@@ -61,6 +88,7 @@ class DatabaseWriter:
     ) -> ReplaceResult:
         conn = self._connect()
         try:
+            self._ensure_in_stock_column(conn)
             cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM records WHERE store_name = ?", (store_name,))
             previous_count = int(cursor.fetchone()[0])
@@ -92,7 +120,7 @@ class DatabaseWriter:
                     key = (str(product_url or "").strip().lower(), str(album or "").strip().lower())
                     existing_keys.add(key)
 
-                to_insert: list[tuple[str, str, str, str, str, str, str, str, str, str, str, str]] = []
+                to_insert: list[tuple] = []
                 for row in normalized_rows:
                     key = (
                         str(row.get("product_url") or "").strip().lower(),
@@ -101,6 +129,7 @@ class DatabaseWriter:
                     if key in existing_keys:
                         continue
                     existing_keys.add(key)
+                    in_stock_val = row.get("in_stock")
                     to_insert.append(
                         (
                             (row.get("artist") or "").strip(),
@@ -115,6 +144,7 @@ class DatabaseWriter:
                             (row.get("store_url") or "").strip(),
                             (row.get("product_url") or "").strip(),
                             (row.get("cover_url") or "").strip(),
+                            1 if in_stock_val is True else (0 if in_stock_val is False else None),
                         )
                     )
 
@@ -133,8 +163,9 @@ class DatabaseWriter:
                             condition,
                             store_url,
                             product_url,
-                            cover_url
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            cover_url,
+                            in_stock
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
                         to_insert,
                     )
@@ -169,8 +200,9 @@ class DatabaseWriter:
                         condition,
                         store_url,
                         product_url,
-                        cover_url
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        cover_url,
+                        in_stock
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     [
                         (
@@ -186,6 +218,7 @@ class DatabaseWriter:
                             (row.get("store_url") or "").strip(),
                             (row.get("product_url") or "").strip(),
                             (row.get("cover_url") or "").strip(),
+                            1 if row.get("in_stock") is True else (0 if row.get("in_stock") is False else None),
                         )
                         for row in normalized_rows
                     ],

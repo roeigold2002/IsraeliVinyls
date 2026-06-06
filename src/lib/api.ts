@@ -3,6 +3,7 @@ import { STORE_MAP } from './constants'
 import { STORE_CATALOG, getStoreById, getStoreByName, getStoreFilterNameById } from './storeCatalog'
 
 const API_BASE_STORAGE_KEY = 'projectv_api_base_url'
+const PRODUCTION_SITE_BASE_URL = 'https://israeli-vinyls-projectv.netlify.app'
 
 function normalizeApiBase(value: string | null | undefined): string {
   if (!value) return ''
@@ -34,7 +35,30 @@ function getRuntimeApiOverride(): string {
 function getApiBase(): string {
   const runtimeOverride = getRuntimeApiOverride()
   if (runtimeOverride) return runtimeOverride
-  return normalizeApiBase(import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '')
+
+  const envBase = normalizeApiBase(import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '')
+  if (envBase) return envBase
+
+  if (typeof window !== 'undefined') {
+    const protocol = String(window.location.protocol || '').toLowerCase()
+    if (protocol === 'file:' || protocol === 'content:') {
+      // Android wrappers often load static assets from local file/content URLs.
+      return PRODUCTION_SITE_BASE_URL
+    }
+
+    const host = String(window.location.hostname || '').toLowerCase()
+    if (host === 'appassets.androidplatform.net' || host.endsWith('.androidplatform.net')) {
+      return PRODUCTION_SITE_BASE_URL
+    }
+    if (host === 'israeli-vinyls-projectv.netlify.app') {
+      return PRODUCTION_SITE_BASE_URL
+    }
+    if (host.endsWith('.netlify.app')) {
+      return normalizeApiBase(window.location.origin)
+    }
+  }
+
+  return ''
 }
 
 type ApiStoreSummary = {
@@ -75,40 +99,69 @@ function rememberStoreFilterName(storeId: string, filterName: string): void {
   storeFilterNameById.set(storeId, filterName)
 }
 
-async function fetchJson<T>(path: string, retries = 3, delayMs = 800): Promise<T> {
-  const requestUrl = `${getApiBase()}${path}`
+function buildSearchNoEnrichFallbackPath(path: string): string | null {
+  if (!path.startsWith('/api/search')) {
+    return null
+  }
+
+  const [pathname, query = ''] = path.split('?')
+  const params = new URLSearchParams(query)
+  if (params.has('no_enrich')) {
+    return null
+  }
+
+  params.set('no_enrich', '1')
+  params.set('enrich', '0')
+  return `${pathname}?${params.toString()}`
+}
+
+async function fetchJson<T>(path: string, retries = 3, delayMs = 800, signal?: AbortSignal): Promise<T> {
+  let requestPath = path
+  let appliedSearchFallback = false
   let lastError: Error | null = null
 
   for (let attempt = 0; attempt <= retries; attempt++) {
+    if (signal?.aborted) throw new DOMException('Aborted', 'AbortError')
     if (attempt > 0) {
       await new Promise(resolve => setTimeout(resolve, delayMs * attempt))
     }
 
     try {
-      const res = await fetch(requestUrl)
+      const requestUrl = `${getApiBase()}${requestPath}`
+      const res = await fetch(requestUrl, { signal })
 
       const contentType = res.headers.get('content-type') || ''
       const isJson = contentType.includes('application/json')
 
       if (!res.ok) {
+        if (!appliedSearchFallback && res.status === 504) {
+          const fallbackPath = buildSearchNoEnrichFallbackPath(requestPath)
+          if (fallbackPath) {
+            requestPath = fallbackPath
+            appliedSearchFallback = true
+            continue
+          }
+        }
+
         const details = isJson
           ? JSON.stringify(await res.json())
           : (await res.text()).slice(0, 120)
-        throw new Error(`API request failed (${res.status}) for ${path}. ${details}`)
+        throw new Error(`API request failed (${res.status}) for ${requestPath}. ${details}`)
       }
 
       if (!isJson) {
         const body = await res.text()
         if (body.trimStart().startsWith('<!DOCTYPE') || body.trimStart().startsWith('<html')) {
           throw new Error(
-            `API returned HTML for ${path}. Configure VITE_API_BASE_URL (or VITE_API_URL) to your backend origin, or open the site with ?api=https://your-backend.example.com`
+            `API returned HTML for ${requestPath}. Configure VITE_API_BASE_URL (or VITE_API_URL) to your backend origin, or open the site with ?api=https://your-backend.example.com`
           )
         }
-        throw new Error(`API response for ${path} is not JSON (content-type: ${contentType || 'unknown'})`)
+        throw new Error(`API response for ${requestPath} is not JSON (content-type: ${contentType || 'unknown'})`)
       }
 
       return (await res.json()) as T
     } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') throw err
       lastError = err as Error
       // Only retry network-level errors (Failed to fetch), not API errors
       if (err instanceof Error && err.message.includes('API request failed')) {
@@ -278,10 +331,13 @@ function prioritizeDisplayRecords(records: VinylRecord[]): VinylRecord[] {
   return [...withPriceAndCover, ...withCoverOnly, ...withPriceOnly, ...remaining]
 }
 
-export async function searchRecords(filters: SearchFilters): Promise<SearchResult> {
+const _searchCache = new Map<string, { data: SearchResult; expiresAt: number }>()
+const SEARCH_CACHE_TTL_MS = 2 * 60 * 1000
+
+export async function searchRecords(filters: SearchFilters, signal?: AbortSignal): Promise<SearchResult> {
   const params = new URLSearchParams()
   params.set('page', String(filters.page || 1))
-  params.set('per_page', '50')
+  params.set('per_page', String(filters.perPage || 50))
 
   if (filters.query) params.set('q', filters.query)
   filters.genres.filter(Boolean).forEach((genre) => params.append('genre', genre))
@@ -307,21 +363,36 @@ export async function searchRecords(filters: SearchFilters): Promise<SearchResul
     params.append('store_filter', storeName)
   })
 
+  const cacheKey = params.toString()
+  const cached = _searchCache.get(cacheKey)
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.data
+  }
+
   const raw = await fetchJson<{
     records: Record<string, unknown>[]
     total: number
     page: number
+    per_page: number
     total_pages: number
-  }>(`/api/search?${params.toString()}`)
+    has_next?: boolean
+    has_prev?: boolean
+  }>(`/api/search?${cacheKey}`, 3, 800, signal)
 
   const records = raw.records.map(mapRecord)
 
-  return {
+  const result: SearchResult = {
     records,
     total: raw.total,
     page: raw.page,
+    perPage: raw.per_page || filters.perPage || 50,
     totalPages: raw.total_pages || 1,
+    hasNext: Boolean(raw.has_next),
+    hasPrev: Boolean(raw.has_prev),
   }
+
+  _searchCache.set(cacheKey, { data: result, expiresAt: Date.now() + SEARCH_CACHE_TTL_MS })
+  return result
 }
 
 export async function fetchStores(): Promise<Store[]> {
@@ -388,19 +459,21 @@ export async function fetchCheapestRecords(): Promise<VinylRecord[]> {
   return prioritizeDisplayRecords(mapped).slice(0, 12)
 }
 
-export async function fetchRecordById(id: string): Promise<VinylRecord | null> {
+export async function fetchRecordById(id: string, signal?: AbortSignal): Promise<VinylRecord | null> {
   try {
-    const direct = await fetchJson<{ record?: Record<string, unknown> }>(`/api/record?id=${encodeURIComponent(id)}`)
+    const direct = await fetchJson<{ record?: Record<string, unknown> }>(`/api/record?id=${encodeURIComponent(id)}`, 3, 800, signal)
     if (direct.record) {
       return mapRecord(direct.record)
     }
-  } catch {
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') throw err
     // Fallback for older deployments where /api/record may be unavailable.
   }
 
   const pagesToCheck = 12
   for (let page = 1; page <= pagesToCheck; page += 1) {
-    const raw = await fetchJson<{ records: Record<string, unknown>[] }>('/api/all-records?page=' + page + '&per_page=500')
+    if (signal?.aborted) throw new DOMException('Aborted', 'AbortError')
+    const raw = await fetchJson<{ records: Record<string, unknown>[] }>('/api/all-records?page=' + page + '&per_page=500', 3, 800, signal)
     const match = (raw.records || []).find((r) => String(r.id) === id)
     if (match) return mapRecord(match)
     if (!raw.records || raw.records.length < 500) break
@@ -408,14 +481,33 @@ export async function fetchRecordById(id: string): Promise<VinylRecord | null> {
   return null
 }
 
-export async function fetchSimilarRecords(record: VinylRecord): Promise<VinylRecord[]> {
+export async function fetchSimilarRecords(record: VinylRecord, signal?: AbortSignal): Promise<VinylRecord[]> {
   const query = encodeURIComponent(record.artist || record.album)
-  const raw = await fetchJson<{ records: Record<string, unknown>[] }>(`/api/search?q=${query}&page=1&per_page=80`)
+  const raw = await fetchJson<{ records: Record<string, unknown>[] }>(`/api/search?q=${query}&page=1&per_page=80`, 3, 800, signal)
   return (raw.records || []).map(mapRecord).filter((item) => item.id !== record.id)
 }
 
 export async function fetchRecordsByIds(ids: string[]): Promise<VinylRecord[]> {
   if (!ids.length) return []
+
+  // Fast path: use the batch endpoint (single request for up to 200 IDs at a time)
+  try {
+    const chunks: string[][] = []
+    for (let i = 0; i < ids.length; i += 200) chunks.push(ids.slice(i, i + 200))
+    const chunkResults = await Promise.all(
+      chunks.map((chunk) =>
+        fetchJson<{ records: Record<string, unknown>[]; total: number }>(
+          `/api/records?ids=${encodeURIComponent(chunk.join(','))}`
+        )
+      )
+    )
+    const found = chunkResults.flatMap((r) => (r.records || []).map(mapRecord))
+    return ids.map((id) => found.find((f) => f.id === id)).filter((x): x is VinylRecord => Boolean(x))
+  } catch {
+    // fall through to legacy pagination path
+  }
+
+  // Legacy fallback: paginate all-records
   const wanted = new Set(ids)
   const found: VinylRecord[] = []
   const pagesToCheck = 20
@@ -434,6 +526,24 @@ export async function fetchRecordsByIds(ids: string[]): Promise<VinylRecord[]> {
   }
 
   return ids.map((id) => found.find((f) => f.id === id)).filter((x): x is VinylRecord => Boolean(x))
+}
+
+export async function fetchSuggestions(
+  q: string,
+  signal?: AbortSignal
+): Promise<Array<{ type: string; value: string }>> {
+  if (!q || q.trim().length < 2) return []
+  try {
+    const raw = await fetchJson<{ suggestions: Array<{ type: string; value: string }> }>(
+      `/api/suggest?q=${encodeURIComponent(q.trim())}&limit=6`,
+      1,
+      200,
+      signal
+    )
+    return raw.suggestions || []
+  } catch {
+    return []
+  }
 }
 
 export async function fetchStats(): Promise<{

@@ -3,12 +3,27 @@ interface CoverCacheEntry {
   expiresAt: number
 }
 
+interface ItunesAlbumResult {
+  artistName?: string
+  collectionName?: string
+  trackName?: string
+  artworkUrl100?: string
+  artworkUrl60?: string
+  artworkUrl30?: string
+}
+
 const SUCCESS_CACHE_TTL_MS = 12 * 60 * 60 * 1000
 const FAILURE_CACHE_TTL_MS = 60 * 60 * 1000
 
 const cache = new Map<string, CoverCacheEntry>()
 const inflight = new Map<string, Promise<string | null>>()
-const queue: Array<{ key: string; term: string; resolve: (v: string | null) => void }> = []
+const queue: Array<{
+  key: string
+  term: string
+  artist: string
+  album: string
+  resolve: (v: string | null) => void
+}> = []
 let active = 0
 const MAX_CONCURRENT = 3
 
@@ -38,6 +53,97 @@ function normalizeArtworkUrl(url: string | undefined): string | null {
   return /^https?:\/\//i.test(upgraded) ? upgraded : null
 }
 
+function normalizeForMatch(value: string): string {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[\u0591-\u05C7]/g, '')
+    .replace(/[^\p{L}\p{N}\s]+/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function buildMatchTokens(value: string): string[] {
+  return normalizeForMatch(value)
+    .split(/\s+/)
+    .filter((token) => token.length > 2)
+    .slice(0, 10)
+}
+
+function scoreItunesCandidate(
+  candidate: ItunesAlbumResult,
+  targetArtist: string,
+  targetAlbum: string,
+): number {
+  const candidateArtist = normalizeForMatch(candidate.artistName || '')
+  const candidateAlbum = normalizeForMatch(candidate.collectionName || candidate.trackName || '')
+
+  let score = 0
+
+  if (targetArtist && candidateArtist === targetArtist) {
+    score += 5
+  } else if (
+    targetArtist &&
+    (candidateArtist.includes(targetArtist) || targetArtist.includes(candidateArtist))
+  ) {
+    score += 2
+  }
+
+  if (targetAlbum && candidateAlbum === targetAlbum) {
+    score += 6
+  } else if (
+    targetAlbum &&
+    (candidateAlbum.includes(targetAlbum) || targetAlbum.includes(candidateAlbum))
+  ) {
+    score += 3
+  }
+
+  const targetTokens = new Set(buildMatchTokens(`${targetArtist} ${targetAlbum}`))
+  const candidateTokens = new Set(buildMatchTokens(`${candidateArtist} ${candidateAlbum}`))
+  let overlap = 0
+  targetTokens.forEach((token) => {
+    if (candidateTokens.has(token)) {
+      overlap += 1
+    }
+  })
+
+  score += overlap
+
+  if (targetAlbum && overlap === 0) {
+    score -= 3
+  }
+
+  return score
+}
+
+function pickBestItunesCover(
+  results: ItunesAlbumResult[],
+  targetArtist: string,
+  targetAlbum: string,
+): string | null {
+  let bestCover: string | null = null
+  let bestScore = Number.NEGATIVE_INFINITY
+
+  for (const result of results) {
+    const candidateCover =
+      normalizeArtworkUrl(result.artworkUrl100) ||
+      normalizeArtworkUrl(result.artworkUrl60) ||
+      normalizeArtworkUrl(result.artworkUrl30)
+
+    if (!candidateCover) {
+      continue
+    }
+
+    const score = scoreItunesCandidate(result, targetArtist, targetAlbum)
+    if (score > bestScore) {
+      bestScore = score
+      bestCover = candidateCover
+    }
+  }
+
+  const minimumScore = targetArtist && targetAlbum ? 8 : 5
+  return bestCover && bestScore >= minimumScore ? bestCover : null
+}
+
 function fetchWithTimeout(url: string, timeoutMs: number): Promise<Response> {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), timeoutMs)
@@ -53,12 +159,18 @@ function pump() {
     active++
 
     const url =
-      `https://itunes.apple.com/search?term=${encodeURIComponent(next.term)}&media=music&entity=album&limit=3&country=il`
+      `https://itunes.apple.com/search?term=${encodeURIComponent(next.term)}&media=music&entity=album&limit=8&country=il`
 
     fetchWithTimeout(url, 6000)
       .then(r => r.json())
-      .then((data: { results?: Array<{ artworkUrl100?: string }> }) => {
-        const cover = normalizeArtworkUrl(data.results?.[0]?.artworkUrl100)
+      .then((data: { results?: ItunesAlbumResult[] }) => {
+        const targetArtist = normalizeForMatch(next.artist)
+        const targetAlbum = normalizeForMatch(next.album)
+        const cover = pickBestItunesCover(
+          Array.isArray(data.results) ? data.results : [],
+          targetArtist,
+          targetAlbum,
+        )
         rememberCover(next.key, cover)
         next.resolve(cover)
       })
@@ -108,7 +220,7 @@ export function fetchItunesCoverForRecord(
   if (pending) return pending
 
   const promise = new Promise<string | null>(resolve => {
-    queue.push({ key, term, resolve })
+    queue.push({ key, term, artist: cleanArtist, album: cleanAlbum, resolve })
     pump()
   })
 

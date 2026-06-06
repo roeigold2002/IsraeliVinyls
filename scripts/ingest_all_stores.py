@@ -15,7 +15,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--strict", action="store_true", help="Fail when any store does not meet minimum record threshold")
     parser.add_argument("--min-records", type=int, default=1, help="Minimum records required per store")
     parser.add_argument("--timeout", type=int, default=10, help="HTTP/browser timeout in seconds")
-    parser.add_argument("--max-pages", type=int, default=35, help="Maximum crawled pages per store")
+    parser.add_argument("--max-pages", type=int, default=5000, help="Maximum crawled pages per store")
     parser.add_argument("--max-depth", type=int, default=2, help="Maximum crawl depth per store")
     parser.add_argument("--require-query-match", action="store_true", help="Require title/query token match during parsing")
     parser.add_argument("--max-workers", type=int, default=5, help="Parallel worker count")

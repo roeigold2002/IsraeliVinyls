@@ -35,6 +35,41 @@ NOISE_TITLE_TOKENS = {
     "למעבר",
 }
 
+# Promotional badge text that appears nested inside anchor elements on some stores
+_PROMO_PREFIX_RE = re.compile(
+    r"^(?:מחיר\s+אונליין|מחיר\s+online|מחיר\s*:)\s*",
+    re.IGNORECASE | re.UNICODE,
+)
+
+# Separators used between artist and album in product titles (em-dash first, then plain hyphen)
+_ARTIST_SEP_RE = re.compile(r"\s*[–—]\s*", re.UNICODE)
+_ARTIST_SEP_HYPHEN_RE = re.compile(r"\s+-\s+", re.UNICODE)
+# Format/edition suffixes to strip from album part
+_FORMAT_SUFFIX_RE = re.compile(
+    r"\s+(?:\d{1,2}[xX]?)?"
+    r"(?:LP|2LP|3LP|4LP|EP|CD|DVD|7\"|10\"|12\"|Single|Vinyl|Box\s*Set|Deluxe|Remaster(?:ed)?|"
+    r"Limited|Edition|Reissue|Colored?\s*Vinyl)\b.*$",
+    re.IGNORECASE,
+)
+
+
+def _split_artist_album(title: str) -> tuple[str | None, str]:
+    """Try to separate 'Artist – Album' into (artist, album). Returns (None, title) on failure."""
+    for sep_re in (_ARTIST_SEP_RE, _ARTIST_SEP_HYPHEN_RE):
+        parts = sep_re.split(title, maxsplit=1)
+        if len(parts) == 2:
+            artist_part, album_part = parts[0].strip(), parts[1].strip()
+            if not artist_part or not album_part:
+                continue
+            word_count = len(artist_part.split())
+            # Heuristic: artist part should be 1–5 words, no price markers, not all-caps format token
+            if word_count <= 5 and "₪" not in artist_part and not artist_part.isupper():
+                album_clean = _FORMAT_SUFFIX_RE.sub("", album_part).strip() or album_part
+                return artist_part, album_clean
+    # No clear separator — still try to strip trailing format suffix
+    album_clean = _FORMAT_SUFFIX_RE.sub("", title).strip() or title
+    return None, album_clean
+
 
 @dataclass
 class ParsedRecord:
@@ -51,6 +86,7 @@ class ParsedRecord:
     store_url: str
     product_url: str
     cover_url: str | None
+    in_stock: bool | None = None
 
 
 def _normalize_text(value: str | None) -> str:
@@ -87,6 +123,8 @@ def _looks_like_real_title(text: str) -> bool:
     if any(token in lowered for token in NOISE_TITLE_TOKENS):
         return False
     if not re.search(r"[a-zA-Z\u0590-\u05FF0-9]", cleaned):
+        return False
+    if re.search(r"\.(aspx|php|html?|jsp|cfm)(\?|$)", lowered):
         return False
     return True
 
@@ -153,6 +191,12 @@ def _looks_like_product_link(url: str) -> bool:
     path = (urlparse(url).path or "").lower()
     if any(marker in path for marker in ("cart", "checkout", "account", "login", "register")):
         return False
+    # Reject category/listing pages (e.g. store-products.aspx, products.aspx?catId=...)
+    _filename = path.rsplit("/", 1)[-1] if "/" in path else path
+    if re.search(r"\.(aspx|php|html?|jsp|cfm)(\?|$)", _filename) and re.search(
+        r"(?:^|[-_])products?(?:[-_.]|$)|catalog|categor|listing|browse", _filename
+    ):
+        return False
     return any(marker in path for marker in ("product", "item", "album", "record", "vinyl", "lp"))
 
 
@@ -189,16 +233,48 @@ def _parse_jsonld_records(
 
         product_url = _first_string(product.get("url")) or page.url
         product_url = urljoin(page.url, product_url)
+        if "#" in product_url:
+            product_url = product_url[: product_url.index("#")]
         image = _first_string(product.get("image")) or og_image
         image = urljoin(page.url, image) if image else None
+
+        artist_parsed, album_parsed = _split_artist_album(title)
+
+        # Genre: try JSON-LD fields first
+        genre_raw = (
+            _first_string(product.get("genre"))
+            or _first_string(product.get("musicGenre"))
+            or None
+        )
+        genre = genre_raw.strip() if genre_raw else None
+
+        # Year: parse from releaseDate or datePublished
+        year_raw = (
+            _first_string(product.get("releaseDate"))
+            or _first_string(product.get("datePublished"))
+            or None
+        )
+        year: str | None = None
+        if year_raw:
+            year_str = str(year_raw)[:4]
+            if year_str.isdigit() and 1900 <= int(year_str) <= 2100:
+                year = year_str
+
+        # Stock: parse offers.availability (schema.org)
+        availability = str(offers.get("availability") or "").lower()
+        in_stock: bool | None = None
+        if "instock" in availability or "instoreonly" in availability or "onlineonly" in availability:
+            in_stock = True
+        elif "outofstock" in availability or "discontinued" in availability or "soldout" in availability:
+            in_stock = False
 
         rows.append(
             ParsedRecord(
                 source_key=_product_key(store.id, product_url, title),
-                artist=None,
-                album=title,
-                genre=None,
-                year=None,
+                artist=artist_parsed,
+                album=album_parsed,
+                genre=genre,
+                year=year,
                 store_name=store.store_name,
                 price=_parse_price(offers.get("price")),
                 currency="ILS",
@@ -207,6 +283,7 @@ def _parse_jsonld_records(
                 store_url=store.website,
                 product_url=product_url,
                 cover_url=image,
+                in_stock=in_stock,
             )
         )
 
@@ -224,7 +301,9 @@ def _parse_anchor_fallback(
 
     for anchor in soup.find_all("a", href=True):
         href = urljoin(page.url, anchor["href"])
-        text = anchor.get_text(" ", strip=True)
+        if "#" in href:
+            href = href[: href.index("#")]
+        text = _PROMO_PREFIX_RE.sub("", anchor.get_text(" ", strip=True)).strip()
         if not _looks_like_product_link(href):
             continue
         if not _looks_like_real_title(text):
@@ -232,11 +311,26 @@ def _parse_anchor_fallback(
         if require_query_match and not _query_matches(f"{text} {href}", query_terms):
             continue
 
+        # Try to find a cover image inside or near the anchor element
+        img_tag = anchor.find("img")
+        if img_tag is None:
+            parent = anchor.parent
+            img_tag = parent.find("img") if parent else None
+        cover_url: str | None = None
+        if img_tag:
+            raw_src = img_tag.get("src") or img_tag.get("data-src") or img_tag.get("data-lazy-src")
+            if raw_src:
+                abs_src = urljoin(page.url, str(raw_src))
+                if abs_src.startswith("http"):
+                    cover_url = abs_src
+
+        artist_parsed, album_parsed = _split_artist_album(text)
+
         rows.append(
             ParsedRecord(
                 source_key=_product_key(store.id, href, text),
-                artist=None,
-                album=text,
+                artist=artist_parsed,
+                album=album_parsed,
                 genre=None,
                 year=None,
                 store_name=store.store_name,
@@ -246,7 +340,7 @@ def _parse_anchor_fallback(
                 condition=None,
                 store_url=store.website,
                 product_url=href,
-                cover_url=None,
+                cover_url=cover_url,
             )
         )
 
@@ -288,6 +382,7 @@ def parse_store_pages(
                 "store_url": row.store_url,
                 "product_url": row.product_url,
                 "cover_url": row.cover_url or "",
+                "in_stock": row.in_stock,
             }
         )
 

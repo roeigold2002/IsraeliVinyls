@@ -11,8 +11,12 @@ export const FORMATS = ['Vinyl', 'LP', 'EP', '7"', '12"', 'CD', 'Cassette']
 
 export const SORT_OPTIONS: Array<{ value: SortOption; label: string }> = [
   { value: 'newest', label: 'חדש תחילה' },
+  { value: 'relevance', label: 'רלוונטיות' },
   { value: 'price_asc', label: 'מחיר: נמוך לגבוה' },
   { value: 'price_desc', label: 'מחיר: גבוה לנמוך' },
+  { value: 'year_desc', label: 'שנה: חדש לישן' },
+  { value: 'year_asc', label: 'שנה: ישן לחדש' },
+  { value: 'in_stock', label: 'במלאי תחילה' },
 ]
 
 export const STORE_MAP: Record<string, { emoji: string; color: string }> = {

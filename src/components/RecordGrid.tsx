@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import type { VinylRecord } from '../lib/types'
 import { RecordCard } from './RecordCard'
 import { SearchX } from 'lucide-react'
@@ -24,12 +25,26 @@ function SkeletonCard() {
 
 export function RecordGrid({ records, loading, emptyMessage = 'לא נמצאו תקליטים', columns = 'default' }: Props) {
   const gridClass = columns === 'wide'
-    ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4'
+    ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3'
     : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4'
+
+  // Fade in when content changes (loading→loaded or page change)
+  const [visible, setVisible] = useState(true)
+  const prevLoadingRef = useRef(loading)
+  useEffect(() => {
+    if (prevLoadingRef.current !== loading) {
+      prevLoadingRef.current = loading
+      setVisible(false)
+      const t = setTimeout(() => setVisible(true), 30)
+      return () => clearTimeout(t)
+    }
+  }, [loading])
+
+  const fadeClass = `transition-opacity duration-200 ${visible ? 'opacity-100' : 'opacity-0'}`
 
   if (loading) {
     return (
-      <div className={gridClass}>
+      <div className={`${gridClass} ${fadeClass}`}>
         {Array.from({ length: 12 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -50,7 +65,7 @@ export function RecordGrid({ records, loading, emptyMessage = 'לא נמצאו �
   }
 
   return (
-    <div className={gridClass}>
+    <div className={`${gridClass} ${fadeClass}`}>
       {records.map((record, i) => (
         <RecordCard key={record.id} record={record} index={i} />
       ))}

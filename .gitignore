@@ -69,3 +69,7 @@ rollout/reports/
 
 # Local Netlify folder
 .netlify
+
+# Claude Code local tooling
+.claude/
+.local/

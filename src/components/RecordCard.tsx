@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Heart, ExternalLink, ShoppingBag, Loader2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import type { VinylRecord } from '../lib/types'
 import { isInWishlist, toggleWishlist } from '../lib/wishlist'
 import { DEFAULT_COVER } from '../lib/constants'
@@ -26,19 +26,52 @@ function isRealCoverUrl(url: string | null | undefined): boolean {
   return /^https?:\/\//i.test(url)
 }
 
-export function RecordCard({ record, index = 0 }: Props) {
+export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props) {
   const navigate = useNavigate()
   const location = useLocation()
+  const cardRef = useRef<HTMLDivElement | null>(null)
   const [inWishlist, setInWishlist] = useState(() => isInWishlist(record.id))
   const [imgError, setImgError] = useState(false)
   const [imgLoaded, setImgLoaded] = useState(false)
+  const [isVisible, setIsVisible] = useState(index < 8)
   const [cover, setCover] = useState<string | null>(null)
   const [livePrice, setLivePrice] = useState<number>(record.price || 0)
   const [liveProductUrl, setLiveProductUrl] = useState<string | undefined>(record.product_url ?? undefined)
+  const [liveInStock, setLiveInStock] = useState<boolean | null>(record.in_stock ?? null)
   const [priceLoading, setPriceLoading] = useState(false)
+
+  useEffect(() => {
+    if (isVisible) return
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true)
+      return
+    }
+
+    const node = cardRef.current
+    if (!node) {
+      setIsVisible(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setIsVisible(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '320px 0px', threshold: 0.01 },
+    )
+
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [isVisible])
 
   // Cover art: real URL → iTunes → default
   useEffect(() => {
+    if (!isVisible) return
+
     setCover(null)
     setImgError(false)
     setImgLoaded(false)
@@ -71,27 +104,41 @@ export function RecordCard({ record, index = 0 }: Props) {
 
     void loadCover()
     return () => { cancelled = true }
-  }, [record.id, record.artist, record.album, record.cover_url])
+  }, [record.id, record.artist, record.album, record.cover_url, isVisible])
 
   // Live price: queue a background fetch per record
   useEffect(() => {
     setLivePrice(record.price || 0)
     setLiveProductUrl(record.product_url ?? undefined)
+    setLiveInStock(record.in_stock ?? null)
 
-    // Only fetch live price if we don't already have one
-    if (record.price && record.price > 0) return
+    if (!isVisible) {
+      setPriceLoading(false)
+      return
+    }
+
+    const hasKnownStock = record.in_stock === true || record.in_stock === false
+    const shouldFetchLiveRecord =
+      !(record.price && record.price > 0) ||
+      !hasKnownStock ||
+      !record.product_url
+
+    if (!shouldFetchLiveRecord) return
 
     setPriceLoading(true)
-    const cancel = enqueuePriceFetch(record.id, (price, productUrl) => {
+    const cancel = enqueuePriceFetch(record.id, (price, productUrl, inStock) => {
       setLivePrice(price)
       if (productUrl) setLiveProductUrl(productUrl)
+      if (inStock === true || inStock === false) {
+        setLiveInStock(inStock)
+      }
       setPriceLoading(false)
     })
     return () => {
       cancel()
       setPriceLoading(false)
     }
-  }, [record.id, record.price, record.product_url])
+  }, [record.id, record.price, record.product_url, record.in_stock, isVisible])
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -107,7 +154,7 @@ export function RecordCard({ record, index = 0 }: Props) {
   }
 
   const coverSrc = !imgError && cover ? cover : DEFAULT_COVER
-  const isOutOfStock = record.in_stock === false
+  const isOutOfStock = liveInStock === false
   const hasPrice = livePrice > 0
 
   const catalogStore = record.store_name ? getStoreByName(record.store_name) : undefined
@@ -120,6 +167,7 @@ export function RecordCard({ record, index = 0 }: Props) {
 
   return (
     <div
+      ref={cardRef}
       className="animate-fade-in opacity-0 group"
       style={{ animationDelay: `${Math.min(index * 0.035, 0.6)}s` }}
     >
@@ -136,10 +184,12 @@ export function RecordCard({ record, index = 0 }: Props) {
         >
           {!imgLoaded && <div className="absolute inset-0 shimmer" />}
           <img
-            src={coverSrc}
+            src={isVisible ? coverSrc : undefined}
             alt={`${record.artist} - ${record.album}`}
             className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading="lazy"
+            decoding="async"
+            fetchPriority={index < 6 ? 'high' : 'auto'}
             onLoad={() => setImgLoaded(true)}
             onError={() => { setImgError(true); setImgLoaded(true) }}
           />
@@ -152,7 +202,7 @@ export function RecordCard({ record, index = 0 }: Props) {
             className={`absolute top-2 right-2 p-1.5 rounded-full transition-all duration-200 shadow-md z-10 ${
               inWishlist
                 ? 'bg-accent text-white'
-                : 'bg-black/50 text-white/60 hover:text-white opacity-0 group-hover:opacity-100 hover:bg-black/70'
+                : 'bg-black/50 text-white/60 hover:text-white opacity-60 sm:opacity-0 sm:group-hover:opacity-100 hover:bg-black/70 hover:opacity-100'
             }`}
           >
             <Heart size={13} fill={inWishlist ? 'currentColor' : 'none'} />
@@ -239,4 +289,4 @@ export function RecordCard({ record, index = 0 }: Props) {
       </div>
     </div>
   )
-}
+})

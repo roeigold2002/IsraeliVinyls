@@ -37,9 +37,42 @@ vite.config.ts  # Dev server on port 5000, proxies /api/* to localhost:3001
 - `npm run dev` — Starts API server (port 3001) + Vite dev server (port 5000)
 - `npm run ingest:all` — Run all store scrapers (requires Python)
 - `npm run export:snapshot` — Export SQLite data to JSON snapshots
+- `npm run index:manual-html` — Build `netlify/data/manual_enrichment_index.json` from archived HTML pages
+- `npm run verify:manual-index` — Validate generated manual enrichment index coverage
+- `npm run manual-index:refresh` — Build + verify manual enrichment index in one command
+- `npm run trueup:run` — Run one incremental background true-up cycle (queue-based)
+- `npm run trueup:loop` — Run continuous true-up cycles in daemon mode
+- `npm run trueup:rebuild-queue` — Rebuild true-up queue from current records
 - `npm run build` — Export snapshots + TypeScript compile + Vite build
+- `npm run preflight:netlify` — Production deployment pre-flight checks
+- `npm run deploy:netlify:preview` — Netlify preview deploy (CLI)
+- `npm run deploy:netlify:prod` — Netlify production deploy (CLI)
 - `npm run synthetic:check -- --base-url <URL>` — Run synthetic API checks and evaluate SLO/failure budget thresholds
 - `npm run rollout:staged -- --base-url <URL>` — Execute staged rollout + burn-in hardening cycles using `rollout/rollout-policy.json`
+
+## Netlify Production
+
+- Site name: israeli-vinyls-projectv
+- Production URL: https://israeli-vinyls-projectv.netlify.app
+- Config source: netlify.toml
+
+Required Netlify settings are already captured in `.env.example` and netlify.toml defaults:
+
+- `VITE_API_BASE_URL=https://israeli-vinyls-projectv.netlify.app`
+- `CORS_ALLOWED_ORIGINS=https://israeli-vinyls-projectv.netlify.app`
+- `PRODUCTION_SITE_URL=https://israeli-vinyls-projectv.netlify.app`
+- `NODE_VERSION=20`
+
+Routing behavior:
+
+- `/api/*` rewrites to `/.netlify/functions/api/:splat`
+- `/*` rewrites to `/index.html` with `200` for SPA client-side routes
+
+Release checklist:
+
+1. Run `npm run preflight:netlify` locally or in CI.
+2. Push to the connected Git branch (Netlify auto-build) OR run `npm run deploy:netlify:prod`.
+3. Verify `/api/health`, `/api/snapshot-meta`, and a deep link route (e.g. `/record/<id>`).
 
 ## Rollout and Burn-In (Phase 6)
 
@@ -77,7 +110,51 @@ npm run rollout:staged -- --base-url https://candidate.example.com --max-cycles 
 - The Vite dev server proxies `/api/*` to the local API server (port 3001)
 - The local API server (`server/api.cjs`) reuses the Netlify function handler
 - Records are stored as JSON snapshots, loaded into memory on startup (~97K records)
+- Search in `netlify/functions/api.cjs` uses an in-memory token index to avoid full scans for most queries
+- Search UI supports configurable page size (24/50/100) and robust page navigation controls
+- Record covers and live-price hydration are viewport-triggered to reduce unnecessary work while scrolling
+- Runtime enrichment applies `netlify/data/manual_enrichment_index.json` first and only uses live fetch to fill remaining gaps
+- Background true-up is queue-driven (`scripts/trueup_worker.cjs`) with retries, proxy fallback, and optional headless fallback
 - Genres in `genres.json` may be empty — computed from records at search time
+
+## Manual HTML Archive Index
+
+- Source archive root defaults to `E:\Code\DB\IsraeliVinyls-main`
+- Override archive location with `MANUAL_HTML_ROOT=<path>` when needed
+- Output files:
+  - `netlify/data/manual_enrichment_index.json`
+  - `netlify/data/manual_enrichment_report.json`
+- API fallback behavior:
+  - Applies manual index lookup first for cover/price/in-stock metadata on snapshot records
+  - Uses live fetch only when manual data is missing/incomplete
+  - `GET /api/record?id=<id>&refresh=1` forces a live refresh for that record when needed
+
+## Background Data True-Up
+
+- Worker script: `scripts/trueup_worker.cjs`
+- Queue state: `netlify/data/trueup_queue.json`
+- Latest report: `netlify/data/trueup_report.json`
+
+The worker:
+
+- Incrementally processes a persisted queue of stale/suspect records
+- Uses delayed exponential retries per record
+- Tries direct fetch, then proxy templates, then optional Playwright headless fallback
+- Applies conservative updates only when live data improves record quality
+- Writes `price_source` / `cover_source` provenance for future targeting
+
+Useful env vars:
+
+- `TRUEUP_BATCH_SIZE`, `TRUEUP_CONCURRENCY`, `TRUEUP_TIMEOUT_MS`, `TRUEUP_RETRIES`
+- `TRUEUP_MAX_ATTEMPTS`, `TRUEUP_RETRY_BASE_MS`
+- `TRUEUP_PROXY_TEMPLATES` (supports `{url}` and `{url_raw}` placeholders)
+- `TRUEUP_USE_HEADLESS`, `TRUEUP_MAX_HEADLESS`
+- `TRUEUP_AUDIT_ALL_PRICES`, `TRUEUP_FORCE_PRICE_REFRESH`, `TRUEUP_REFRESH_SNAPSHOT`
+
+Scheduler integration:
+
+- `scheduler_service.py` exposes `incremental_data_trueup()`
+- `app.py` schedules incremental true-up on a recurring interval (`TRUEUP_INTERVAL_MINUTES`, default 30)
 
 ## Deployment
 

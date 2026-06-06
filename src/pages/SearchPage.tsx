@@ -1,93 +1,54 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { SlidersHorizontal, X, TrendingUp, Zap, Music2, Star } from 'lucide-react'
+import { SlidersHorizontal, X, Music2, Disc3 } from 'lucide-react'
 import { SearchBar } from '../components/SearchBar'
 import { RecordGrid } from '../components/RecordGrid'
 import { Pagination } from '../components/Pagination'
-import { searchRecords, fetchStores, fetchGenres, fetchFeaturedRecords, fetchCheapestRecords } from '../lib/api'
+import { searchRecords, fetchStores, fetchGenres } from '../lib/api'
 import { FORMATS, SORT_OPTIONS } from '../lib/constants'
 import { buildStoreSearchUrl } from '../lib/storeCatalog'
-import type { SearchFilters, SearchResult, Store, SortOption, VinylRecord } from '../lib/types'
+import type { SearchFilters, SearchResult, Store, SortOption } from '../lib/types'
 
-const QUICK_SEARCHES = ['Beatles', 'Pink Floyd', 'Jazz', 'Rock', 'Classical', 'Elvis', 'Bob Dylan', 'David Bowie']
+const PAGE_SIZE_OPTIONS = [24, 50, 100]
 
-function SectionHeader({ icon: Icon, title, subtitle }: { icon: React.ElementType; title: string; subtitle?: string }) {
-  return (
-    <div className="flex items-center justify-between mb-6">
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-accent/15 flex items-center justify-center">
-          <Icon size={18} className="text-accent" />
-        </div>
-        <div>
-          <h2 className="text-lg font-bold text-text-primary">{title}</h2>
-          {subtitle && <p className="text-xs text-text-muted">{subtitle}</p>}
-        </div>
-      </div>
-    </div>
-  )
+function normalizePerPage(value: number): number {
+  if (PAGE_SIZE_OPTIONS.includes(value)) {
+    return value
+  }
+  return 50
 }
 
 function HomeView({ onSearch }: { onSearch: (q: string) => void }) {
-  const [featured, setFeatured] = useState<VinylRecord[]>([])
-  const [cheapest, setCheapest] = useState<VinylRecord[]>([])
-  const [loadingFeatured, setLoadingFeatured] = useState(true)
-  const [loadingCheapest, setLoadingCheapest] = useState(true)
-
-  useEffect(() => {
-    fetchFeaturedRecords()
-      .then(setFeatured)
-      .catch(console.error)
-      .finally(() => setLoadingFeatured(false))
-
-    fetchCheapestRecords()
-      .then(setCheapest)
-      .catch(console.error)
-      .finally(() => setLoadingCheapest(false))
-  }, [])
-
   return (
-    <div className="space-y-16 py-6">
-      <section className="text-center py-10">
-        <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 rounded-full px-4 py-1.5 text-accent text-sm font-medium mb-6">
-          <Zap size={14} />
-          97,000+ תקליטים מ-19 חנויות בישראל
+    <section className="min-h-[calc(100vh-12rem)] flex items-center justify-center py-6">
+      <div className="w-full max-w-3xl text-center">
+        <div className="mb-8 flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full bg-accent/25 blur-2xl" />
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl border border-accent/35 bg-gradient-to-br from-accent/20 via-bg-card to-bg-secondary shadow-xl shadow-accent/10">
+              <Disc3
+                className="h-10 w-10 text-accent"
+                style={{ animation: 'spin 9s linear infinite' }}
+              />
+              <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white shadow-lg shadow-accent/40">
+                V
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h1 className="latin-text text-3xl md:text-4xl font-black tracking-tight text-text-primary">
+              Project V Vinyl Finder
+            </h1>
+            <p className="mx-auto max-w-xl text-sm md:text-base text-text-secondary">
+              המחט יורדת, הגילוי מתחיל. מצאו תקליטים חמים מכל החנויות במקום אחד.
+            </p>
+          </div>
         </div>
-        <h1 className="text-4xl md:text-5xl font-black text-text-primary mb-3 leading-tight">
-          מצאו את התקליט
-          <span className="text-accent block md:inline"> הבא שלכם</span>
-        </h1>
-        <p className="text-text-secondary text-base mb-8 max-w-md mx-auto">
-          השוואת מחירים ומלאי ממקום אחד. עם עטיפות, מחירים ולינק לקנייה ישירה.
-        </p>
 
-        <div className="max-w-2xl mx-auto mb-8">
-          <SearchBar large autoFocus />
-        </div>
-
-        <div className="flex flex-wrap justify-center gap-2">
-          <span className="text-text-muted text-sm ml-2">חיפושים פופולריים:</span>
-          {QUICK_SEARCHES.map(term => (
-            <button
-              key={term}
-              onClick={() => onSearch(term)}
-              className="px-3 py-1 text-sm bg-bg-card border border-border hover:border-accent/40 hover:text-accent text-text-secondary rounded-full transition-all duration-200 latin-text"
-            >
-              {term}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <SectionHeader icon={Star} title="תקליטים מומלצים" subtitle="עם עטיפות ומחירים" />
-        <RecordGrid records={featured} loading={loadingFeatured} />
-      </section>
-
-      <section>
-        <SectionHeader icon={TrendingUp} title="הכי זולים" subtitle="תקליטים במחירים הנמוכים ביותר" />
-        <RecordGrid records={cheapest} loading={loadingCheapest} />
-      </section>
-    </div>
+        <SearchBar large autoFocus onSearch={onSearch} />
+      </div>
+    </section>
   )
 }
 
@@ -99,6 +60,7 @@ export function SearchPage() {
   const [stores, setStores] = useState<Store[]>([])
   const [genres, setGenres] = useState<string[]>([])
   const [showFilters, setShowFilters] = useState(false)
+  const metadataLoadedRef = useRef(false)
 
   const getFilters = useCallback(
     (): SearchFilters => ({
@@ -113,6 +75,7 @@ export function SearchPage() {
       yearMax: searchParams.get('ymax') ? Number(searchParams.get('ymax')) : null,
       sortBy: (searchParams.get('sort') as SortOption) ?? 'newest',
       page: Number(searchParams.get('page') ?? '1'),
+      perPage: normalizePerPage(Number(searchParams.get('per_page') ?? '50')),
     }),
     [searchParams]
   )
@@ -130,19 +93,19 @@ export function SearchPage() {
     filters.yearMax !== null
 
   useEffect(() => {
-    if (!hasSearchIntent) return
-    if (stores.length > 0 && genres.length > 0) return
-
+    if (!hasSearchIntent || metadataLoadedRef.current) return
+    metadataLoadedRef.current = true
     Promise.all([fetchStores(), fetchGenres()])
       .then(([s, g]) => {
         setStores(s)
         setGenres(g)
       })
       .catch((err) => {
+        metadataLoadedRef.current = false
         setLoadError(err instanceof Error ? err.message : 'Failed to load filters')
         console.error(err)
       })
-  }, [hasSearchIntent, stores.length, genres.length])
+  }, [hasSearchIntent])
 
   useEffect(() => {
     if (!hasSearchIntent) {
@@ -152,22 +115,25 @@ export function SearchPage() {
       return
     }
 
-    async function load() {
-      setLoading(true)
-      try {
-        const res = await searchRecords(getFilters())
+    const controller = new AbortController()
+    setLoading(true)
+
+    searchRecords(getFilters(), controller.signal)
+      .then((res) => {
         setResult(res)
         setLoadError(null)
-      } catch (err) {
+      })
+      .catch((err) => {
+        if (err instanceof Error && err.name === 'AbortError') return
         setLoadError(err instanceof Error ? err.message : 'Failed to load results')
         setResult(null)
         console.error(err)
-      } finally {
+      })
+      .finally(() => {
         setLoading(false)
-      }
-    }
+      })
 
-    load()
+    return () => controller.abort()
   }, [getFilters, hasSearchIntent])
 
   const updateParam = (key: string, value: string | null, options?: { resetPage?: boolean }) => {
@@ -198,12 +164,6 @@ export function SearchPage() {
     const q = searchParams.get('q')
     const params = new URLSearchParams()
     if (q) params.set('q', q)
-    setSearchParams(params)
-  }
-
-  const handleQuickSearch = (term: string) => {
-    const params = new URLSearchParams()
-    params.set('q', term)
     setSearchParams(params)
   }
 
@@ -243,13 +203,14 @@ export function SearchPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       {!hasSearchIntent ? (
-        <HomeView onSearch={handleQuickSearch} />
+        <HomeView onSearch={(q) => updateParam('q', q || null)} />
       ) : (
         <>
           <div className="max-w-3xl mx-auto mb-8">
             <SearchBar
               large
               autoFocus
+              instant
               initialQuery={filters.query}
               onSearch={(q) => updateParam('q', q || null)}
             />
@@ -265,6 +226,13 @@ export function SearchPage() {
                     {filters.query && (
                       <span className="text-text-muted"> עבור "<span className="latin-text">{filters.query}</span>"</span>
                     )}
+                    {result.total > 0 && (
+                      <span className="text-text-muted">
+                        {' '}
+                        · מציג {(((result.page - 1) * result.perPage) + 1).toLocaleString('he-IL')}-
+                        {Math.min(result.page * result.perPage, result.total).toLocaleString('he-IL')}
+                      </span>
+                    )}
                   </span>
                 </div>
               )}
@@ -277,6 +245,19 @@ export function SearchPage() {
             </div>
 
             <div className="flex items-center gap-2">
+              <select
+                value={filters.perPage}
+                onChange={(e) => updateParam('per_page', e.target.value)}
+                className="bg-bg-card border border-border rounded-xl text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50 cursor-pointer hover:border-border-light transition-colors"
+                title="כמות תוצאות בעמוד"
+              >
+                {PAGE_SIZE_OPTIONS.map((option) => (
+                  <option key={option} value={option}>
+                    {option} / עמוד
+                  </option>
+                ))}
+              </select>
+
               <select
                 value={filters.sortBy}
                 onChange={(e) => updateParam('sort', e.target.value)}

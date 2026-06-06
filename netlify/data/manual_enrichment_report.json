@@ -1,0 +1,85 @@
+{
+  "generated_at": "2026-04-15T18:18:37.402Z",
+  "archive_root": "E:\\Code\\DB\\IsraeliVinyls-main",
+  "stores": {
+    "beatnik_pages": {
+      "files": 1496,
+      "product_blocks": 127160,
+      "entries_seen": 127160,
+      "entries_indexed": 127160,
+      "with_cover": 0,
+      "with_price": 0,
+      "with_in_stock": 0
+    },
+    "giora_pages": {
+      "files": 226,
+      "product_blocks": 8970,
+      "entries_seen": 8970,
+      "entries_indexed": 8970,
+      "with_cover": 8970,
+      "with_price": 0,
+      "with_in_stock": 8904
+    },
+    "hasivoov_pages": {
+      "files": 82,
+      "product_blocks": 2010,
+      "entries_seen": 2010,
+      "entries_indexed": 2010,
+      "with_cover": 2010,
+      "with_price": 0,
+      "with_in_stock": 878
+    },
+    "rollindice_pages": {
+      "files": 38,
+      "product_blocks": 0,
+      "entries_seen": 0,
+      "entries_indexed": 0,
+      "with_cover": 0,
+      "with_price": 0,
+      "with_in_stock": 0
+    },
+    "shablool_pages": {
+      "files": 622,
+      "product_blocks": 23014,
+      "entries_seen": 23014,
+      "entries_indexed": 23014,
+      "with_cover": 0,
+      "with_price": 0,
+      "with_in_stock": 0
+    },
+    "taklithouse_pages": {
+      "files": 823,
+      "product_blocks": 0,
+      "entries_seen": 0,
+      "entries_indexed": 0,
+      "with_cover": 0,
+      "with_price": 0,
+      "with_in_stock": 0
+    },
+    "third_ear_pages": {
+      "files": 586,
+      "product_blocks": 18690,
+      "entries_seen": 18690,
+      "entries_indexed": 18690,
+      "with_cover": 18690,
+      "with_price": 15624,
+      "with_in_stock": 18680
+    },
+    "vinylroom_pages": {
+      "files": 296,
+      "product_blocks": 7082,
+      "entries_seen": 7082,
+      "entries_indexed": 7082,
+      "with_cover": 4714,
+      "with_price": 4714,
+      "with_in_stock": 4714
+    }
+  },
+  "files_scanned": 4169,
+  "product_blocks": 186926,
+  "entries_seen": 186926,
+  "unique_entries": 17276,
+  "with_cover": 17192,
+  "with_price": 10169,
+  "with_in_stock": 16588
+}
