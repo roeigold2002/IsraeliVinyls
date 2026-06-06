@@ -71,9 +71,17 @@ jobs:
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
-      - name: Trigger Netlify deploy
+      # The Netlify site has no Git integration, so we build the frontend here
+      # (data is already finalized + committed above) and deploy via the CLI.
+      - name: Build frontend
         if: success()
+        run: npx tsc -b && npx vite build
+
+      - name: Deploy to Netlify production
+        if: success()
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: |
-          curl -s -X POST "${{ secrets.NETLIFY_BUILD_HOOK_URL }}" | \
-            python3 -c "import sys,json; d=json.load(sys.stdin); print('Deploy triggered:', d.get('build_id','ok'))"
-        continue-on-error: true
+          npx netlify-cli deploy --prod \
+            --message "Nightly price refresh (${GITHUB_SHA})"
