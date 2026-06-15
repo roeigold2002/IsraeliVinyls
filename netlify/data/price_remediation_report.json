@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-06-14T06:25:04.199Z",
+  "generated_at": "2026-06-15T07:07:52.174Z",
   "records_total": 117539,
   "targets_total": 60000,
   "processed": 60000,
-  "fetch_failures": 1968,
+  "fetch_failures": 1959,
   "no_url": 0,
   "price_fixed": 3,
-  "stock_fixed": 7,
-  "artist_fixed": 36,
-  "direct_hits": 9,
-  "bypass_hits": 12,
+  "stock_fixed": 3,
+  "artist_fixed": 12,
+  "direct_hits": 4,
+  "bypass_hits": 13,
   "local_token_hits": 3,
   "imputed_price_hits": 0,
   "stores": [
@@ -54,26 +54,26 @@
     },
     {
       "name": "Rock Store 1970",
-      "processed": 8522,
+      "processed": 8532,
       "price_fixed": 0,
-      "stock_fixed": 7,
-      "artist_fixed": 36,
-      "bypass_hits": 2,
-      "direct_hits": 9,
-      "fetch_failures": 733,
+      "stock_fixed": 3,
+      "artist_fixed": 12,
+      "bypass_hits": 0,
+      "direct_hits": 4,
+      "fetch_failures": 737,
       "no_url": 0,
       "local_token_hits": 0,
       "imputed_price_hits": 0
     },
     {
       "name": "The Vinyl Room",
-      "processed": 5808,
+      "processed": 5798,
       "price_fixed": 0,
       "stock_fixed": 0,
       "artist_fixed": 0,
-      "bypass_hits": 10,
+      "bypass_hits": 13,
       "direct_hits": 0,
-      "fetch_failures": 264,
+      "fetch_failures": 251,
       "no_url": 0,
       "local_token_hits": 0,
       "imputed_price_hits": 0
@@ -208,11 +208,5 @@
       "local_token_hits": 0,
       "imputed_price_hits": 0
     }
-  ],
-  "finished_at": "2026-06-14T06:27:32.392Z",
-  "imputation": {
-    "global_median": 140,
-    "global_samples": 117539
-  },
-  "connectivity_overrides_written": 0
+  ]
 }
