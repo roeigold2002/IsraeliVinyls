@@ -1,27 +1,27 @@
 {
-  "generated_at": "2026-06-28T06:07:33.540Z",
+  "generated_at": "2026-06-29T06:28:09.287Z",
   "records_total": 117539,
   "targets_total": 60000,
   "processed": 60000,
-  "fetch_failures": 1442,
+  "fetch_failures": 1429,
   "no_url": 0,
   "price_fixed": 3,
   "stock_fixed": 0,
-  "artist_fixed": 26,
-  "direct_hits": 1,
-  "bypass_hits": 32,
+  "artist_fixed": 33,
+  "direct_hits": 0,
+  "bypass_hits": 23,
   "local_token_hits": 3,
   "imputed_price_hits": 0,
   "stores": [
     {
       "name": "Third Ear",
-      "processed": 14730,
+      "processed": 14723,
       "price_fixed": 0,
       "stock_fixed": 0,
       "artist_fixed": 0,
-      "bypass_hits": 7,
+      "bypass_hits": 5,
       "direct_hits": 0,
-      "fetch_failures": 700,
+      "fetch_failures": 695,
       "no_url": 0,
       "local_token_hits": 0,
       "imputed_price_hits": 0
@@ -54,24 +54,24 @@
     },
     {
       "name": "Rock Store 1970",
-      "processed": 8849,
+      "processed": 8877,
       "price_fixed": 0,
       "stock_fixed": 0,
-      "artist_fixed": 26,
-      "bypass_hits": 4,
-      "direct_hits": 1,
-      "fetch_failures": 552,
+      "artist_fixed": 33,
+      "bypass_hits": 0,
+      "direct_hits": 0,
+      "fetch_failures": 562,
       "no_url": 0,
       "local_token_hits": 0,
       "imputed_price_hits": 0
     },
     {
       "name": "The Vinyl Room",
-      "processed": 5542,
+      "processed": 5534,
       "price_fixed": 0,
       "stock_fixed": 0,
       "artist_fixed": 0,
-      "bypass_hits": 8,
+      "bypass_hits": 0,
       "direct_hits": 0,
       "fetch_failures": 0,
       "no_url": 0,
@@ -93,13 +93,13 @@
     },
     {
       "name": "Holit Records",
-      "processed": 2521,
+      "processed": 2508,
       "price_fixed": 0,
       "stock_fixed": 0,
       "artist_fixed": 0,
-      "bypass_hits": 13,
+      "bypass_hits": 18,
       "direct_hits": 0,
-      "fetch_failures": 190,
+      "fetch_failures": 172,
       "no_url": 0,
       "local_token_hits": 0,
       "imputed_price_hits": 0
@@ -208,5 +208,11 @@
       "local_token_hits": 0,
       "imputed_price_hits": 0
     }
-  ]
+  ],
+  "finished_at": "2026-06-29T06:30:06.842Z",
+  "imputation": {
+    "global_median": 140,
+    "global_samples": 117539
+  },
+  "connectivity_overrides_written": 0
 }
