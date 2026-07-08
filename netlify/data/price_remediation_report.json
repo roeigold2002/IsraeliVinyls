@@ -1,27 +1,27 @@
 {
-  "generated_at": "2026-07-07T05:58:33.712Z",
+  "generated_at": "2026-07-08T04:58:34.547Z",
   "records_total": 117539,
   "targets_total": 60000,
   "processed": 60000,
-  "fetch_failures": 1182,
+  "fetch_failures": 1156,
   "no_url": 0,
   "price_fixed": 3,
-  "stock_fixed": 17,
-  "artist_fixed": 30,
-  "direct_hits": 19,
-  "bypass_hits": 23,
+  "stock_fixed": 5,
+  "artist_fixed": 42,
+  "direct_hits": 5,
+  "bypass_hits": 16,
   "local_token_hits": 3,
   "imputed_price_hits": 0,
   "stores": [
     {
       "name": "Third Ear",
-      "processed": 14693,
+      "processed": 14678,
       "price_fixed": 0,
       "stock_fixed": 0,
       "artist_fixed": 0,
-      "bypass_hits": 15,
+      "bypass_hits": 7,
       "direct_hits": 0,
-      "fetch_failures": 655,
+      "fetch_failures": 648,
       "no_url": 0,
       "local_token_hits": 0,
       "imputed_price_hits": 0
@@ -54,13 +54,13 @@
     },
     {
       "name": "Rock Store 1970",
-      "processed": 9055,
+      "processed": 9078,
       "price_fixed": 0,
-      "stock_fixed": 17,
-      "artist_fixed": 30,
+      "stock_fixed": 5,
+      "artist_fixed": 42,
       "bypass_hits": 0,
-      "direct_hits": 19,
-      "fetch_failures": 493,
+      "direct_hits": 5,
+      "fetch_failures": 483,
       "no_url": 0,
       "local_token_hits": 0,
       "imputed_price_hits": 0
@@ -93,13 +93,13 @@
     },
     {
       "name": "Holit Records",
-      "processed": 2360,
+      "processed": 2352,
       "price_fixed": 0,
       "stock_fixed": 0,
       "artist_fixed": 0,
-      "bypass_hits": 8,
+      "bypass_hits": 9,
       "direct_hits": 0,
-      "fetch_failures": 34,
+      "fetch_failures": 25,
       "no_url": 0,
       "local_token_hits": 0,
       "imputed_price_hits": 0
@@ -208,11 +208,5 @@
       "local_token_hits": 0,
       "imputed_price_hits": 0
     }
-  ],
-  "finished_at": "2026-07-07T06:00:18.613Z",
-  "imputation": {
-    "global_median": 140,
-    "global_samples": 117539
-  },
-  "connectivity_overrides_written": 0
+  ]
 }
