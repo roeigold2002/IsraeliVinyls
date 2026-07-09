@@ -43,9 +43,9 @@
     "records_with_year": 8312,
     "coverage_percent_years": 7.1,
     "records_in_stock": 4886,
-    "records_out_of_stock": 11101,
-    "records_stock_unknown": 101552,
-    "records_with_known_stock": 15987,
+    "records_out_of_stock": 11111,
+    "records_stock_unknown": 101542,
+    "records_with_known_stock": 15997,
     "coverage_percent_stock_known": 13.6
   },
   "pricing_integrity": {
@@ -104,5 +104,5 @@
       "25"
     ]
   },
-  "rebuilt_at": "2026-07-08T05:00:22.021Z"
+  "rebuilt_at": "2026-07-09T05:56:57.085Z"
 }
