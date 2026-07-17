@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node server/api.cjs & vite",
-    "dev:e2e": "node server/api.cjs & vite --host 127.0.0.1 --port 5173",
-    "export:snapshot": "python -m scripts.export_snapshot || python3 -m scripts.export_snapshot",
+    "dev": "node scripts/dev.cjs",
+    "dev:e2e": "node scripts/dev.cjs --host 127.0.0.1 --port 5173",
+    "export:snapshot": "(python -m scripts.export_snapshot || python3 -m scripts.export_snapshot) && node scripts/build_search_bundle.cjs",
+    "bundle:search": "node scripts/build_search_bundle.cjs",
     "ingest:all": "python -m scripts.ingest_all_stores || python3 -m scripts.ingest_all_stores",
     "verify:coverage": "python -m scripts.verify_store_coverage || python3 -m scripts.verify_store_coverage",
     "verify:record-integrity": "node scripts/verify_record_integrity.cjs",

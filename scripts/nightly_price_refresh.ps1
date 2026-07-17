@@ -38,9 +38,11 @@ try {
   }
   Log "Step 2/4: Done"
 
-  # Step 3: Rebuild stats and verify
-  Log "Step 3/4: Rebuilding stats and verifying..."
+  # Step 3: Rebuild stats, search bundle, and verify
+  Log "Step 3/4: Rebuilding stats, search bundle, and verifying..."
   node scripts/rebuild_stats.cjs
+  node scripts/build_search_bundle.cjs
+  if ($LASTEXITCODE -ne 0) { throw "build_search_bundle failed (exit $LASTEXITCODE)" }
   node scripts/verify_record_integrity.cjs
   node scripts/verify_api_contract.cjs
   Log "Step 3/4: Done"

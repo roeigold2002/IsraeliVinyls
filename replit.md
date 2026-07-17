@@ -34,9 +34,10 @@ vite.config.ts  # Dev server on port 5000, proxies /api/* to localhost:3001
 
 ## Development
 
-- `npm run dev` — Starts API server (port 3001) + Vite dev server (port 5000)
+- `npm run dev` — Starts API server (port 3001) + Vite dev server (port 5000) via `scripts/dev.cjs` (cross-platform)
 - `npm run ingest:all` — Run all store scrapers (requires Python)
-- `npm run export:snapshot` — Export SQLite data to JSON snapshots
+- `npm run export:snapshot` — Export SQLite data to JSON snapshots + rebuild search bundle
+- `npm run bundle:search` — Rebuild `netlify/data/search_bundle.json` only
 - `npm run index:manual-html` — Build `netlify/data/manual_enrichment_index.json` from archived HTML pages
 - `npm run verify:manual-index` — Validate generated manual enrichment index coverage
 - `npm run manual-index:refresh` — Build + verify manual enrichment index in one command
@@ -109,13 +110,22 @@ npm run rollout:staged -- --base-url https://candidate.example.com --max-cycles 
 
 - The Vite dev server proxies `/api/*` to the local API server (port 3001)
 - The local API server (`server/api.cjs`) reuses the Netlify function handler
-- Records are stored as JSON snapshots, loaded into memory on startup (~97K records)
-- Search in `netlify/functions/api.cjs` uses an in-memory token index to avoid full scans for most queries
+- **Search architecture: see `docs/SEARCH_ARCHITECTURE.md`** (rebuilt 2026-07)
+  - `scripts/build_search_bundle.cjs` precomputes `netlify/data/search_bundle.json`
+    at build time: normalization, manual-index hydration, quarantine filtering,
+    dedupe, and the inverted index
+  - `netlify/functions/api.cjs` is a thin router; engine code lives in
+    `netlify/functions/lib/` (text, search, snapshot, enrich, covers, urls,
+    manual_index)
+  - `/api/search` and `/api/suggest` are pure in-memory (no network I/O, no
+    snapshot mutation); queries default to relevance ranking
+  - Live enrichment (scraping/iTunes) happens only on `/api/record`
+  - The detail catalog (`records.json`) loads lazily — never on the search path
 - Search UI supports configurable page size (24/50/100) and robust page navigation controls
-- Record covers and live-price hydration are viewport-triggered to reduce unnecessary work while scrolling
-- Runtime enrichment applies `netlify/data/manual_enrichment_index.json` first and only uses live fetch to fill remaining gaps
+- Search result cards render straight from the search response; the only
+  client-side fallback is a cached iTunes cover lookup for records without covers
 - Background true-up is queue-driven (`scripts/trueup_worker.cjs`) with retries, proxy fallback, and optional headless fallback
-- Genres in `genres.json` may be empty — computed from records at search time
+- Genres in `genres.json` may be empty — computed from records at build time
 
 ## Manual HTML Archive Index
 

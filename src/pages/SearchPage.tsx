@@ -73,7 +73,10 @@ export function SearchPage() {
       priceMax: searchParams.get('pmax') ? Number(searchParams.get('pmax')) : null,
       yearMin: searchParams.get('ymin') ? Number(searchParams.get('ymin')) : null,
       yearMax: searchParams.get('ymax') ? Number(searchParams.get('ymax')) : null,
-      sortBy: (searchParams.get('sort') as SortOption) ?? 'newest',
+      // Queries default to relevance ranking; browsing defaults to newest.
+      sortBy:
+        (searchParams.get('sort') as SortOption) ??
+        ((searchParams.get('q') ?? '').trim() ? 'relevance' : 'newest'),
       page: Number(searchParams.get('page') ?? '1'),
       perPage: normalizePerPage(Number(searchParams.get('per_page') ?? '50')),
     }),

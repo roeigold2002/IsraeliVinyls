@@ -1,13 +1,11 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Heart, ExternalLink, ShoppingBag, Loader2 } from 'lucide-react'
+import { Heart, ExternalLink, ShoppingBag } from 'lucide-react'
 import { memo, useEffect, useRef, useState } from 'react'
 import type { VinylRecord } from '../lib/types'
 import { isInWishlist, toggleWishlist } from '../lib/wishlist'
 import { DEFAULT_COVER } from '../lib/constants'
 import { fetchItunesCoverForRecord } from '../lib/itunesCover'
 import { getStoreByName } from '../lib/storeCatalog'
-import { enqueuePriceFetch } from '../lib/priceQueue'
-import { hydrateCoverForRecord, shouldHydrateCover } from '../lib/coverHydration'
 
 interface Props {
   record: VinylRecord
@@ -35,10 +33,6 @@ export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [isVisible, setIsVisible] = useState(index < 8)
   const [cover, setCover] = useState<string | null>(null)
-  const [livePrice, setLivePrice] = useState<number>(record.price || 0)
-  const [liveProductUrl, setLiveProductUrl] = useState<string | undefined>(record.product_url ?? undefined)
-  const [liveInStock, setLiveInStock] = useState<boolean | null>(record.in_stock ?? null)
-  const [priceLoading, setPriceLoading] = useState(false)
 
   useEffect(() => {
     if (isVisible) return
@@ -68,7 +62,9 @@ export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props)
     return () => observer.disconnect()
   }, [isVisible])
 
-  // Cover art: real URL → iTunes → default
+  // Cover art: snapshot URL → iTunes fallback → default placeholder.
+  // The search API already delivers hydrated data, so no per-record API
+  // calls happen here — only a cached iTunes lookup when a cover is missing.
   useEffect(() => {
     if (!isVisible) return
 
@@ -76,69 +72,24 @@ export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props)
     setImgError(false)
     setImgLoaded(false)
 
-    let cancelled = false
-
-    const loadCover = async () => {
-      if (isRealCoverUrl(record.cover_url)) {
-        setCover(record.cover_url ?? null)
-        return
-      }
-
-      if (shouldHydrateCover(record.cover_url)) {
-        const hydratedCover = await hydrateCoverForRecord(record.id)
-        if (!cancelled && hydratedCover) {
-          setCover(hydratedCover)
-          return
-        }
-      }
-
-      const artist = record.artist || ''
-      const album = record.album || ''
-      if (artist || album) {
-        const fallbackCover = await fetchItunesCoverForRecord(artist, album)
-        if (!cancelled && fallbackCover) {
-          setCover(fallbackCover)
-        }
-      }
-    }
-
-    void loadCover()
-    return () => { cancelled = true }
-  }, [record.id, record.artist, record.album, record.cover_url, isVisible])
-
-  // Live price: queue a background fetch per record
-  useEffect(() => {
-    setLivePrice(record.price || 0)
-    setLiveProductUrl(record.product_url ?? undefined)
-    setLiveInStock(record.in_stock ?? null)
-
-    if (!isVisible) {
-      setPriceLoading(false)
+    if (isRealCoverUrl(record.cover_url)) {
+      setCover(record.cover_url ?? null)
       return
     }
 
-    const hasKnownStock = record.in_stock === true || record.in_stock === false
-    const shouldFetchLiveRecord =
-      !(record.price && record.price > 0) ||
-      !hasKnownStock ||
-      !record.product_url
-
-    if (!shouldFetchLiveRecord) return
-
-    setPriceLoading(true)
-    const cancel = enqueuePriceFetch(record.id, (price, productUrl, inStock) => {
-      setLivePrice(price)
-      if (productUrl) setLiveProductUrl(productUrl)
-      if (inStock === true || inStock === false) {
-        setLiveInStock(inStock)
-      }
-      setPriceLoading(false)
-    })
-    return () => {
-      cancel()
-      setPriceLoading(false)
+    let cancelled = false
+    const artist = record.artist || ''
+    const album = record.album || ''
+    if (artist || album) {
+      void fetchItunesCoverForRecord(artist, album).then((fallbackCover) => {
+        if (!cancelled && fallbackCover) {
+          setCover(fallbackCover)
+        }
+      })
     }
-  }, [record.id, record.price, record.product_url, record.in_stock, isVisible])
+
+    return () => { cancelled = true }
+  }, [record.id, record.artist, record.album, record.cover_url, isVisible])
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -147,15 +98,15 @@ export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props)
 
   const handleOpenStore = (e: React.MouseEvent) => {
     e.stopPropagation()
-    const outboundUrl = liveProductUrl || record.store_url
+    const outboundUrl = record.product_url || record.store_url
     if (outboundUrl) {
       window.open(outboundUrl, '_blank', 'noopener,noreferrer')
     }
   }
 
   const coverSrc = !imgError && cover ? cover : DEFAULT_COVER
-  const isOutOfStock = liveInStock === false
-  const hasPrice = livePrice > 0
+  const isOutOfStock = record.in_stock === false
+  const hasPrice = (record.price || 0) > 0
 
   const catalogStore = record.store_name ? getStoreByName(record.store_name) : undefined
   const storeEmoji = record.store?.logo_emoji || catalogStore?.emoji || '🎵'
@@ -253,12 +204,7 @@ export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props)
             <div className="min-w-0 flex items-center gap-1.5">
               {hasPrice ? (
                 <span className="text-accent font-bold text-base leading-none">
-                  {formatPrice(livePrice)}
-                </span>
-              ) : priceLoading ? (
-                <span className="flex items-center gap-1 text-text-muted text-[11px]">
-                  <Loader2 size={11} className="animate-spin" />
-                  <span>מחיר...</span>
+                  {formatPrice(record.price)}
                 </span>
               ) : (
                 <span className="text-text-muted text-[11px] truncate block">
@@ -267,7 +213,7 @@ export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props)
               )}
             </div>
 
-            {(liveProductUrl || record.store_url) && (
+            {(record.product_url || record.store_url) && (
               <button
                 onClick={handleOpenStore}
                 title="פתח בחנות"
@@ -280,7 +226,7 @@ export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props)
                 }`}
               >
                 <ShoppingBag size={11} />
-                <span>{liveProductUrl ? 'לחנות' : 'חנות'}</span>
+                <span>{record.product_url ? 'לחנות' : 'חנות'}</span>
                 <ExternalLink size={9} />
               </button>
             )}

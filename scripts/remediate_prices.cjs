@@ -29,6 +29,9 @@ function parseArgs(argv) {
     bypassAll: true,
     offlineMode: false,
     refreshDays: 30,
+    // Fabricating prices from store medians is opt-in. Imputed prices are
+    // marked with price_source="imputed" and re-fetched on the next run.
+    imputeMissing: false,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -84,6 +87,9 @@ function parseArgs(argv) {
       case "--refresh-days":
         args.refreshDays = Math.max(1, toNumber(next, 30));
         i += 1;
+        break;
+      case "--impute":
+        args.imputeMissing = true;
         break;
       default:
         break;
@@ -213,15 +219,21 @@ async function main() {
   const nowMs = Date.now();
   const refreshCutoffMs = args.refreshDays * 24 * 60 * 60 * 1000;
 
+  // Records whose last fetch failed retry sooner than the regular refresh
+  // window, but not on every run (avoids hammering permanently dead URLs).
+  const failedRetryCutoffMs = Math.min(refreshCutoffMs, 3 * 24 * 60 * 60 * 1000);
+
   const targets = [];
   for (let i = 0; i < records.length; i += 1) {
     const record = records[i] || {};
     const price = toNumber(record.price, 0);
     const hasInStock = record.in_stock === true || record.in_stock === false;
     const checkedAt = record.checked_at ? new Date(record.checked_at).getTime() : 0;
-    const isStale = !checkedAt || (nowMs - checkedAt) > refreshCutoffMs;
+    const cutoffMs = record.fetch_ok === false ? failedRetryCutoffMs : refreshCutoffMs;
+    const isStale = !checkedAt || (nowMs - checkedAt) > cutoffMs;
+    const hasImputedPrice = String(record.price_source || "") === "imputed";
 
-    if (price <= 0 || !hasInStock || isStale) {
+    if (price <= 0 || !hasInStock || isStale || hasImputedPrice) {
       targets.push(i);
     }
   }
@@ -304,9 +316,19 @@ async function main() {
       }
     }
 
+    // Fetch whenever the record is missing data OR its data is stale.
+    // (The old condition skipped any record that already had a price, which
+    // meant imputed/stale prices were never re-verified — the pipeline was
+    // a no-op for nearly the entire catalog.)
+    const hasInStock = record.in_stock === true || record.in_stock === false;
+    const checkedAtMs = record.checked_at ? new Date(record.checked_at).getTime() : 0;
+    const recordIsStale = !checkedAtMs || (Date.now() - checkedAtMs) > refreshCutoffMs;
     const needsFetch =
       toNumber(record.price, 0) <= 0 ||
-      !String(record.artist || "").trim();
+      !String(record.artist || "").trim() ||
+      !hasInStock ||
+      recordIsStale ||
+      String(record.price_source || "") === "imputed";
 
     if (needsFetch && !args.offlineMode) {
       const url = getEnrichmentUrl(record);
@@ -365,7 +387,12 @@ async function main() {
           }
 
           record.checked_at = nowIso();
+          record.fetch_ok = true;
         } else {
+          // Stamp failures too so dead URLs back off (shorter retry window)
+          // instead of being re-attempted on every single run.
+          record.checked_at = nowIso();
+          record.fetch_ok = false;
           report.fetch_failures += 1;
           storeStats.fetch_failures += 1;
         }
@@ -395,7 +422,7 @@ async function main() {
   await Promise.all(workers);
 
   const baselines = buildPriceBaselines(records);
-  for (const index of targets) {
+  for (const index of args.imputeMissing ? targets : []) {
     const record = records[index];
     if (toNumber(record && record.price, 0) > 0) {
       continue;

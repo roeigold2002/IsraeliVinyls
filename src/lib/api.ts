@@ -461,24 +461,12 @@ export async function fetchCheapestRecords(): Promise<VinylRecord[]> {
 
 export async function fetchRecordById(id: string, signal?: AbortSignal): Promise<VinylRecord | null> {
   try {
-    const direct = await fetchJson<{ record?: Record<string, unknown> }>(`/api/record?id=${encodeURIComponent(id)}`, 3, 800, signal)
-    if (direct.record) {
-      return mapRecord(direct.record)
-    }
+    const direct = await fetchJson<{ record?: Record<string, unknown> }>(`/api/record?id=${encodeURIComponent(id)}`, 2, 800, signal)
+    return direct.record ? mapRecord(direct.record) : null
   } catch (err) {
     if (err instanceof Error && err.name === 'AbortError') throw err
-    // Fallback for older deployments where /api/record may be unavailable.
+    return null
   }
-
-  const pagesToCheck = 12
-  for (let page = 1; page <= pagesToCheck; page += 1) {
-    if (signal?.aborted) throw new DOMException('Aborted', 'AbortError')
-    const raw = await fetchJson<{ records: Record<string, unknown>[] }>('/api/all-records?page=' + page + '&per_page=500', 3, 800, signal)
-    const match = (raw.records || []).find((r) => String(r.id) === id)
-    if (match) return mapRecord(match)
-    if (!raw.records || raw.records.length < 500) break
-  }
-  return null
 }
 
 export async function fetchSimilarRecords(record: VinylRecord, signal?: AbortSignal): Promise<VinylRecord[]> {
