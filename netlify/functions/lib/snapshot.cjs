@@ -36,7 +36,26 @@ const {
   computeGenresFromRecords,
 } = require("./search.cjs");
 
-const DATA_DIR = path.join(__dirname, "..", "..", "data");
+// Data directory resolution must survive two layouts:
+//  - local/dev: this file lives at netlify/functions/lib/ → ../../data
+//  - deployed:  esbuild inlines lib/ into the function bundle, so __dirname
+//    is the function directory itself → ../data
+const DATA_DIR = (() => {
+  const candidates = [
+    path.join(__dirname, "..", "..", "data"),
+    path.join(__dirname, "..", "data"),
+    path.join(__dirname, "data"),
+  ];
+  for (const candidate of candidates) {
+    try {
+      fs.accessSync(path.join(candidate, "stores.json"));
+      return candidate;
+    } catch {
+      // try next layout
+    }
+  }
+  return candidates[0];
+})();
 const SEARCH_BUNDLE_FILE = "search_bundle.json";
 
 async function readJsonFileAsync(fileName) {
