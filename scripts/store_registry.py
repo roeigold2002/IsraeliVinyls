@@ -173,6 +173,18 @@ STORE_CONFIGS: tuple[StoreConfig, ...] = (
             "/search?q={query}",
         ),
     ),
+    StoreConfig(
+        id="grooves",
+        store_name="Grooves",
+        website="https://groovesil.shop/",
+        # Supabase-backed SPA, not WooCommerce: ingested via
+        # scripts/ingest_groovesil.cjs from netlify/data/groovesil_raw.json,
+        # not the HTML scraper. Kept here for registry completeness.
+        search_templates=("/shop?q={query}",),
+        aliases=("Grooves", "Groovesil", "גרובס"),
+        use_browser_fallback=False,
+        use_proxy_fallback=False,
+    ),
 )
 
 STORE_BY_ID = {store.id: store for store in STORE_CONFIGS}

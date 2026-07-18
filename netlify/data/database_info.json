@@ -1,5 +1,5 @@
 {
-  "total_records": 117539,
+  "total_records": 117878,
   "stores": {
     "Tav8": 1530,
     "Giora": 7697,
@@ -19,34 +19,35 @@
     "H2Shop": 1556,
     "Rolling Dise": 3129,
     "Vinylia Records": 10309,
-    "HaSivoov": 5770
+    "HaSivoov": 5770,
+    "Grooves": 339
   },
-  "store_count": 19,
+  "store_count": 20,
   "genres": {
-    "Rock": 1334,
-    "Pop": 1317,
-    "Jazz": 1209,
-    "Hip-Hop": 662,
+    "Pop": 1433,
+    "Rock": 1426,
+    "Jazz": 1211,
+    "Hip-Hop": 701,
     "Alternative": 501,
     "Classic rock": 410,
     "Progressive rock": 312,
-    "Soul": 245,
+    "Soul": 247,
     "Hard rock": 218,
-    "Folk": 210
+    "Folk": 211
   },
-  "genre_count": 728,
+  "genre_count": 729,
   "data_quality": {
-    "records_with_cover": 45517,
-    "coverage_percent_covers": 38.7,
-    "records_with_genre": 13197,
-    "coverage_percent_genres": 11.2,
-    "records_with_year": 8312,
-    "coverage_percent_years": 7.1,
-    "records_in_stock": 6708,
+    "records_with_cover": 45856,
+    "coverage_percent_covers": 38.9,
+    "records_with_genre": 13536,
+    "coverage_percent_genres": 11.5,
+    "records_with_year": 8651,
+    "coverage_percent_years": 7.3,
+    "records_in_stock": 7047,
     "records_out_of_stock": 13006,
     "records_stock_unknown": 97825,
-    "records_with_known_stock": 19714,
-    "coverage_percent_stock_known": 16.8
+    "records_with_known_stock": 20053,
+    "coverage_percent_stock_known": 17
   },
   "pricing_integrity": {
     "target_percent": 95,
@@ -104,5 +105,5 @@
       "25"
     ]
   },
-  "rebuilt_at": "2026-07-17T17:40:27.707Z"
+  "rebuilt_at": "2026-07-18T03:50:40.748Z"
 }

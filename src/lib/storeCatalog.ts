@@ -254,6 +254,20 @@ export const STORE_CATALOG: StoreCatalogEntry[] = [
     aliases: ['H2 Shop', 'H2Shop Records'],
     search_templates: ['/shop/?s={query}', '/?post_type=product&s={query}'],
   },
+  {
+    id: 'grooves',
+    name: 'Grooves',
+    name_he: 'גרובס',
+    url: 'https://groovesil.shop/',
+    city: 'Israel',
+    platform: 'Web',
+    emoji: '💽',
+    color: '#8e44ad',
+    aliases: ['Grooves', 'Groovesil', 'Grooves Record Shop', 'גרובס'],
+    snapshot_names: ['Grooves'],
+    store_filter_name: 'Grooves',
+    search_templates: ['/shop?q={query}'],
+  },
 ]
 
 function normalizeStoreName(value: string): string {
