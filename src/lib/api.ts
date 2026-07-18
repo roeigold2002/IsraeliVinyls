@@ -32,7 +32,7 @@ function getRuntimeApiOverride(): string {
   }
 }
 
-function getApiBase(): string {
+export function getApiBase(): string {
   const runtimeOverride = getRuntimeApiOverride()
   if (runtimeOverride) return runtimeOverride
 

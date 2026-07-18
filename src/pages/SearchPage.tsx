@@ -1,10 +1,16 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { SlidersHorizontal, X, Music2, Disc3 } from 'lucide-react'
+import { SlidersHorizontal, X, Music2, Disc3, Radio, RefreshCw } from 'lucide-react'
 import { SearchBar } from '../components/SearchBar'
 import { RecordGrid } from '../components/RecordGrid'
 import { Pagination } from '../components/Pagination'
 import { searchRecords, fetchStores, fetchGenres } from '../lib/api'
+import {
+  fetchLiveRefresh,
+  fetchLiveSearch,
+  applyLiveUpdates,
+  type LiveSearchResult,
+} from '../lib/liveSearch'
 import { FORMATS, SORT_OPTIONS } from '../lib/constants'
 import { buildStoreSearchUrl } from '../lib/storeCatalog'
 import type { SearchFilters, SearchResult, Store, SortOption } from '../lib/types'
@@ -61,6 +67,11 @@ export function SearchPage() {
   const [genres, setGenres] = useState<string[]>([])
   const [showFilters, setShowFilters] = useState(false)
   const metadataLoadedRef = useRef(false)
+  // Real-time layer state
+  const [refreshing, setRefreshing] = useState(false)
+  const [refreshedCount, setRefreshedCount] = useState<number | null>(null)
+  const [liveResult, setLiveResult] = useState<LiveSearchResult | null>(null)
+  const [liveLoading, setLiveLoading] = useState(false)
 
   const getFilters = useCallback(
     (): SearchFilters => ({
@@ -120,11 +131,33 @@ export function SearchPage() {
 
     const controller = new AbortController()
     setLoading(true)
+    setLiveResult(null)
+    setRefreshedCount(null)
 
     searchRecords(getFilters(), controller.signal)
       .then((res) => {
         setResult(res)
         setLoadError(null)
+
+        // Tier 2 — live revalidation: re-fetch price/stock for the visible
+        // page directly from the stores, then patch results in place.
+        const visibleIds = res.records.slice(0, 12).map((r) => r.id)
+        if (visibleIds.length > 0) {
+          setRefreshing(true)
+          void fetchLiveRefresh(visibleIds, controller.signal)
+            .then((updates) => {
+              if (controller.signal.aborted) return
+              setResult((prev) => {
+                if (!prev) return prev
+                const { records, changed } = applyLiveUpdates(prev.records, updates)
+                setRefreshedCount(changed)
+                return changed > 0 ? { ...prev, records } : prev
+              })
+            })
+            .finally(() => {
+              if (!controller.signal.aborted) setRefreshing(false)
+            })
+        }
       })
       .catch((err) => {
         if (err instanceof Error && err.name === 'AbortError') return
@@ -138,6 +171,30 @@ export function SearchPage() {
 
     return () => controller.abort()
   }, [getFilters, hasSearchIntent])
+
+  // Tier 3 — live federation: query every store's own search endpoint for
+  // fresh listings the catalog doesn't have yet. Progressive: cached results
+  // render first, live finds stream in below.
+  const liveQuery = filters.query.trim()
+  useEffect(() => {
+    if (liveQuery.length < 2) {
+      setLiveResult(null)
+      return
+    }
+
+    const controller = new AbortController()
+    setLiveLoading(true)
+
+    void fetchLiveSearch(liveQuery, controller.signal)
+      .then((live) => {
+        if (!controller.signal.aborted) setLiveResult(live)
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLiveLoading(false)
+      })
+
+    return () => controller.abort()
+  }, [liveQuery])
 
   const updateParam = (key: string, value: string | null, options?: { resetPage?: boolean }) => {
     const params = new URLSearchParams(searchParams)
@@ -244,6 +301,18 @@ export function SearchPage() {
                   <div className="w-3.5 h-3.5 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
                   מחפש...
                 </div>
+              )}
+              {!loading && refreshing && (
+                <span className="flex items-center gap-1.5 text-[11px] text-text-muted" title="בודק מחירים עדכניים מהחנויות">
+                  <RefreshCw size={11} className="animate-spin" />
+                  מעדכן מחירים...
+                </span>
+              )}
+              {!loading && !refreshing && refreshedCount !== null && (
+                <span className="flex items-center gap-1 text-[11px] text-success/80" title="המחירים והמלאי אומתו מול אתרי החנויות">
+                  <RefreshCw size={11} />
+                  {refreshedCount > 0 ? `${refreshedCount} מחירים עודכנו` : 'המחירים מאומתים'}
+                </span>
               )}
             </div>
 
@@ -458,6 +527,38 @@ export function SearchPage() {
               totalPages={result.totalPages}
               onPageChange={(p) => updateParam('page', String(p), { resetPage: false })}
             />
+          )}
+
+          {/* Real-time federation: fresh finds from the stores' own search */}
+          {liveQuery.length >= 2 && (liveLoading || (liveResult && liveResult.records.length > 0)) && (
+            <section className="mt-10">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-8 h-8 rounded-xl bg-accent/15 flex items-center justify-center">
+                  <Radio size={16} className={`text-accent ${liveLoading ? 'animate-pulse' : ''}`} />
+                </span>
+                <h2 className="text-lg font-bold text-text-primary">
+                  {liveLoading ? 'סורק את החנויות בזמן אמת...' : 'נמצאו עכשיו בחנויות'}
+                </h2>
+                {liveResult && !liveLoading && (
+                  <span className="text-xs text-text-muted">
+                    {liveResult.records.length} פריטים חדשים ·{' '}
+                    {liveResult.stores.filter((s) => s.status === 'ok').length} חנויות הגיבו
+                  </span>
+                )}
+              </div>
+
+              {liveLoading && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="aspect-[3/4] shimmer rounded-2xl" />
+                  ))}
+                </div>
+              )}
+
+              {!liveLoading && liveResult && liveResult.records.length > 0 && (
+                <RecordGrid records={liveResult.records} />
+              )}
+            </section>
           )}
         </>
       )}

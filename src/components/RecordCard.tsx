@@ -116,6 +116,18 @@ export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props)
     fromPath: `${location.pathname}${location.search}`,
   }
 
+  // Live federation results aren't in the local catalog — open the store
+  // product page directly instead of an internal detail route.
+  const isLiveRecord = record.id.startsWith('live-')
+  const openRecord = () => {
+    if (isLiveRecord) {
+      const outboundUrl = record.product_url || record.store_url
+      if (outboundUrl) window.open(outboundUrl, '_blank', 'noopener,noreferrer')
+      return
+    }
+    navigate(`/record/${record.id}`, { state: detailState })
+  }
+
   return (
     <div
       ref={cardRef}
@@ -127,10 +139,10 @@ export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props)
         {/* Cover image */}
         <div
           className="relative aspect-square overflow-hidden bg-bg-secondary cursor-pointer"
-          onClick={() => navigate(`/record/${record.id}`, { state: detailState })}
+          onClick={openRecord}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && navigate(`/record/${record.id}`, { state: detailState })}
+          onKeyDown={(e) => e.key === 'Enter' && openRecord()}
           aria-label={`${record.artist} - ${record.album}`}
         >
           {!imgLoaded && <div className="absolute inset-0 shimmer" />}
@@ -170,10 +182,10 @@ export const RecordCard = memo(function RecordCard({ record, index = 0 }: Props)
         <div className="p-3 flex flex-col flex-1">
           <div
             className="cursor-pointer flex-1 mb-2"
-            onClick={() => navigate(`/record/${record.id}`, { state: detailState })}
+            onClick={openRecord}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && navigate(`/record/${record.id}`, { state: detailState })}
+            onKeyDown={(e) => e.key === 'Enter' && openRecord()}
           >
             <h3 className="font-semibold text-text-primary text-[13px] leading-snug line-clamp-1 latin-text">
               {record.artist || '—'}

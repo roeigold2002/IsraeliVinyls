@@ -106,6 +106,37 @@ had five compounding failures:
 - Live refresh at request time exists ONLY on `/api/record` (single record,
   the page where a user is about to click "buy").
 
+### Real-time layer (metasearch tiers)
+
+Search is a hybrid: the cached index is the instant floor, live data layers
+on top progressively (the Kayak/Skyscanner pattern). Per-query synchronous
+scraping of 20 stores would blow both the sub-second latency budget and the
+stores' goodwill — so freshness is delivered in three tiers:
+
+| Tier | What | Where | Latency |
+|---|---|---|---|
+| 1. Instant | bundle-indexed cached results | `/api/search` | <1ms warm |
+| 2. Revalidation | live price/stock re-fetch for the visible page (≤12 records, concurrency 6) | `/api/live-refresh?ids=…` | ~2-4s, patched in place |
+| 3. Federation | the query fanned out to every store's own search endpoint; fresh finds the catalog lacks stream in below results | `/api/live-search?q=…` (also `source=live`) | ~5-7s budgeted, 10-min TTL cache |
+
+Key modules:
+- `lib/live_stores.cjs` — adapter registry. **Adding a store to live search
+  = one entry** (base URL + search paths + adapter type). `adapter: "none"`
+  stores (SPAs/custom platforms) still get tier-2 revalidation via their
+  product pages.
+- `lib/live_search.cjs` — generic WooCommerce card parser (entity-decoded
+  price extraction, `<ins>` sale-price priority, container-class stock),
+  federation runner with a hard time budget (Netlify sync functions cap at
+  ~10s), per-store status reporting (`ok/blocked/no_results/skipped_budget`),
+  and bounded TTL caches (10 min) so repeat queries never re-hit stores.
+- Client: `src/lib/liveSearch.ts` + SearchPage — fire-after-render; cached
+  results are never blocked on live data; live federation records get
+  `live-*` ids and open the store page directly.
+
+Politeness: fetches honor per-store timeouts, results are TTL-cached, the
+Cloudflare-challenge detector backs off (`blocked` status), and stores whose
+robots/platform don't support it are `adapter: "none"`.
+
 ### Invariants (do not break these)
 
 1. `/api/search` and `/api/suggest` perform no network I/O and mutate no

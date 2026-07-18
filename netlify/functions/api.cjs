@@ -18,7 +18,7 @@ const {
   normalizeInStock,
   parseNumericPrice,
 } = require("./lib/text.cjs");
-const { isSafeOutboundUrl } = require("./lib/urls.cjs");
+const { isSafeOutboundUrl, normalizeManualLookupUrl: canonicalProductUrl } = require("./lib/urls.cjs");
 const { selectBestCoverCandidate, hasCoverUrl } = require("./lib/covers.cjs");
 const {
   LruCache,
@@ -45,6 +45,7 @@ const {
   extractInStockValue,
   probeUrl,
 } = require("./lib/enrich.cjs");
+const { runLiveSearch, runLiveRefresh } = require("./lib/live_search.cjs");
 
 // ---------------------------------------------------------------------------
 // CORS + response helpers
@@ -277,7 +278,7 @@ function runSearch(snapshot, params) {
   return sorted;
 }
 
-function handleSearch(snapshot, params, event) {
+async function handleSearch(snapshot, params, event) {
   const q = (params.get("q") || "").trim();
   const source = (params.get("source") || "").trim();
 
@@ -285,20 +286,20 @@ function handleSearch(snapshot, params, event) {
   const perPage = clampPerPage(parseIntParam(params.get("per_page"), 50, "per_page"));
 
   if (source === "live") {
-    return response(200, {
-      records: [],
-      total: 0,
-      page,
-      per_page: perPage,
-      total_pages: 0,
-      has_next: false,
-      has_prev: false,
-      source: "live",
-      message:
-        q.length < 2
-          ? "Type at least 2 characters for live store scraping"
-          : "Live source is unavailable in Netlify snapshot mode",
-    }, event);
+    if (q.length < 2) {
+      return response(200, {
+        records: [],
+        total: 0,
+        page,
+        per_page: perPage,
+        total_pages: 0,
+        has_next: false,
+        has_prev: false,
+        source: "live",
+        message: "Type at least 2 characters for live store search",
+      }, event);
+    }
+    return await handleLiveSearch(snapshot, params, event);
   }
 
   const filtered = runSearch(snapshot, params);
@@ -316,6 +317,66 @@ function handleSearch(snapshot, params, event) {
     has_next: page < totalPages,
     has_prev: page > 1,
   }, event);
+}
+
+/**
+ * Real-time federated search: queries every adapter-enabled store's own
+ * search endpoint concurrently and returns fresh listings that the cached
+ * catalog does NOT already show, plus per-store status. Results are TTL-
+ * cached (~10 min) server-side.
+ */
+async function handleLiveSearch(snapshot, params, event) {
+  const q = (params.get("q") || "").trim();
+  if (q.length < 2) {
+    return response(200, { records: [], stores: [], elapsed_ms: 0, source: "live" }, event);
+  }
+
+  // Canonical product URLs already present in cached search results for this
+  // query — used to return only genuinely new listings.
+  const knownProductUrls = new Set();
+  const cachedMatches = runSearch(snapshot, params);
+  for (const record of cachedMatches) {
+    const canonical = canonicalProductUrl(record.product_url);
+    if (canonical) {
+      knownProductUrls.add(canonical);
+    }
+  }
+
+  const result = await runLiveSearch(q, { knownProductUrls });
+
+  return response(200, {
+    source: "live",
+    query: q,
+    records: result.records,
+    total: result.records.length,
+    stores: result.stores,
+    elapsed_ms: result.elapsed_ms,
+  }, event);
+}
+
+/**
+ * Batched live revalidation: re-fetches current price/stock for up to 12
+ * known records directly from their store pages. The client calls this for
+ * the page of results the user is looking at, then patches the UI.
+ */
+async function handleLiveRefresh(params, event) {
+  const idsParam = (params.get("ids") || "").trim();
+  if (!idsParam) {
+    return response(400, { error: "Missing ids parameter" }, event);
+  }
+
+  const requestedIds = [...new Set(idsParam.split(",").map((s) => s.trim()).filter(Boolean))];
+  if (requestedIds.length === 0) {
+    return response(400, { error: "ids parameter must contain at least one id" }, event);
+  }
+
+  const store = await loadDetailStore();
+  const records = requestedIds
+    .map((id) => store.byId.get(id))
+    .filter(Boolean);
+
+  const updates = await runLiveRefresh(records);
+  return response(200, { updates, checked: updates.length }, event);
 }
 
 function handleSuggest(snapshot, params, event) {
@@ -516,7 +577,13 @@ exports.handler = async (event) => {
       return response(200, snapshot.recordIntegrity?.summary || null, event);
     }
     if (endpoint === "search") {
-      return handleSearch(snapshot, params, event);
+      return await handleSearch(snapshot, params, event);
+    }
+    if (endpoint === "live-search") {
+      return await handleLiveSearch(snapshot, params, event);
+    }
+    if (endpoint === "live-refresh") {
+      return await handleLiveRefresh(params, event);
     }
     if (endpoint === "suggest") {
       return handleSuggest(snapshot, params, event);
