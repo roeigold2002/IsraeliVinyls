@@ -1,29 +1,34 @@
 "use strict";
 
 /**
- * Live-search adapter registry.
+ * Live-search adapter registry — ALL 20 stores participate in real time.
  *
- * Each entry describes how to query one store's own search endpoint in real
- * time. Adding a new Israeli vinyl store to live search = adding one entry
- * here (plus, if its platform is exotic, a parser in live_search.cjs).
+ * Adapter types (parsers live in live_search.cjs):
+ *   - "woocommerce": standard WooCommerce product-grid markup.
+ *     `productPathRe` overrides the product-URL shape for custom permalinks.
+ *   - "linkgrid": generic parser for platforms whose search pages are
+ *     server-rendered grids of product links (Shopify, Wix, custom Israeli
+ *     platforms). Configured by `searchPaths` + `productPathRe`.
+ *   - "dgwt": WordPress "FiboSearch/DGWT WC Ajax Search" JSON endpoint.
+ *   - "revalidate": the platform has NO query endpoint (SPA / no server-side
+ *     search). The store still participates in real time: its catalog
+ *     matches for the query get price/stock live-fetched from the store's
+ *     product pages at search time and returned as verifications.
  *
- * `adapter` values:
- *   - "woocommerce": standard WooCommerce product-grid markup (the majority
- *     of Israeli vinyl stores). Parsed generically.
- *   - "none": store cannot be live-searched (SPA/custom platform); its
- *     records still get live *revalidation* via their product pages, and
- *     cached results still appear instantly.
- *
- * `storeName` must match `store_name` in records.json so live results can
- * be deduped against the cached catalog.
+ * `storeName` must match `store_name` in records.json.
+ * Adding a new store = one entry here.
  */
 
 const LIVE_STORES = [
+  // --- WooCommerce ---
   {
+    // Cloudflare-challenged for direct fetches; the proxy fallback needs
+    // extra headroom.
     storeName: "Beatnik",
     base: "https://www.beatnik.co.il",
     searchPaths: ["/?s={query}&post_type=product", "/product/?s={query}"],
     adapter: "woocommerce",
+    timeoutMs: 5500,
   },
   {
     storeName: "Shablool",
@@ -38,57 +43,17 @@ const LIVE_STORES = [
     adapter: "woocommerce",
   },
   {
+    // Large catalog; its search endpoint regularly needs >3.5s.
     storeName: "Third Ear",
     base: "https://third-ear.com",
     searchPaths: ["/?s={query}&post_type=product"],
     adapter: "woocommerce",
+    timeoutMs: 5500,
   },
   {
     storeName: "The Vinyl Room",
     base: "https://thevinylroom.co.il",
     searchPaths: ["/?s={query}&post_type=product", "/?s={query}"],
-    adapter: "woocommerce",
-  },
-  {
-    storeName: "HaSivoov",
-    base: "https://hasivoov.co.il",
-    searchPaths: ["/?s={query}&post_type=product"],
-    adapter: "woocommerce",
-  },
-  {
-    storeName: "Holit Records",
-    base: "https://holit-records.co.il",
-    searchPaths: ["/?s={query}&post_type=product"],
-    adapter: "woocommerce",
-  },
-  {
-    storeName: "Vinyl Stock",
-    base: "https://www.vinylstock.co.il",
-    searchPaths: ["/?s={query}&post_type=product"],
-    adapter: "woocommerce",
-  },
-  {
-    storeName: "Vinylia Records",
-    base: "https://vinyliarecords.co.il",
-    searchPaths: ["/?s={query}&post_type=product"],
-    adapter: "woocommerce",
-  },
-  {
-    storeName: "Transistore",
-    base: "https://transistore.co.il",
-    searchPaths: ["/?s={query}&post_type=product"],
-    adapter: "woocommerce",
-  },
-  {
-    storeName: "My Records",
-    base: "https://www.my-records.co.il",
-    searchPaths: ["/?s={query}&post_type=product"],
-    adapter: "woocommerce",
-  },
-  {
-    storeName: "Rolling Dise",
-    base: "https://www.rollindise.com",
-    searchPaths: ["/?s={query}&post_type=product"],
     adapter: "woocommerce",
   },
   {
@@ -98,26 +63,8 @@ const LIVE_STORES = [
     adapter: "woocommerce",
   },
   {
-    storeName: "Hod Hamahat",
-    base: "https://hodhamahat.com",
-    searchPaths: ["/?s={query}&post_type=product"],
-    adapter: "woocommerce",
-  },
-  {
-    storeName: "Taklit House",
-    base: "https://www.taklithouse.com",
-    searchPaths: ["/?s={query}&post_type=product", "/search?q={query}"],
-    adapter: "woocommerce",
-  },
-  {
-    storeName: "Disc Center",
-    base: "https://www.disccenter.co.il",
-    searchPaths: ["/?s={query}&post_type=product", "/search?q={query}"],
-    adapter: "woocommerce",
-  },
-  {
-    storeName: "B-Side Haifa",
-    base: "https://www.bsidehaifa.co.il",
+    storeName: "Vinylia Records",
+    base: "https://vinyliarecords.co.il",
     searchPaths: ["/?s={query}&post_type=product"],
     adapter: "woocommerce",
   },
@@ -127,15 +74,89 @@ const LIVE_STORES = [
     searchPaths: ["/?s={query}&post_type=product"],
     adapter: "woocommerce",
   },
-  // Custom platform (no server-rendered search results) — revalidation only.
-  { storeName: "Tav8", base: "https://www.tav8.co.il", searchPaths: [], adapter: "none" },
-  // Supabase SPA; full catalog is imported and revalidated via JSON-LD
-  // product pages. No server-rendered search endpoint.
-  { storeName: "Grooves", base: "https://groovesil.shop", searchPaths: [], adapter: "none" },
+  {
+    // WooCommerce with custom "/p/<slug>" permalinks and a nonstandard
+    // card theme — the generic link-grid parser handles it better.
+    storeName: "B-Side Haifa",
+    base: "https://www.bsidehaifa.co.il",
+    searchPaths: ["/?s={query}&post_type=product", "/?s={query}"],
+    adapter: "linkgrid",
+    productPathRe: "\\/p\\/[^\"'#?]+",
+  },
+
+  // --- FiboSearch JSON (WordPress) ---
+  {
+    storeName: "HaSivoov",
+    base: "https://hasivoov.co.il",
+    searchPaths: ["/?wc-ajax=dgwt_wcas_ajax_search&s={query}"],
+    adapter: "dgwt",
+  },
+
+  // --- Shopify (server-rendered /search page, /products/<handle> links) ---
+  {
+    storeName: "Holit Records",
+    base: "https://holit-records.co.il",
+    searchPaths: ["/search?q={query}&type=product", "/search?q={query}"],
+    adapter: "linkgrid",
+    productPathRe: "\\/products\\/[^\"'#?]+",
+    timeoutMs: 5500,
+  },
+  {
+    storeName: "Rolling Dise",
+    base: "https://www.rollindise.com",
+    searchPaths: ["/search?q={query}&type=product", "/search?q={query}"],
+    adapter: "linkgrid",
+    productPathRe: "\\/products\\/[^\"'#?]+",
+    timeoutMs: 5500,
+  },
+  {
+    storeName: "Hod Hamahat",
+    base: "https://hodhamahat.com",
+    searchPaths: ["/search?q={query}&type=product", "/search?q={query}"],
+    adapter: "linkgrid",
+    productPathRe: "\\/products\\/[^\"'#?]+",
+    timeoutMs: 5500,
+  },
+
+  // --- Custom platforms with server-rendered search ---
+  {
+    // Custom storefront; /search?q= renders /products/<id>/<name> links.
+    storeName: "Vinyl Stock",
+    base: "https://www.vinylstock.co.il",
+    searchPaths: ["/search?q={query}"],
+    adapter: "linkgrid",
+    productPathRe: "\\/products\\/\\d+\\/[^\"'#?]+",
+  },
+  {
+    // Custom storefront; /Results?q= renders /prod/<id> links.
+    storeName: "Disc Center",
+    base: "https://www.disccenter.co.il",
+    searchPaths: ["/Results?q={query}"],
+    adapter: "linkgrid",
+    productPathRe: "\\/prod\\/[^\"'#?]+",
+  },
+  {
+    // Wix; /search?q= server-renders /product-page/<slug> links.
+    storeName: "Taklit House",
+    base: "https://www.taklithouse.com",
+    searchPaths: ["/search?q={query}"],
+    adapter: "linkgrid",
+    productPathRe: "\\/product-page\\/[^\"'#?]+",
+  },
+
+  // --- No server-side search: live verification of catalog matches ---
+  { storeName: "Transistore", base: "https://transistore.co.il", searchPaths: [], adapter: "revalidate" },
+  { storeName: "My Records", base: "https://www.my-records.co.il", searchPaths: [], adapter: "revalidate" },
+  { storeName: "Tav8", base: "https://www.tav8.co.il", searchPaths: [], adapter: "revalidate" },
+  { storeName: "Grooves", base: "https://groovesil.shop", searchPaths: [], adapter: "revalidate" },
 ];
 
 function getLiveSearchableStores() {
-  return LIVE_STORES.filter((store) => store.adapter !== "none" && store.searchPaths.length > 0);
+  return LIVE_STORES.filter((store) => store.adapter !== "revalidate" && store.searchPaths.length > 0);
+}
+
+function getRevalidateStores() {
+  return LIVE_STORES.filter((store) => store.adapter === "revalidate");
 }
 
 function getLiveStoreByName(name) {
@@ -146,5 +167,6 @@ function getLiveStoreByName(name) {
 module.exports = {
   LIVE_STORES,
   getLiveSearchableStores,
+  getRevalidateStores,
   getLiveStoreByName,
 };

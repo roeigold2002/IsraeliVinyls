@@ -23,13 +23,15 @@ export interface LiveRefreshUpdate {
 
 export interface LiveStoreStatus {
   store: string
-  status: 'ok' | 'blocked' | 'no_results' | 'skipped_budget'
+  status: 'ok' | 'verified' | 'blocked' | 'no_results' | 'unreachable' | 'skipped_budget'
   cached: boolean
   count: number
 }
 
 export interface LiveSearchResult {
   records: VinylRecord[]
+  /** Live price/stock confirmations for catalog records (stores without a search endpoint). */
+  verified: LiveRefreshUpdate[]
   stores: LiveStoreStatus[]
   elapsedMs: number
 }
@@ -75,6 +77,7 @@ export async function fetchLiveSearch(
   try {
     const raw = await getJson<{
       records: Record<string, unknown>[]
+      verified?: LiveRefreshUpdate[]
       stores: LiveStoreStatus[]
       elapsed_ms: number
     }>(`/api/live-search?q=${encodeURIComponent(trimmed)}`, signal, 20000)
@@ -98,6 +101,7 @@ export async function fetchLiveSearch(
 
     return {
       records,
+      verified: (raw.verified || []).map((u) => ({ ...u, status: 'ok' as const })),
       stores: raw.stores || [],
       elapsedMs: Number(raw.elapsed_ms || 0),
     }

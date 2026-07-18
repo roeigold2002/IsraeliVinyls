@@ -187,7 +187,17 @@ export function SearchPage() {
 
     void fetchLiveSearch(liveQuery, controller.signal)
       .then((live) => {
-        if (!controller.signal.aborted) setLiveResult(live)
+        if (controller.signal.aborted) return
+        setLiveResult(live)
+        // Stores without a search endpoint return live verifications of
+        // catalog records instead of new listings — patch those in place.
+        if (live && live.verified.length > 0) {
+          setResult((prev) => {
+            if (!prev) return prev
+            const { records, changed } = applyLiveUpdates(prev.records, live.verified)
+            return changed > 0 ? { ...prev, records } : prev
+          })
+        }
       })
       .finally(() => {
         if (!controller.signal.aborted) setLiveLoading(false)
@@ -542,7 +552,7 @@ export function SearchPage() {
                 {liveResult && !liveLoading && (
                   <span className="text-xs text-text-muted">
                     {liveResult.records.length} פריטים חדשים ·{' '}
-                    {liveResult.stores.filter((s) => s.status === 'ok').length} חנויות הגיבו
+                    {liveResult.stores.filter((s) => s.status === 'ok' || s.status === 'verified').length} חנויות הגיבו
                   </span>
                 )}
               </div>

@@ -332,22 +332,34 @@ async function handleLiveSearch(snapshot, params, event) {
   }
 
   // Canonical product URLs already present in cached search results for this
-  // query — used to return only genuinely new listings.
+  // query — used to return only genuinely new listings. Catalog matches are
+  // also grouped per store to drive live verification for stores whose
+  // platforms have no search endpoint.
   const knownProductUrls = new Set();
+  const catalogMatchesByStore = new Map();
   const cachedMatches = runSearch(snapshot, params);
   for (const record of cachedMatches) {
     const canonical = canonicalProductUrl(record.product_url);
     if (canonical) {
       knownProductUrls.add(canonical);
     }
+    const storeKey = String(record.store_name || "").toLowerCase();
+    if (storeKey) {
+      if (!catalogMatchesByStore.has(storeKey)) {
+        catalogMatchesByStore.set(storeKey, []);
+      }
+      const list = catalogMatchesByStore.get(storeKey);
+      if (list.length < 4) list.push(record);
+    }
   }
 
-  const result = await runLiveSearch(q, { knownProductUrls });
+  const result = await runLiveSearch(q, { knownProductUrls, catalogMatchesByStore });
 
   return response(200, {
     source: "live",
     query: q,
     records: result.records,
+    verified: result.verified,
     total: result.records.length,
     stores: result.stores,
     elapsed_ms: result.elapsed_ms,

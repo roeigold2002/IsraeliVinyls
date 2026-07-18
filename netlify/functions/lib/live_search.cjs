@@ -33,7 +33,7 @@ const {
   looksLikeBlockedHtml,
   TTLCache,
 } = require("./enrich.cjs");
-const { getLiveSearchableStores } = require("./live_stores.cjs");
+const { getLiveSearchableStores, getRevalidateStores } = require("./live_stores.cjs");
 
 const LIVE_SEARCH_TTL_MS = 10 * 60 * 1000; // per (store, query)
 const LIVE_REFRESH_TTL_MS = 10 * 60 * 1000; // per product URL
@@ -83,8 +83,10 @@ function priceFromHtmlSnippet(html) {
   if (symbolAdjacent) {
     return parseNumericPrice(symbolAdjacent[1] || symbolAdjacent[2]);
   }
-  const firstNumber = text.match(/([0-9]{1,5}(?:[.,][0-9]{1,2})?)/);
-  return firstNumber ? parseNumericPrice(firstNumber[1]) : 0;
+  // No currency symbol: only accept a plausible standalone price (2-4
+  // digits, not glued to units like "2LP" / "3xLP" / years in titles).
+  const standalone = text.match(/(?<![0-9])([0-9]{2,4}(?:[.,][0-9]{1,2})?)(?!\s*(?:LP|EP|CD|X|×|")\b)(?![0-9])/i);
+  return standalone ? parseNumericPrice(standalone[1]) : 0;
 }
 
 function extractBlockPrice(block) {
@@ -109,11 +111,15 @@ function extractBlockPrice(block) {
  * Splits a WooCommerce search-results page into product blocks and extracts
  * {title, product_url, cover_url, price, in_stock} from each.
  */
-function parseWooProducts(html, baseUrl) {
+function parseWooProducts(html, baseUrl, productPathRe) {
   const source = String(html || "");
   if (!source) {
     return [];
   }
+  const productLinkRe = new RegExp(
+    `href="([^"]*${productPathRe || "\\/products?\\/[^\"]+"})"`,
+    "i"
+  );
 
   const starts = [];
   let match;
@@ -132,8 +138,8 @@ function parseWooProducts(html, baseUrl) {
     const to = i + 1 < starts.length ? starts[i + 1].index : Math.min(source.length, from + 8000);
     const block = source.slice(from, to);
 
-    // Product URL: first link into /product/ (or /products/)
-    const urlMatch = block.match(/href="([^"]*\/products?\/[^"]+)"/i);
+    // Product URL: first link matching the store's product-path shape
+    const urlMatch = block.match(productLinkRe);
     if (!urlMatch) continue;
     let productUrl;
     try {
@@ -192,6 +198,129 @@ function parseWooProducts(html, baseUrl) {
 }
 
 // ---------------------------------------------------------------------------
+// FiboSearch (DGWT WC Ajax Search) JSON parser — used by HaSivoov
+// ---------------------------------------------------------------------------
+
+function parseDgwtJson(jsonText) {
+  let payload;
+  try {
+    payload = JSON.parse(jsonText);
+  } catch {
+    return [];
+  }
+
+  const results = [];
+  for (const item of payload.suggestions || []) {
+    if (!item || item.type !== "product" || !item.url) continue;
+    results.push({
+      title: stripTags(String(item.value || "")),
+      product_url: String(item.url),
+      cover_url: resolveUsableCoverUrl(item.thumb_html ? (String(item.thumb_html).match(/src="([^"]+)"/) || [])[1] : null, item.url),
+      price: priceFromHtmlSnippet(String(item.price || "")),
+      in_stock: null,
+    });
+    if (results.length >= MAX_RESULTS_PER_STORE) break;
+  }
+  return results;
+}
+
+// ---------------------------------------------------------------------------
+// Generic link-grid parser — Shopify, Wix, and custom server-rendered
+// storefronts. Finds product links by a configurable path pattern, then
+// pulls title/price/cover from the markup around each link.
+// ---------------------------------------------------------------------------
+
+function titleFromSlug(url) {
+  try {
+    const parts = new URL(url).pathname.split("/").filter(Boolean);
+    const slug = decodeURIComponent(parts[parts.length - 1] || "");
+    return slug.replace(/[-_+]+/g, " ").replace(/\s+/g, " ").trim();
+  } catch {
+    return "";
+  }
+}
+
+function parseLinkGrid(html, baseUrl, productPathRe) {
+  const source = String(html || "");
+  if (!source) return [];
+
+  // Product links may carry tracking query strings (Shopify: ?_pos=…) —
+  // match the path, tolerate an optional ?query/#hash before the closing quote.
+  const linkRe = new RegExp(`href="((?:https?:\\/\\/[^"\\/]+)?${productPathRe})(?:[?#][^"]*)?"`, "gi");
+  const byUrl = new Map(); // canonical url -> { url, positions: [] }
+
+  let match;
+  while ((match = linkRe.exec(source)) !== null) {
+    let url;
+    try {
+      url = new URL(decodeEntities(match[1]), baseUrl).toString();
+    } catch {
+      continue;
+    }
+    const canonical = url.split("#")[0];
+    if (!byUrl.has(canonical)) {
+      byUrl.set(canonical, { url: canonical, positions: [] });
+    }
+    byUrl.get(canonical).positions.push(match.index);
+    if (byUrl.size > 40) break;
+  }
+
+  const results = [];
+  for (const entry of byUrl.values()) {
+    if (results.length >= MAX_RESULTS_PER_STORE) break;
+
+    // Examine a window around each occurrence for title / price / image.
+    let title = "";
+    let price = 0;
+    let coverUrl = null;
+    let inStock = null;
+
+    for (const pos of entry.positions) {
+      const windowHtml = source.slice(pos, Math.min(source.length, pos + 1600));
+
+      if (!title) {
+        const anchorText = windowHtml.match(/^[^>]*>([\s\S]{0,300}?)<\/a>/);
+        const candidate = anchorText ? stripTags(anchorText[1]) : "";
+        if (candidate.length >= 4 && !/^\d+$/.test(candidate)) {
+          title = candidate;
+        }
+      }
+      if (!coverUrl) {
+        const imgMatch = windowHtml.match(/<img[^>]*src="([^"]+\.(?:jpg|jpeg|png|webp|avif|gif)(?:\?[^"]*)?)"/i);
+        if (imgMatch) coverUrl = resolveUsableCoverUrl(decodeEntities(imgMatch[1]), baseUrl);
+        if (!coverUrl) {
+          const altImg = windowHtml.match(/<img[^>]*(?:data-src|srcset)="([^" ]+)/i);
+          if (altImg) coverUrl = resolveUsableCoverUrl(decodeEntities(altImg[1]), baseUrl);
+        }
+      }
+      if (price <= 0) {
+        price = priceFromHtmlSnippet(windowHtml);
+      }
+      if (inStock === null) {
+        const text = stripTags(windowHtml).toLowerCase();
+        if (/אזל מהמלאי|out of stock|sold out/.test(text)) inStock = false;
+      }
+      if (title && price > 0 && coverUrl) break;
+    }
+
+    if (!title) {
+      title = titleFromSlug(entry.url);
+    }
+    if (!title || title.length < 3) continue;
+
+    results.push({
+      title: normalizeDisplayText(title, { stripLeadingFormat: true }) || title,
+      product_url: entry.url,
+      cover_url: coverUrl,
+      price,
+      in_stock: inStock,
+    });
+  }
+
+  return results;
+}
+
+// ---------------------------------------------------------------------------
 // Federation
 // ---------------------------------------------------------------------------
 
@@ -234,7 +363,8 @@ async function searchOneStore(store, query, deadline) {
     return { store: store.storeName, status: "skipped_budget", records: [] };
   }
 
-  const timeoutMs = Math.min(LIVE_STORE_TIMEOUT_MS, budgetLeft - 700);
+  const storeTimeout = Number(store.timeoutMs) || LIVE_STORE_TIMEOUT_MS;
+  const timeoutMs = Math.min(storeTimeout, budgetLeft - 700);
   const encoded = encodeURIComponent(query);
 
   for (const pathTemplate of store.searchPaths) {
@@ -255,7 +385,14 @@ async function searchOneStore(store, query, deadline) {
         continue;
       }
 
-      const parsed = parseWooProducts(attempt.html, store.base);
+      let parsed;
+      if (store.adapter === "dgwt") {
+        parsed = parseDgwtJson(attempt.html);
+      } else if (store.adapter === "linkgrid") {
+        parsed = parseLinkGrid(attempt.html, store.base, store.productPathRe);
+      } else {
+        parsed = parseWooProducts(attempt.html, store.base, store.productPathRe);
+      }
       if (parsed.length > 0) {
         const payload = {
           store: store.storeName,
@@ -281,21 +418,69 @@ async function searchOneStore(store, query, deadline) {
 }
 
 /**
- * Federated live search across all adapter-enabled stores.
- * Returns { records, stores: [{store, status, count}], elapsed_ms }.
- * `knownProductUrls` (Set of canonical URLs) lets the caller drop listings
- * that the cached catalog already shows.
+ * Live verification for stores whose platforms have no query endpoint:
+ * their catalog matches for this query get price/stock re-fetched from the
+ * store's product pages RIGHT NOW. Returns per-record verifications.
+ */
+async function verifyOneStore(store, catalogRecords, deadline) {
+  const candidates = (catalogRecords || []).slice(0, 4).filter((r) => getEnrichmentUrl(r));
+  if (candidates.length === 0) {
+    return { store: store.storeName, status: "no_results", records: [], verified: [] };
+  }
+  if (deadline - Date.now() < 1500) {
+    return { store: store.storeName, status: "skipped_budget", records: [], verified: [] };
+  }
+
+  const verified = [];
+  await Promise.all(
+    candidates.map(async (record) => {
+      const result = await refreshOneRecord(record);
+      if (result.status === "ok") {
+        verified.push({
+          id: result.id,
+          price: result.price,
+          in_stock: result.in_stock,
+          checked_at: result.checked_at,
+        });
+      }
+    })
+  );
+
+  return {
+    store: store.storeName,
+    status: verified.length > 0 ? "verified" : "unreachable",
+    records: [],
+    verified,
+  };
+}
+
+/**
+ * Federated live search + live verification across ALL registered stores.
+ * Returns { records, verified, stores: [{store, status, count}], elapsed_ms }.
+ *  - `records`: fresh listings the cached catalog does not show
+ *  - `verified`: live price/stock confirmations for catalog records from
+ *    stores without a search endpoint (client patches these in place)
+ * `knownProductUrls` drops listings the catalog already shows;
+ * `catalogMatchesByStore` (Map storeName → records) feeds verification.
  */
 async function runLiveSearch(query, options = {}) {
   const startedAt = Date.now();
   const deadline = startedAt + (Number(options.budgetMs) || LIVE_TOTAL_BUDGET_MS);
-  const stores = getLiveSearchableStores();
+  const searchable = getLiveSearchableStores();
+  const revalidate = getRevalidateStores();
+  const catalogMatches = options.catalogMatchesByStore instanceof Map
+    ? options.catalogMatchesByStore
+    : new Map();
 
-  const settled = await Promise.allSettled(
-    stores.map((store) => searchOneStore(store, query, deadline))
-  );
+  const settled = await Promise.allSettled([
+    ...searchable.map((store) => searchOneStore(store, query, deadline)),
+    ...revalidate.map((store) =>
+      verifyOneStore(store, catalogMatches.get(store.storeName.toLowerCase()), deadline)
+    ),
+  ]);
 
   const records = [];
+  const verified = [];
   const storeStatuses = [];
   const seenUrls = new Set();
   const known = options.knownProductUrls instanceof Set ? options.knownProductUrls : new Set();
@@ -314,6 +499,10 @@ async function runLiveSearch(query, options = {}) {
       records.push(record);
       kept += 1;
     }
+    for (const item of payload.verified || []) {
+      verified.push(item);
+      kept += 1;
+    }
     storeStatuses.push({
       store: payload.store,
       status: payload.status,
@@ -324,6 +513,7 @@ async function runLiveSearch(query, options = {}) {
 
   return {
     records,
+    verified,
     stores: storeStatuses,
     elapsed_ms: Date.now() - startedAt,
   };
@@ -398,6 +588,8 @@ module.exports = {
   LIVE_REFRESH_TTL_MS,
   LIVE_REFRESH_MAX_IDS,
   parseWooProducts,
+  parseLinkGrid,
+  parseDgwtJson,
   runLiveSearch,
   runLiveRefresh,
 };
