@@ -35,12 +35,15 @@ const {
 } = require("./enrich.cjs");
 const { getLiveSearchableStores, getRevalidateStores } = require("./live_stores.cjs");
 
-const LIVE_SEARCH_TTL_MS = 10 * 60 * 1000; // per (store, query)
+const LIVE_SEARCH_TTL_MS = 10 * 60 * 1000; // per (store, query), successful results
+// Failures (timeouts/flakes/no_results) retry much sooner — a store that was
+// momentarily slow shouldn't disappear from live results for 10 minutes.
+const LIVE_SEARCH_NEGATIVE_TTL_MS = 2 * 60 * 1000;
 const LIVE_REFRESH_TTL_MS = 10 * 60 * 1000; // per product URL
 const LIVE_STORE_TIMEOUT_MS = 3500; // per store fetch
 // Netlify synchronous functions cap at ~10s; keep the whole federation pass
 // safely inside that (the client treats live results as progressive anyway).
-const LIVE_TOTAL_BUDGET_MS = 7000;
+const LIVE_TOTAL_BUDGET_MS = 6500;
 const MAX_RESULTS_PER_STORE = 12;
 const LIVE_REFRESH_MAX_IDS = 12;
 const LIVE_REFRESH_CONCURRENCY = 6;
@@ -407,13 +410,13 @@ async function searchOneStore(store, query, deadline) {
 
     if (blocked) {
       const payload = { store: store.storeName, status: "blocked", records: [] };
-      liveSearchCache.set(cacheKey, payload);
+      liveSearchCache.set(cacheKey, payload, LIVE_SEARCH_NEGATIVE_TTL_MS);
       return payload;
     }
   }
 
   const payload = { store: store.storeName, status: "no_results", records: [] };
-  liveSearchCache.set(cacheKey, payload);
+  liveSearchCache.set(cacheKey, payload, LIVE_SEARCH_NEGATIVE_TTL_MS);
   return payload;
 }
 
