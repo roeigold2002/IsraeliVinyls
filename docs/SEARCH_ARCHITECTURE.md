@@ -120,15 +120,21 @@ stores' goodwill — so freshness is delivered in three tiers:
 | 3. Federation | the query fanned out to every store's own search endpoint; fresh finds the catalog lacks stream in below results | `/api/live-search?q=…` (also `source=live`) | ~5-7s budgeted, 10-min TTL cache |
 
 Key modules:
-- `lib/live_stores.cjs` — adapter registry. **Adding a store to live search
-  = one entry** (base URL + search paths + adapter type). `adapter: "none"`
-  stores (SPAs/custom platforms) still get tier-2 revalidation via their
-  product pages.
-- `lib/live_search.cjs` — generic WooCommerce card parser (entity-decoded
-  price extraction, `<ins>` sale-price priority, container-class stock),
-  federation runner with a hard time budget (Netlify sync functions cap at
-  ~10s), per-store status reporting (`ok/blocked/no_results/skipped_budget`),
-  and bounded TTL caches (10 min) so repeat queries never re-hit stores.
+- `lib/live_stores.cjs` — adapter registry covering ALL 20 stores. **Adding
+  a store = one entry** (base URL + search paths + adapter type):
+  - `woocommerce` (9 stores) — product-grid parser, custom permalinks via
+    `productPathRe`
+  - `linkgrid` (7) — generic server-rendered link-grid parser for Shopify
+    (Holit, Rolling Dise, Hod Hamahat), Wix (Taklit House), and custom
+    platforms (Vinyl Stock, Disc Center, B-Side Haifa)
+  - `dgwt` (1) — HaSivoov's FiboSearch JSON endpoint
+  - `revalidate` (4) — Transistore, My Records, Tav8, Grooves have no
+    server-side search; their catalog matches get price/stock live-fetched
+    from the store at query time and returned as `verified` patches
+- `lib/live_search.cjs` — parsers + federation runner with a hard time
+  budget (Netlify sync functions cap at ~10s), per-store status reporting
+  (`ok/verified/blocked/no_results/skipped_budget`), 10-min TTL for
+  successes and 2-min negative TTL so momentarily-flaky stores retry fast.
 - Client: `src/lib/liveSearch.ts` + SearchPage — fire-after-render; cached
   results are never blocked on live data; live federation records get
   `live-*` ids and open the store page directly.
