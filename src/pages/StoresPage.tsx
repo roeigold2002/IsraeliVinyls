@@ -192,8 +192,8 @@ export function StoresPage() {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="text-3xl group-hover:scale-110 transition-transform duration-300">
-                      {store.logo_emoji}
+                    <div className="mono w-10 h-10 flex items-center justify-center border border-border text-text-secondary text-sm font-medium" dir="ltr" aria-hidden="true">
+                      {store.name.replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase() || '––'}
                     </div>
                     <div>
                       <h2 className="font-bold text-text-primary">{store.name_he}</h2>
@@ -285,7 +285,7 @@ export function StoresPage() {
                     to={`/?store=${store.id}`}
                     className="block w-full text-center bg-white/4 hover:bg-accent/12 text-text-secondary hover:text-accent py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border border-transparent hover:border-accent/20"
                   >
-                    {store.record_count > 0 ? '🎵 צפה בתקליטים' : '↗ חפש באתר'}
+                    {store.record_count > 0 ? 'צפה בתקליטים' : 'חפש באתר ↗'}
                   </Link>
                 )}
               </div>

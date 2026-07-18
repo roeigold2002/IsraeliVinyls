@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { SlidersHorizontal, X, Music2, Disc3, Radio, RefreshCw } from 'lucide-react'
+import { SlidersHorizontal, X, Radio, RefreshCw } from 'lucide-react'
 import { SearchBar } from '../components/SearchBar'
 import { RecordGrid } from '../components/RecordGrid'
 import { Pagination } from '../components/Pagination'
@@ -26,33 +26,30 @@ function normalizePerPage(value: number): number {
 
 function HomeView({ onSearch }: { onSearch: (q: string) => void }) {
   return (
-    <section className="min-h-[calc(100vh-12rem)] flex items-center justify-center py-6">
-      <div className="w-full max-w-3xl text-center">
-        <div className="mb-8 flex flex-col items-center gap-4">
-          <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-accent/25 blur-2xl" />
-            <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl border border-accent/35 bg-gradient-to-br from-accent/20 via-bg-card to-bg-secondary shadow-xl shadow-accent/10">
-              <Disc3
-                className="h-10 w-10 text-accent"
-                style={{ animation: 'spin 9s linear infinite' }}
-              />
-              <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white shadow-lg shadow-accent/40">
-                V
-              </span>
-            </div>
-          </div>
+    <section className="min-h-[calc(100vh-16rem)] flex items-center py-16">
+      <div className="w-full max-w-2xl mx-auto">
+        <p className="eyebrow mb-5">מנוע השוואת תקליטים · ישראל</p>
 
-          <div className="space-y-2">
-            <h1 className="latin-text text-3xl md:text-4xl font-black tracking-tight text-text-primary">
-              Project V Vinyl Finder
-            </h1>
-            <p className="mx-auto max-w-xl text-sm md:text-base text-text-secondary">
-              המחט יורדת, הגילוי מתחיל. מצאו תקליטים חמים מכל החנויות במקום אחד.
-            </p>
-          </div>
-        </div>
+        <h1 className="text-[34px] sm:text-5xl font-bold tracking-tight text-text-primary leading-[1.12] mb-3">
+          כל תקליט שנמכר בארץ.
+          <br />
+          המחיר האמיתי שלו, עכשיו.
+        </h1>
+
+        <p className="text-[15px] text-text-secondary leading-relaxed mb-10 max-w-md">
+          חיפוש אחד סורק את כל חנויות הוויניל בישראל, מצליב מחירים
+          ומאמת אותם מול החנות ברגע החיפוש.
+        </p>
 
         <SearchBar large autoFocus onSearch={onSearch} />
+
+        <div className="mono flex items-center gap-5 mt-6 text-[11px] text-text-muted" dir="ltr">
+          <span>97,000+ records</span>
+          <span className="w-px h-3 bg-border" aria-hidden="true" />
+          <span>20 stores</span>
+          <span className="w-px h-3 bg-border" aria-hidden="true" />
+          <span>live-verified prices</span>
+        </div>
       </div>
     </section>
   )
@@ -290,9 +287,8 @@ export function SearchPage() {
             <div className="flex items-center gap-3">
               {result && !loading && (
                 <div className="flex items-center gap-2">
-                  <Music2 size={15} className="text-text-muted" />
                   <span className="text-text-secondary text-sm">
-                    <span className="text-text-primary font-semibold">{result.total.toLocaleString('he-IL')}</span> תוצאות
+                    <span className="mono text-text-primary font-semibold">{result.total.toLocaleString('he-IL')}</span> תוצאות
                     {filters.query && (
                       <span className="text-text-muted"> עבור "<span className="latin-text">{filters.query}</span>"</span>
                     )}
@@ -315,12 +311,12 @@ export function SearchPage() {
               {!loading && refreshing && (
                 <span className="flex items-center gap-1.5 text-[11px] text-text-muted" title="בודק מחירים עדכניים מהחנויות">
                   <RefreshCw size={11} className="animate-spin" />
-                  מעדכן מחירים...
+                  מעדכן מחירים…
                 </span>
               )}
               {!loading && !refreshing && refreshedCount !== null && (
-                <span className="flex items-center gap-1 text-[11px] text-success/80" title="המחירים והמלאי אומתו מול אתרי החנויות">
-                  <RefreshCw size={11} />
+                <span className="flex items-center gap-1.5 text-[11px] text-accent" title="המחירים והמלאי אומתו מול אתרי החנויות">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent" aria-hidden="true" />
                   {refreshedCount > 0 ? `${refreshedCount} מחירים עודכנו` : 'המחירים מאומתים'}
                 </span>
               )}
@@ -330,7 +326,7 @@ export function SearchPage() {
               <select
                 value={filters.perPage}
                 onChange={(e) => updateParam('per_page', e.target.value)}
-                className="bg-bg-card border border-border rounded-xl text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50 cursor-pointer hover:border-border-light transition-colors"
+                className="bg-transparent border border-border text-text-secondary text-[13px] px-3 py-2 outline-none focus:border-accent cursor-pointer hover:text-text-primary hover:border-border-light transition-colors duration-150"
                 title="כמות תוצאות בעמוד"
               >
                 {PAGE_SIZE_OPTIONS.map((option) => (
@@ -343,7 +339,7 @@ export function SearchPage() {
               <select
                 value={filters.sortBy}
                 onChange={(e) => updateParam('sort', e.target.value)}
-                className="bg-bg-card border border-border rounded-xl text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50 cursor-pointer hover:border-border-light transition-colors"
+                className="bg-transparent border border-border text-text-secondary text-[13px] px-3 py-2 outline-none focus:border-accent cursor-pointer hover:text-text-primary hover:border-border-light transition-colors duration-150"
               >
                 {SORT_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>
@@ -354,16 +350,16 @@ export function SearchPage() {
 
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 border text-[13px] font-medium transition-colors duration-150 ${
                   showFilters || hasActiveFilters
-                    ? 'bg-accent/15 text-accent border border-accent/30'
-                    : 'bg-bg-card border border-border text-text-secondary hover:text-text-primary hover:border-border-light'
+                    ? 'border-accent text-accent'
+                    : 'border-border text-text-secondary hover:text-text-primary hover:border-border-light'
                 }`}
               >
-                <SlidersHorizontal size={15} />
+                <SlidersHorizontal size={14} />
                 סינון
                 {hasActiveFilters && (
-                  <span className="bg-accent text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                  <span className="mono bg-accent text-ink text-[10px] min-w-4 h-4 px-1 flex items-center justify-center font-semibold" dir="ltr">
                     {activeFilterCount}
                   </span>
                 )}
@@ -372,9 +368,9 @@ export function SearchPage() {
           </div>
 
           {showFilters && (
-            <div className="bg-bg-card border border-border rounded-2xl p-5 mb-6 animate-fade-in">
+            <div className="bg-bg-secondary border border-border p-5 mb-8 animate-fade-in">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-text-primary text-sm">סינון תוצאות</h3>
+                <h3 className="eyebrow">סינון תוצאות</h3>
                 {hasActiveFilters && (
                   <button
                     onClick={clearFilters}
@@ -388,7 +384,7 @@ export function SearchPage() {
 
               <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-5">
                 <div>
-                  <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">חנויות</label>
+                  <label className="eyebrow mb-2 block">חנויות</label>
                   <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
                     {stores.map((s) => {
                       const isBlocked = s.connectivity_status === 'blocked'
@@ -399,15 +395,15 @@ export function SearchPage() {
                             if (!isBlocked) toggleArrayParam('store', s.id)
                           }}
                           disabled={isBlocked}
-                          className={`text-[11px] px-2.5 py-1 rounded-full transition-all border ${
+                          className={`text-[11.5px] px-2.5 py-1 transition-colors duration-150 border ${
                             isBlocked
-                              ? 'bg-red-500/10 text-red-300 border-red-500/30 cursor-not-allowed'
+                              ? 'text-text-muted border-border cursor-not-allowed line-through'
                               : filters.storeIds.includes(s.id)
-                                ? 'bg-accent text-white border-accent'
-                                : 'bg-white/4 text-text-secondary border-transparent hover:text-text-primary hover:bg-white/8'
+                                ? 'bg-accent text-ink border-accent font-semibold'
+                                : 'text-text-secondary border-border hover:text-text-primary hover:border-border-light'
                           }`}
                         >
-                          {s.logo_emoji} {s.name_he}
+                          {s.name_he}
                           {isBlocked ? ' (חסום)' : s.record_count === 0 ? ' ↗' : ''}
                         </button>
                       )
@@ -419,16 +415,16 @@ export function SearchPage() {
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">ז'אנר</label>
+                  <label className="eyebrow mb-2 block">ז'אנר</label>
                   <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
                     {genres.map((g) => (
                       <button
                         key={g}
                         onClick={() => toggleArrayParam('genre', g)}
-                        className={`text-[11px] px-2.5 py-1 rounded-full transition-all border latin-text ${
+                        className={`text-[11.5px] px-2.5 py-1 transition-colors duration-150 border latin-text ${
                           filters.genres.includes(g)
-                            ? 'bg-accent text-white border-accent'
-                            : 'bg-white/4 text-text-secondary border-transparent hover:text-text-primary hover:bg-white/8'
+                            ? 'bg-accent text-ink border-accent font-semibold'
+                            : 'text-text-secondary border-border hover:text-text-primary hover:border-border-light'
                         }`}
                       >
                         {g}
@@ -441,16 +437,16 @@ export function SearchPage() {
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">פורמט</label>
+                  <label className="eyebrow mb-2 block">פורמט</label>
                   <div className="flex flex-wrap gap-1.5">
                     {FORMATS.map((f) => (
                       <button
                         key={f}
                         onClick={() => toggleArrayParam('format', f)}
-                        className={`text-[11px] px-2.5 py-1 rounded-full transition-all border latin-text ${
+                        className={`text-[11.5px] px-2.5 py-1 transition-colors duration-150 border latin-text ${
                           filters.formats.includes(f)
-                            ? 'bg-accent text-white border-accent'
-                            : 'bg-white/4 text-text-secondary border-transparent hover:text-text-primary hover:bg-white/8'
+                            ? 'bg-accent text-ink border-accent font-semibold'
+                            : 'text-text-secondary border-border hover:text-text-primary hover:border-border-light'
                         }`}
                       >
                         {f}
@@ -460,14 +456,14 @@ export function SearchPage() {
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">מחיר (₪)</label>
+                  <label className="eyebrow mb-2 block">מחיר (₪)</label>
                   <div className="flex items-center gap-2">
                     <input
                       type="number"
                       placeholder="מ-"
                       value={filters.priceMin ?? ''}
                       onChange={(e) => updateParam('pmin', e.target.value || null)}
-                      className="w-full bg-white/4 border border-border rounded-lg text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50 placeholder:text-text-muted"
+                      className="mono w-full bg-transparent border border-border text-text-primary text-sm px-3 py-2 outline-none focus:border-accent placeholder:text-text-muted"
                     />
                     <span className="text-text-muted text-sm">-</span>
                     <input
@@ -475,19 +471,19 @@ export function SearchPage() {
                       placeholder="עד"
                       value={filters.priceMax ?? ''}
                       onChange={(e) => updateParam('pmax', e.target.value || null)}
-                      className="w-full bg-white/4 border border-border rounded-lg text-text-primary text-sm px-3 py-2 outline-none focus:border-accent/50 placeholder:text-text-muted"
+                      className="mono w-full bg-transparent border border-border text-text-primary text-sm px-3 py-2 outline-none focus:border-accent placeholder:text-text-muted"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-text-muted font-semibold mb-2 block uppercase tracking-wide">זמינות</label>
+                  <label className="eyebrow mb-2 block">זמינות</label>
                   <button
                     onClick={() => updateParam('in_stock', filters.onlyInStock ? null : '1')}
-                    className={`w-full text-sm px-3 py-2 rounded-xl border transition-all font-medium ${
+                    className={`w-full text-[13px] px-3 py-2 border transition-colors duration-150 font-medium ${
                       filters.onlyInStock
-                        ? 'bg-success/15 border-success/30 text-success'
-                        : 'bg-white/4 border-border text-text-secondary hover:text-text-primary hover:bg-white/8'
+                        ? 'bg-accent text-ink border-accent font-semibold'
+                        : 'border-border text-text-secondary hover:text-text-primary hover:border-border-light'
                     }`}
                   >
                     {filters.onlyInStock ? '✓ ' : ''} רק במלאי
@@ -498,15 +494,14 @@ export function SearchPage() {
           )}
 
           {loadError && (
-            <div className="rounded-xl border border-red-500/30 bg-red-500/8 px-4 py-3 text-sm text-red-300 mb-6 flex items-center gap-2">
-              <X size={16} className="shrink-0" />
+            <div className="border border-error/40 border-r-2 border-r-error px-4 py-3 text-sm text-error mb-6">
               שגיאה בטעינת הנתונים: {loadError}
             </div>
           )}
 
           {selectedStoresWithoutLocalCatalog.length > 0 && (
-            <div className="rounded-xl border border-accent/25 bg-accent/8 px-4 py-3 mb-6">
-              <p className="text-sm text-text-primary mb-2">
+            <div className="border border-border px-4 py-3 mb-8">
+              <p className="text-[13px] text-text-secondary mb-2.5">
                 חפשו ישירות באתרי החנויות שנבחרו:
               </p>
               <div className="flex flex-wrap gap-2">
@@ -516,9 +511,9 @@ export function SearchPage() {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs px-3 py-1.5 rounded-full bg-white/8 text-text-secondary hover:text-accent hover:bg-accent/10 transition-all border border-border hover:border-accent/30"
+                    className="text-xs px-3 py-1.5 text-text-secondary hover:text-accent transition-colors duration-150 border border-border hover:border-accent"
                   >
-                    {store.logo_emoji} {store.name_he} ↗
+                    {store.name_he} ↗
                   </a>
                 ))}
               </div>
@@ -541,26 +536,25 @@ export function SearchPage() {
 
           {/* Real-time federation: fresh finds from the stores' own search */}
           {liveQuery.length >= 2 && (liveLoading || (liveResult && liveResult.records.length > 0)) && (
-            <section className="mt-10">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="w-8 h-8 rounded-xl bg-accent/15 flex items-center justify-center">
-                  <Radio size={16} className={`text-accent ${liveLoading ? 'animate-pulse' : ''}`} />
-                </span>
-                <h2 className="text-lg font-bold text-text-primary">
-                  {liveLoading ? 'סורק את החנויות בזמן אמת...' : 'נמצאו עכשיו בחנויות'}
-                </h2>
+            <section className="mt-14 hairline-t pt-8">
+              <div className="flex items-baseline justify-between gap-3 mb-6">
+                <div className="flex items-center gap-2.5">
+                  <Radio size={14} className={`text-accent ${liveLoading ? 'animate-pulse' : ''}`} />
+                  <h2 className="text-[15px] font-bold text-text-primary tracking-tight">
+                    {liveLoading ? 'סורק את החנויות בזמן אמת…' : 'נמצאו עכשיו בחנויות'}
+                  </h2>
+                </div>
                 {liveResult && !liveLoading && (
-                  <span className="text-xs text-text-muted">
-                    {liveResult.records.length} פריטים חדשים ·{' '}
-                    {liveResult.stores.filter((s) => s.status === 'ok' || s.status === 'verified').length} חנויות הגיבו
+                  <span className="mono text-[11px] text-text-muted shrink-0" dir="ltr">
+                    {liveResult.records.length} new · {liveResult.stores.filter((s) => s.status === 'ok' || s.status === 'verified').length} stores
                   </span>
                 )}
               </div>
 
               {liveLoading && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="aspect-[3/4] shimmer rounded-2xl" />
+                    <div key={i} className="aspect-square shimmer" />
                   ))}
                 </div>
               )}

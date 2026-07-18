@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
-@theme {
-  --color-bg-primary: #0b0b14;
-  --color-bg-secondary: #111122;
-  --color-bg-card: #14142a;
-  --color-bg-card-hover: #1a1a35;
-  --color-accent: #e94560;
-  --color-accent-hover: #ff6b81;
-  --color-accent-muted: #e9456022;
-  --color-text-primary: #f0f0f8;
-  --color-text-secondary: #9090b0;
-  --color-text-muted: #58587a;
-  --color-border: #1e1e36;
-  --color-border-light: #2a2a48;
-  --color-success: #2ecc71;
-  --color-warning: #f39c12;
-  --color-error: #e74c3c;
-  --color-teal: #0abde3;
-  --color-gold: #f0c040;
+/* Aesthetic direction: "Night Pressing" — confident / tactile / precise.
+ * - Type: IBM Plex Sans Hebrew (display + body, 400/500/600/700)
+ *         + IBM Plex Mono (prices, counts, meta, latin record titles).
+ * - Color: cool-ink tone. bg #101114 / raised #16181D / hover #1B1E24.
+ *          Text #E9EAEC / secondary #9BA0A8 / muted #61656D.
+ *          One accent: chartreuse #C9E64F (record-sticker green) — filled
+ *          only on the primary CTA and price emphasis.
+ *          Semantic, toned to ink: ok #7CC08E / warn #D8B25F / err #D9705F.
+ * - Density: tight on data surfaces, loose in the hero only. 4px scale.
+ * - Radius: sharp (2–4px). Shadows: none — hairlines + surface contrast.
+ * - Components: ghost/outlined default; filled accent = primary CTA only.
+ * - Icons: lucide. No emoji in UI chrome.
+ * - Motion: quiet. 150ms ease-out state changes; no entrance theatrics.
+ */
 
-  --font-family-hebrew: 'Heebo', sans-serif;
-  --font-family-latin: 'Inter', sans-serif;
+@theme {
+  --color-bg-primary: #101114;
+  --color-bg-secondary: #121418;
+  --color-bg-card: #16181d;
+  --color-bg-card-hover: #1b1e24;
+  --color-accent: #c9e64f;
+  --color-accent-hover: #daf06e;
+  --color-accent-muted: #c9e64f1f;
+  --color-ink: #101114;
+  --color-text-primary: #e9eaec;
+  --color-text-secondary: #9ba0a8;
+  --color-text-muted: #61656d;
+  --color-border: #23262c;
+  --color-border-light: #31353d;
+  --color-success: #7cc08e;
+  --color-warning: #d8b25f;
+  --color-error: #d9705f;
+  --color-teal: #6fb3bf;
+  --color-gold: #d8b25f;
+
+  /* Plex Mono lacks U+20AA (₪) — the Hebrew sans follows it in the stack so
+   * currency and Hebrew glyphs fall back per-character without tofu. */
+  --font-family-hebrew: 'IBM Plex Sans Hebrew', system-ui, sans-serif;
+  --font-family-latin: 'IBM Plex Mono', 'IBM Plex Sans Hebrew', ui-monospace, monospace;
+  --font-family-mono: 'IBM Plex Mono', 'IBM Plex Sans Hebrew', ui-monospace, monospace;
+
+  /* Sharpen the whole app: existing rounded-* utilities resolve to these. */
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 3px;
+  --radius-xl: 3px;
+  --radius-2xl: 4px;
+  --radius-3xl: 6px;
 }
 
 * {
@@ -41,8 +68,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+::selection {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -51,11 +83,15 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-border-light);
-  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 @keyframes spin-slow {
@@ -64,18 +100,8 @@ body {
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slide-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 24px #e9456030; }
-  50% { box-shadow: 0 0 48px #e9456055; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes shimmer {
@@ -88,15 +114,12 @@ body {
 }
 
 .animate-fade-in {
-  animation: fade-in 0.4s ease-out forwards;
+  animation: fade-in 0.25s ease-out forwards;
 }
 
+/* Legacy alias kept for pages not yet reworked. */
 .animate-slide-up {
-  animation: slide-up 0.5s ease-out forwards;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
+  animation: fade-in 0.25s ease-out forwards;
 }
 
 .shimmer {
@@ -107,39 +130,57 @@ body {
     var(--color-bg-card) 100%
   );
   background-size: 800px 100%;
-  animation: shimmer 1.5s infinite linear;
+  animation: shimmer 1.6s infinite linear;
 }
 
-.stagger-1 { animation-delay: 0.05s; }
-.stagger-2 { animation-delay: 0.1s; }
-.stagger-3 { animation-delay: 0.15s; }
-.stagger-4 { animation-delay: 0.2s; }
-.stagger-5 { animation-delay: 0.25s; }
-.stagger-6 { animation-delay: 0.3s; }
+.stagger-1, .stagger-2, .stagger-3, .stagger-4, .stagger-5, .stagger-6 {
+  animation-delay: 0s;
+}
 
+/* Latin record titles and any numeric/meta text: the mono voice. */
 .latin-text {
   font-family: var(--font-family-latin);
   direction: ltr;
   unicode-bidi: isolate;
 }
 
-input::placeholder {
+.mono {
+  font-family: var(--font-family-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ₪ inside mono price runs — Plex Mono has no U+20AA. */
+.shekel {
   font-family: var(--font-family-hebrew);
 }
 
+/* Small-caps letterspaced label — section eyebrows, table headers, meta. */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.hairline-t { border-top: 1px solid var(--color-border); }
+.hairline-b { border-bottom: 1px solid var(--color-border); }
+
+input::placeholder {
+  font-family: var(--font-family-hebrew);
+  color: var(--color-text-muted);
+}
+
+/* Legacy utility names kept so untouched pages don't break; both are now
+ * flat ink surfaces (no blur, no glow — direction forbids them). */
 .glass {
-  background: rgba(20, 20, 42, 0.8);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--color-bg-primary);
 }
 
 .glow-accent {
-  box-shadow: 0 0 30px rgba(233, 69, 96, 0.2);
+  box-shadow: none;
 }
 
 .price-badge {
-  background: linear-gradient(135deg, #e94560, #c73652);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-accent);
 }

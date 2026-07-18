@@ -242,7 +242,6 @@ export function StatsPage() {
               .filter(s => s.avg_price > 0)
               .sort((a, b) => a.avg_price - b.avg_price)
               .map(store => {
-                const storeInfo = STORE_MAP[store.name_he]
                 return (
                   <Link
                     key={store.id}
@@ -250,7 +249,7 @@ export function StatsPage() {
                     className="flex items-center justify-between p-3 rounded-xl hover:bg-bg-card-hover transition-colors group"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-lg">{storeInfo?.emoji ?? '🎵'}</span>
+                      <span className="mono text-[11px] text-text-muted border border-border w-7 h-7 flex items-center justify-center shrink-0" dir="ltr" aria-hidden="true">{store.name.replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase() || '--'}</span>
                       <span className="text-text-secondary group-hover:text-text-primary transition-colors">
                         {store.name_he}
                       </span>

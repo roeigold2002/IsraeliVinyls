@@ -21,6 +21,7 @@ import { DEFAULT_COVER } from '../lib/constants'
 import { fetchItunesCoverForRecord } from '../lib/itunesCover'
 import type { VinylRecord } from '../lib/types'
 import { buildStoreSearchUrl } from '../lib/storeCatalog'
+import { Price } from '../components/Price'
 
 type LinkState = 'unknown' | 'checking' | 'healthy' | 'stale'
 
@@ -231,7 +232,7 @@ export function RecordPage() {
 
       <div className="grid md:grid-cols-2 gap-10 mb-16">
         <div className="relative">
-          <div className="aspect-square rounded-2xl overflow-hidden bg-bg-card border border-border shadow-2xl">
+          <div className="aspect-square overflow-hidden bg-bg-card border border-border">
             {!imgLoaded && <div className="absolute inset-0 shimmer" />}
             <img
               src={coverSrc}
@@ -241,53 +242,53 @@ export function RecordPage() {
               onError={() => { setImgError(true); setImgLoaded(true) }}
             />
           </div>
-          <div className="absolute -inset-4 rounded-3xl bg-gradient-to-b from-accent/5 to-transparent blur-2xl -z-10 opacity-60" />
+
         </div>
 
         <div className="flex flex-col">
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-text-primary latin-text mb-2 leading-tight">
-              {record.album}
-            </h1>
             <button
               onClick={() => navigate(`/?q=${encodeURIComponent(record.artist)}`)}
-              className="text-xl text-accent hover:text-accent-hover transition-colors latin-text font-medium"
+              className="latin-text text-[13px] text-text-secondary hover:text-accent transition-colors duration-150 tracking-wide"
             >
               {record.artist}
             </button>
+            <h1 className="text-3xl sm:text-4xl font-bold text-text-primary latin-text mt-1.5 mb-2 leading-[1.15] tracking-tight">
+              {record.album}
+            </h1>
 
             <div className="flex flex-wrap gap-2 mt-6">
               {displayYear && (
-                <div className="flex items-center gap-1.5 bg-white/5 rounded-lg px-3 py-1.5 text-sm border border-border/50">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] border border-border">
                   <Calendar size={13} className="text-text-muted" />
-                  <span className="text-text-primary latin-text font-medium">{displayYear}</span>
+                  <span className="mono text-text-primary" dir="ltr">{displayYear}</span>
                 </div>
               )}
               {record.genre && (
-                <div className="flex items-center gap-1.5 bg-white/5 rounded-lg px-3 py-1.5 text-sm border border-border/50">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] border border-border">
                   <Music size={13} className="text-text-muted" />
                   <span className="text-text-primary latin-text">{record.genre}</span>
                 </div>
               )}
               {record.format && (
-                <div className="flex items-center gap-1.5 bg-white/5 rounded-lg px-3 py-1.5 text-sm border border-border/50">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] border border-border">
                   <Disc3 size={13} className="text-text-muted" />
                   <span className="text-text-primary latin-text">{record.format}</span>
                 </div>
               )}
               {record.condition && (
-                <div className="flex items-center gap-1.5 bg-white/5 rounded-lg px-3 py-1.5 text-sm border border-border/50">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] border border-border">
                   <Tag size={13} className="text-text-muted" />
                   <span className="text-text-primary latin-text">{record.condition}</span>
                 </div>
               )}
               {record.in_stock === true && (
-                <div className="flex items-center gap-1.5 bg-success/10 border border-success/20 rounded-lg px-3 py-1.5 text-sm text-success font-medium">
+                <div className="flex items-center gap-1.5 border border-success/50 px-3 py-1.5 text-[13px] text-success font-medium">
                   ✓ במלאי
                 </div>
               )}
               {isOutOfStock && (
-                <div className="flex items-center gap-1.5 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-1.5 text-sm text-red-400">
+                <div className="flex items-center gap-1.5 border border-error/50 px-3 py-1.5 text-[13px] text-error">
                   אזל מהמלאי
                 </div>
               )}
@@ -296,9 +297,8 @@ export function RecordPage() {
             {record.store && (
               <Link
                 to={`/?store=${record.store.id}`}
-                className="flex items-center gap-3 mt-6 bg-white/4 rounded-xl p-4 hover:bg-white/6 transition-colors border border-border/50 hover:border-border-light group"
+                className="flex items-center gap-3 mt-6 p-4 transition-colors duration-150 border border-border hover:border-border-light group"
               >
-                <span className="text-3xl group-hover:scale-110 transition-transform">{record.store.logo_emoji}</span>
                 <div>
                   <div className="text-sm font-semibold text-text-primary">{record.store.name_he}</div>
                   <div className="text-xs text-text-muted flex items-center gap-1 mt-0.5">
@@ -318,7 +318,7 @@ export function RecordPage() {
             <div className="mb-5">
               {hasPrice ? (
                 <>
-                  <div className="text-4xl font-black text-accent mb-1">{formatPrice(displayPrice)}</div>
+                  <div className="mb-1"><Price value={displayPrice} className="text-4xl font-semibold text-accent" /></div>
                   <div className="text-xs text-text-muted">המחיר עשוי להשתנות. לחצו לרכישה באתר החנות.</div>
                 </>
               ) : (
@@ -340,7 +340,7 @@ export function RecordPage() {
               {isOutOfStock ? (
                 <button
                   disabled
-                  className="flex-1 flex items-center justify-center gap-2 bg-red-500/10 border border-red-500/30 text-red-400 font-medium py-3.5 rounded-xl cursor-not-allowed text-sm"
+                  className="flex-1 flex items-center justify-center gap-2 border border-border text-text-muted font-medium py-3.5 cursor-not-allowed text-sm"
                 >
                   אזל מהמלאי
                 </button>
@@ -349,7 +349,7 @@ export function RecordPage() {
                   href={linkState === 'stale' && fallbackOutboundUrl ? fallbackOutboundUrl : record.product_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-accent/20 hover:shadow-accent/40 text-sm"
+                  className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-ink font-bold py-3.5 transition-colors duration-150 text-sm"
                 >
                   <ShoppingCart size={17} />
                   {linkState === 'checking'
@@ -366,24 +366,24 @@ export function RecordPage() {
                   href={fallbackOutboundUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-accent/20 hover:shadow-accent/40 text-sm"
+                  className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-ink font-bold py-3.5 transition-colors duration-150 text-sm"
                 >
                   <ShoppingCart size={17} />
                   פתח חיפוש בחנות
                   <ExternalLink size={14} />
                 </a>
               ) : (
-                <div className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-border text-text-secondary py-3.5 rounded-xl text-sm cursor-default">
+                <div className="flex-1 flex items-center justify-center gap-2 border border-border text-text-secondary py-3.5 text-sm cursor-default">
                   אין קישור לרכישה
                 </div>
               )}
               <button
                 onClick={handleWishlist}
                 aria-label={inWishlist ? 'הסר ממועדפים' : 'הוסף למועדפים'}
-                className={`px-4 py-3.5 rounded-xl border transition-all duration-200 ${
+                className={`px-4 py-3.5 border transition-colors duration-150 ${
                   inWishlist
-                    ? 'bg-accent/15 border-accent/40 text-accent shadow-lg shadow-accent/10'
-                    : 'border-border text-text-secondary hover:text-accent hover:border-accent/30 hover:bg-accent/5'
+                    ? 'border-accent text-accent'
+                    : 'border-border text-text-secondary hover:text-accent hover:border-accent'
                 }`}
               >
                 <Heart size={18} fill={inWishlist ? 'currentColor' : 'none'} />
@@ -395,40 +395,37 @@ export function RecordPage() {
 
       {priceComparison.length > 0 && (
         <section className="mb-16">
-          <h2 className="text-xl font-bold text-text-primary mb-5 flex items-center gap-2">
-            <span className="w-8 h-8 rounded-xl bg-warning/15 flex items-center justify-center">
-              <Tag size={16} className="text-warning" />
-            </span>
-            השוואת מחירים
-          </h2>
-          <div className="bg-bg-card border border-border rounded-2xl overflow-hidden">
+          <div className="hairline-t pt-6 mb-5">
+            <h2 className="text-[15px] font-bold text-text-primary tracking-tight">השוואת מחירים</h2>
+          </div>
+          <div className="border border-border overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border bg-white/2 text-text-muted text-xs">
-                  <th className="text-right py-3 px-4 font-semibold uppercase tracking-wide">חנות</th>
-                  <th className="text-right py-3 px-4 font-semibold uppercase tracking-wide">פורמט</th>
-                  <th className="text-right py-3 px-4 font-semibold uppercase tracking-wide">מחיר</th>
+                <tr className="hairline-b text-text-muted text-xs">
+                  <th className="eyebrow text-right py-3 px-4">חנות</th>
+                  <th className="eyebrow text-right py-3 px-4">פורמט</th>
+                  <th className="eyebrow text-right py-3 px-4">מחיר</th>
                   <th className="py-3 px-4" />
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-border/50 bg-accent/5">
+                <tr className="hairline-b bg-bg-secondary">
                   <td className="py-3.5 px-4">
                     <span className="text-sm font-semibold text-text-primary">
-                      {record.store?.logo_emoji} {record.store?.name_he}
+                      {record.store?.name_he}
                     </span>
                   </td>
                   <td className="py-3.5 px-4 text-sm text-text-secondary latin-text">{record.format}</td>
-                  <td className="py-3.5 px-4 text-accent font-bold text-base">{formatPrice(displayPrice)}</td>
+                  <td className="py-3.5 px-4"><Price value={displayPrice} className="text-accent font-medium text-[15px]" /></td>
                   <td className="py-3.5 px-4 text-xs text-accent font-medium">צופה כעת</td>
                 </tr>
                 {priceComparison.map(r => {
                   const isCheaper = r.price > 0 && displayPrice > 0 && r.price < displayPrice
                   const isMoreExpensive = r.price > 0 && displayPrice > 0 && r.price > displayPrice
                   return (
-                    <tr key={r.id} className="border-b border-border/30 hover:bg-white/2 transition-colors">
+                    <tr key={r.id} className="hairline-b hover:bg-bg-secondary transition-colors duration-150">
                       <td className="py-3.5 px-4">
-                        <span className="text-sm text-text-primary">{r.store?.logo_emoji} {r.store?.name_he}</span>
+                        <span className="text-sm text-text-primary">{r.store?.name_he}</span>
                       </td>
                       <td className="py-3.5 px-4 text-sm text-text-secondary latin-text">{r.format}</td>
                       <td className="py-3.5 px-4 font-bold">
@@ -454,12 +451,9 @@ export function RecordPage() {
 
       {similar.filter(s => s.id !== record.id).length > 0 && (
         <section>
-          <h2 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-2">
-            <span className="w-8 h-8 rounded-xl bg-teal/15 flex items-center justify-center">
-              <Music size={16} className="text-teal" />
-            </span>
-            אולי יעניין אותך גם
-          </h2>
+          <div className="hairline-t pt-6 mb-6">
+            <h2 className="text-[15px] font-bold text-text-primary tracking-tight">אולי יעניין אותך גם</h2>
+          </div>
           <RecordGrid records={similarToShow} />
           {similar.filter(s => s.id !== record.id).length > 6 && (
             <div className="text-center mt-6">

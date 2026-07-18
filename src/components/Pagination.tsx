@@ -34,7 +34,7 @@ export function Pagination({ page, totalPages, total = 0, perPage = 50, onPageCh
 
   return (
     <div className="mt-8 space-y-3" dir="ltr">
-      <div className="text-center text-xs text-text-muted">
+      <div className="mono text-center text-[11px] text-text-muted">
         {startItem.toLocaleString('he-IL')} - {endItem.toLocaleString('he-IL')} מתוך {total.toLocaleString('he-IL')}
       </div>
 
@@ -42,7 +42,7 @@ export function Pagination({ page, totalPages, total = 0, perPage = 50, onPageCh
         <button
           onClick={() => onPageChange(1)}
           disabled={page <= 1}
-          className="px-2.5 h-9 rounded-lg text-xs text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all disabled:opacity-30 disabled:pointer-events-none"
+          className="px-2.5 h-9 text-xs text-text-secondary hover:text-text-primary transition-colors duration-150 disabled:opacity-30 disabled:pointer-events-none"
           title="עמוד ראשון"
         >
           ראשון
@@ -51,7 +51,7 @@ export function Pagination({ page, totalPages, total = 0, perPage = 50, onPageCh
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
-          className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all disabled:opacity-30 disabled:pointer-events-none"
+          className="p-2 text-text-secondary hover:text-text-primary transition-colors duration-150 disabled:opacity-30 disabled:pointer-events-none"
           title="עמוד קודם"
         >
           <ChevronLeft size={18} />
@@ -66,10 +66,10 @@ export function Pagination({ page, totalPages, total = 0, perPage = 50, onPageCh
             <button
               key={p}
               onClick={() => onPageChange(p)}
-              className={`min-w-[36px] h-9 rounded-lg text-sm font-medium transition-all ${
+              className={`mono min-w-[34px] h-9 text-[13px] transition-colors duration-150 ${
                 p === page
-                  ? 'bg-accent text-white'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                  ? 'text-ink bg-accent font-semibold'
+                  : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               {p}
@@ -80,7 +80,7 @@ export function Pagination({ page, totalPages, total = 0, perPage = 50, onPageCh
         <button
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
-          className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all disabled:opacity-30 disabled:pointer-events-none"
+          className="p-2 text-text-secondary hover:text-text-primary transition-colors duration-150 disabled:opacity-30 disabled:pointer-events-none"
           title="עמוד הבא"
         >
           <ChevronRight size={18} />
@@ -89,7 +89,7 @@ export function Pagination({ page, totalPages, total = 0, perPage = 50, onPageCh
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={page >= totalPages}
-          className="px-2.5 h-9 rounded-lg text-xs text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all disabled:opacity-30 disabled:pointer-events-none"
+          className="px-2.5 h-9 text-xs text-text-secondary hover:text-text-primary transition-colors duration-150 disabled:opacity-30 disabled:pointer-events-none"
           title="עמוד אחרון"
         >
           אחרון
@@ -111,7 +111,7 @@ export function Pagination({ page, totalPages, total = 0, perPage = 50, onPageCh
             const clamped = Math.max(1, Math.min(totalPages, Math.trunc(parsed)))
             onPageChange(clamped)
           }}
-          className="w-20 bg-bg-card border border-border rounded-lg text-text-primary text-sm px-2.5 py-1.5 outline-none focus:border-accent/50"
+          className="mono w-16 bg-transparent border border-border text-text-primary text-sm px-2.5 py-1.5 outline-none focus:border-accent"
         />
       </div>
     </div>

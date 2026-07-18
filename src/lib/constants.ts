@@ -1,10 +1,12 @@
 import type { SortOption } from './types'
 import { STORE_VISUAL_MAP } from './storeCatalog'
 
+// Placeholder sleeve: a quiet pressed record on ink — grooves as thin rings,
+// chartreuse label dot. Deliberately unbranded so real covers stay the heroes.
 export const DEFAULT_COVER =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
-    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#16213e'/><stop offset='100%' stop-color='#0f3460'/></linearGradient></defs><rect width='600' height='600' fill='url(#g)'/><circle cx='300' cy='300' r='170' fill='none' stroke='#e94560' stroke-width='24'/><circle cx='300' cy='300' r='35' fill='#e94560'/><text x='300' y='520' fill='#ffffff' font-size='48' text-anchor='middle' font-family='Arial, sans-serif' letter-spacing='6'>VINYL</text></svg>"
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'><rect width='600' height='600' fill='#16181d'/><g fill='none' stroke='#23262c' stroke-width='1.5'><circle cx='300' cy='300' r='210'/><circle cx='300' cy='300' r='180'/><circle cx='300' cy='300' r='150'/><circle cx='300' cy='300' r='120'/></g><circle cx='300' cy='300' r='58' fill='#1b1e24'/><circle cx='300' cy='300' r='7' fill='#c9e64f'/></svg>"
   )
 
 export const FORMATS = ['Vinyl', 'LP', 'EP', '7"', '12"', 'CD', 'Cassette']

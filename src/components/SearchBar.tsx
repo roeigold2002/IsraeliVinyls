@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, X, Keyboard, Clock, Music, User } from 'lucide-react'
+import { Search, X, Clock, Music, User } from 'lucide-react'
 import { fetchSuggestions } from '../lib/api'
 import { getSearchHistory, addSearchToHistory } from '../lib/searchHistory'
 
@@ -177,15 +177,14 @@ export function SearchBar({ initialQuery = '', large, autoFocus, onSearch, insta
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
       <div
-        className={`relative flex items-center bg-bg-card border rounded-2xl transition-all duration-300 ${
-          focused
-            ? 'border-accent/60 shadow-lg shadow-accent/10 bg-bg-card-hover'
-            : 'border-border hover:border-border-light'
-        } ${large ? 'h-16' : 'h-12'}`}
+        className={`relative flex items-center bg-bg-card border transition-colors duration-150 ${
+          focused ? 'border-accent' : 'border-border hover:border-border-light'
+        } ${large ? 'h-14' : 'h-11'}`}
       >
         <Search
-          size={large ? 22 : 18}
-          className={`absolute right-4 pointer-events-none transition-colors duration-200 ${
+          size={large ? 18 : 16}
+          strokeWidth={2}
+          className={`absolute right-4 pointer-events-none transition-colors duration-150 ${
             focused ? 'text-accent' : 'text-text-muted'
           }`}
         />
@@ -199,32 +198,30 @@ export function SearchBar({ initialQuery = '', large, autoFocus, onSearch, insta
           onKeyDown={handleKeyDown}
           placeholder="חפשו אמן, אלבום, ז'אנר..."
           className={`w-full h-full bg-transparent border-none outline-none text-text-primary placeholder:text-text-muted ${
-            large ? 'text-lg pr-12 pl-24' : 'text-sm pr-11 pl-20'
-          } ${query ? (large ? 'pl-32' : 'pl-28') : ''}`}
+            large ? 'text-base pr-11 pl-28' : 'text-sm pr-10 pl-24'
+          }`}
           dir="auto"
           autoComplete="off"
         />
 
-        <div className="absolute left-2 flex items-center gap-2">
+        <div className="absolute left-1.5 flex items-center gap-1">
           {query && (
             <button
               type="button"
               onClick={handleClear}
-              className="p-1.5 rounded-full text-text-muted hover:text-text-primary hover:bg-white/8 transition-all"
+              aria-label="ניקוי"
+              className="p-1.5 text-text-muted hover:text-text-primary transition-colors duration-150"
             >
               <X size={15} />
             </button>
           )}
           {!query && !focused && large && (
-            <div className="hidden sm:flex items-center gap-1 text-text-muted/50 text-xs mr-1">
-              <Keyboard size={12} />
-              <span>/</span>
-            </div>
+            <span className="mono hidden sm:inline text-[11px] text-text-muted px-2" dir="ltr">/</span>
           )}
           <button
             type="submit"
-            className={`bg-accent hover:bg-accent-hover text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-accent/20 hover:shadow-accent/40 ${
-              large ? 'px-6 py-2.5 text-sm' : 'px-4 py-1.5 text-xs'
+            className={`bg-accent hover:bg-accent-hover text-ink font-bold transition-colors duration-150 ${
+              large ? 'px-6 h-11 text-sm' : 'px-4 h-8 text-xs'
             }`}
           >
             חיפוש
@@ -235,7 +232,7 @@ export function SearchBar({ initialQuery = '', large, autoFocus, onSearch, insta
       {showDropdown && (
         <div
           ref={dropdownRef}
-          className="absolute top-full mt-2 w-full bg-bg-card border border-border rounded-2xl shadow-xl shadow-black/20 z-50 overflow-hidden"
+          className="absolute top-full w-full bg-bg-card border border-border border-t-0 z-50 overflow-hidden"
         >
           {dropdownItems.map((item, i) => (
             <button
@@ -245,27 +242,25 @@ export function SearchBar({ initialQuery = '', large, autoFocus, onSearch, insta
                 setQuery(item.value)
                 submitQuery(item.value)
               }}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-right transition-colors ${
+              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-right transition-colors duration-150 ${
                 i === activeIndex
-                  ? 'bg-accent/15 text-text-primary'
-                  : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
+                  ? 'bg-bg-card-hover text-text-primary'
+                  : 'text-text-secondary hover:bg-bg-card-hover hover:text-text-primary'
               }`}
             >
               <span className="text-text-muted shrink-0">
                 {item.kind === 'history' ? (
-                  <Clock size={14} />
+                  <Clock size={13} />
                 ) : item.kind === 'artist' ? (
-                  <User size={14} />
+                  <User size={13} />
                 ) : (
-                  <Music size={14} />
+                  <Music size={13} />
                 )}
               </span>
               <span className="truncate flex-1 text-right">{item.value}</span>
-              {item.kind !== 'history' && (
-                <span className="text-xs text-text-muted shrink-0">
-                  {item.kind === 'artist' ? 'אמן' : 'אלבום'}
-                </span>
-              )}
+              <span className="eyebrow shrink-0">
+                {item.kind === 'history' ? '' : item.kind === 'artist' ? 'אמן' : 'אלבום'}
+              </span>
             </button>
           ))}
         </div>
