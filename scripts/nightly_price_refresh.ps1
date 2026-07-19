@@ -47,9 +47,15 @@ try {
   node scripts/verify_api_contract.cjs
   Log "Step 3/4: Done"
 
-  # Step 4: Deploy to Netlify
-  Log "Step 4/4: Deploying to Netlify..."
-  npx netlify-cli deploy --build --prod
+  # Step 4: Build + deploy to Netlify (two-step: draft upload + REST restore;
+  # the one-shot `deploy --prod` returns 403 on this account).
+  Log "Step 4/4: Building and deploying to Netlify..."
+  npx tsc -b
+  if ($LASTEXITCODE -ne 0) { throw "tsc build failed" }
+  npx vite build
+  if ($LASTEXITCODE -ne 0) { throw "vite build failed" }
+  $env:DEPLOY_MESSAGE = "Nightly price refresh"
+  node scripts/netlify_deploy_prod.cjs
   if ($LASTEXITCODE -ne 0) { throw "netlify deploy failed (exit $LASTEXITCODE)" }
   Log "Step 4/4: Done"
 

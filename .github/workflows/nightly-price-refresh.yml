@@ -94,14 +94,16 @@ jobs:
         if: steps.netlify.outputs.available == 'true'
         run: npx tsc -b && npx vite build
 
+      # Two-step publish (draft upload + REST restore): the one-shot
+      # `netlify deploy --prod` returns 403 Forbidden on this account, while
+      # the restore endpoint works. See scripts/netlify_deploy_prod.cjs.
       - name: Deploy to Netlify production
         if: steps.netlify.outputs.available == 'true'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: |
-          npx netlify-cli deploy --prod \
-            --message "Nightly price refresh (${GITHUB_SHA})"
+          DEPLOY_MESSAGE: "Nightly price refresh (${{ github.sha }})"
+        run: node scripts/netlify_deploy_prod.cjs
 
       - name: Fail run if deploy was skipped
         if: steps.netlify.outputs.available == 'false'
