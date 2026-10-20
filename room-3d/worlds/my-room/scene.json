@@ -1,0 +1,542 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "instanceId": "computer-desk-1",
+      "objectId": "computer-desk",
+      "assetId": "my-room/computer-desk/0",
+      "physics": "static",
+      "position": [
+        -1.0,
+        0.0,
+        -1.2
+      ],
+      "rotation": [
+        0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "aerobic-step-platform-1",
+      "objectId": "aerobic-step-platform",
+      "assetId": "my-room/aerobic-step-platform/0",
+      "physics": "static",
+      "position": [
+        -1.0,
+        0.0,
+        -1.28
+      ],
+      "rotation": [
+        0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "curved-monitor-1",
+      "objectId": "curved-monitor",
+      "assetId": "my-room/curved-monitor/0",
+      "physics": "static",
+      "position": [
+        -0.8,
+        0.75,
+        -1.38
+      ],
+      "rotation": [
+        0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "gaming-laptop-1",
+      "objectId": "gaming-laptop",
+      "assetId": "my-room/gaming-laptop/0",
+      "physics": "static",
+      "position": [
+        -1.24,
+        0.75,
+        -1.3
+      ],
+      "rotation": [
+        0,
+        0.15,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "mechanical-keyboard-1",
+      "objectId": "mechanical-keyboard",
+      "assetId": "my-room/mechanical-keyboard/0",
+      "physics": "static",
+      "position": [
+        -0.92,
+        0.75,
+        -1.08
+      ],
+      "rotation": [
+        0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "gaming-mouse-1",
+      "objectId": "gaming-mouse",
+      "assetId": "my-room/gaming-mouse/0",
+      "physics": "static",
+      "position": [
+        -0.68,
+        0.75,
+        -1.06
+      ],
+      "rotation": [
+        0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "white-black-gamepad-1",
+      "objectId": "white-black-gamepad",
+      "assetId": "my-room/white-black-gamepad/0",
+      "physics": "static",
+      "position": [
+        -1.2,
+        0.75,
+        -1.02
+      ],
+      "rotation": [
+        0,
+        0.4,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "white-gamepad-1",
+      "objectId": "white-gamepad",
+      "assetId": "my-room/white-gamepad/0",
+      "physics": "static",
+      "position": [
+        -0.58,
+        0.75,
+        -1.36
+      ],
+      "rotation": [
+        0,
+        -0.3,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "over-ear-headphones-1",
+      "objectId": "over-ear-headphones",
+      "assetId": "my-room/over-ear-headphones/0",
+      "physics": "static",
+      "position": [
+        -1.4,
+        0.75,
+        -1.15
+      ],
+      "rotation": [
+        0,
+        1.5708,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "portable-speaker-1",
+      "objectId": "portable-speaker",
+      "assetId": "my-room/portable-speaker/0",
+      "physics": "static",
+      "position": [
+        -0.6,
+        0.75,
+        -1.15
+      ],
+      "rotation": [
+        0,
+        1.5708,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "keyboard-x-stand-1",
+      "objectId": "keyboard-x-stand",
+      "assetId": "my-room/keyboard-x-stand/0",
+      "physics": "static",
+      "position": [
+        0.05,
+        0.0,
+        -1.28
+      ],
+      "rotation": [
+        0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "digital-piano-keyboard-1",
+      "objectId": "digital-piano-keyboard",
+      "assetId": "my-room/digital-piano-keyboard/0",
+      "physics": "static",
+      "position": [
+        0.05,
+        0.802,
+        -1.3
+      ],
+      "rotation": [
+        0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "mini-fridge-1",
+      "objectId": "mini-fridge",
+      "assetId": "my-room/mini-fridge/0",
+      "physics": "static",
+      "position": [
+        1.25,
+        0.0,
+        -1.25
+      ],
+      "rotation": [
+        0,
+        -1.5708,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "single-bed-1",
+      "objectId": "single-bed",
+      "assetId": "my-room/single-bed/0",
+      "physics": "static",
+      "position": [
+        1.03,
+        0.0,
+        -0.06
+      ],
+      "rotation": [
+        0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "pillow-1",
+      "objectId": "pillow",
+      "assetId": "my-room/pillow/0",
+      "physics": "static",
+      "position": [
+        1.03,
+        0.56,
+        -0.82
+      ],
+      "rotation": [
+        0,
+        0.0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "wooden-tv-stand-1",
+      "objectId": "wooden-tv-stand",
+      "assetId": "my-room/wooden-tv-stand/0",
+      "physics": "static",
+      "position": [
+        1.25,
+        0.0,
+        1.21
+      ],
+      "rotation": [
+        0,
+        -1.5708,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "flat-screen-tv-1",
+      "objectId": "flat-screen-tv",
+      "assetId": "my-room/flat-screen-tv/0",
+      "physics": "static",
+      "position": [
+        1.25,
+        0.6,
+        1.21
+      ],
+      "rotation": [
+        0,
+        -1.5708,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "keyboard-bench-1",
+      "objectId": "keyboard-bench",
+      "assetId": "my-room/keyboard-bench/0",
+      "physics": "rigidbody",
+      "position": [
+        0.55,
+        0.0,
+        1.28
+      ],
+      "rotation": [
+        0,
+        3.1416,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "pedestal-fan-1",
+      "objectId": "pedestal-fan",
+      "assetId": "my-room/pedestal-fan/0",
+      "physics": "rigidbody",
+      "position": [
+        -0.05,
+        0.0,
+        1.3
+      ],
+      "rotation": [
+        0,
+        3.1416,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "office-chair-1",
+      "objectId": "office-chair",
+      "assetId": "my-room/office-chair/0",
+      "physics": "rigidbody",
+      "position": [
+        -0.15,
+        0.0,
+        0.92
+      ],
+      "rotation": [
+        0,
+        3.1416,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "rolled-exercise-mat-1",
+      "objectId": "rolled-exercise-mat",
+      "assetId": "my-room/rolled-exercise-mat/0",
+      "physics": "rigidbody",
+      "position": [
+        -0.62,
+        0.0,
+        1.38
+      ],
+      "rotation": [
+        0,
+        3.1416,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "yoga-block-1",
+      "objectId": "yoga-block",
+      "assetId": "my-room/yoga-block/0",
+      "physics": "rigidbody",
+      "position": [
+        -0.88,
+        0.0,
+        1.36
+      ],
+      "rotation": [
+        0,
+        3.1416,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "yoga-block-2",
+      "objectId": "yoga-block",
+      "assetId": "my-room/yoga-block/0",
+      "physics": "rigidbody",
+      "position": [
+        -0.88,
+        0.076,
+        1.36
+      ],
+      "rotation": [
+        0,
+        3.2916,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "hex-dumbbell-1",
+      "objectId": "hex-dumbbell",
+      "assetId": "my-room/hex-dumbbell/0",
+      "physics": "rigidbody",
+      "position": [
+        -0.95,
+        0.0,
+        1.12
+      ],
+      "rotation": [
+        0,
+        0.2,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "instanceId": "hex-dumbbell-2",
+      "objectId": "hex-dumbbell",
+      "assetId": "my-room/hex-dumbbell/0",
+      "physics": "rigidbody",
+      "position": [
+        -0.75,
+        0.0,
+        1.12
+      ],
+      "rotation": [
+        0,
+        -0.1,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "sun": {
+    "intensity": 1.2,
+    "rotation": [
+      -0.9,
+      0.6,
+      0
+    ],
+    "environmentIntensity": 1.0
+  },
+  "metricScaleFactor": 1,
+  "groundPlaneOffset": 0,
+  "groundPlaneColliderEnabled": true
+}

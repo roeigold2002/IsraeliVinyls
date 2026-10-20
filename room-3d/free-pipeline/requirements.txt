@@ -1,0 +1,16 @@
+numpy
+pillow
+scipy
+trimesh
+shapely
+fast-simplification
+# only for --triposr (local CPU image-to-3D)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+omegaconf
+einops
+transformers<4.46
+huggingface-hub
+rembg
+onnxruntime
+PyMCubes

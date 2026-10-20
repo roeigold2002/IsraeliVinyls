@@ -1,65 +1,74 @@
-# room-3d — my room, prepped for IMAGE-BLASTER
+# room-3d: my room, ready for a 3D game
 
-My bedroom photos, analyzed and staged as an [image-blaster](https://github.com/neilsonnn/image-blaster) world (`worlds/my-room`) so it can be turned into a 3D game level: a walkable Gaussian-splat room + collider, separate 3D models for every movable prop, and sound effects.
+The bedroom from my 10 photos, rebuilt in 3D in the [image-blaster](https://github.com/neilsonnn/image-blaster) world format, plus plain GLB files that load into any engine. **No paid API was used.** Everything was built locally: geometry and textures from the photos, local TripoSR (CPU) for organic shapes, and ffmpeg for sounds.
 
-## What's already done (free steps)
+## What's here
 
-| image-blaster step | status | files |
-| --- | --- | --- |
-| project envelope + staged sources | done | `worlds/my-room/project.json`, `worlds/my-room/source/0-*.jpg` (10 photos) |
-| uncover: per-image literal analysis | done | `worlds/my-room/source/0-*.json` (10) |
-| uncover: merged scene analysis | done | `worlds/my-room/image.json` (30 object candidates) |
-| confirmed objects | done | `worlds/my-room/output/<object>/object.json` (25) |
-| clean plate (FAL nano-banana) | needs `FAL_KEY` | → `worlds/my-room/source/1-desk-window-wide-plate.png` |
-| world splat + collider (World Labs Marble) | needs `WORLD_LABS_API_KEY` | → `worlds/my-room/output/world/` |
-| 3D props (FAL Hunyuan 3D) | needs `FAL_KEY` | → `worlds/my-room/output/<object>/*.glb` |
-| SFX (FAL ElevenLabs) | needs `FAL_KEY` | → `output/sfx/`, `output/<object>/sfx/` |
+| path | what it is |
+| --- | --- |
+| `game/my-room-furnished.glb` | the whole room with all 25 props in place. One file for Unity, Unreal, Godot, Blender or Three.js |
+| `game/my-room-empty.glb` | just the room shell: textured walls, tile floor, ceiling, window with roller shutter, door, posters, figure-shelf photo |
+| `game/my-room-collider.glb` | invisible box collider for floor, walls and ceiling |
+| `worlds/my-room/` | the image-blaster project: drop it into `image-blaster/worlds/` and it opens in the viewer as a walkable world |
+| `worlds/my-room/output/world/0-world-full_res.spz` | Gaussian splat of the empty room (~500k splats, 2.9 MB) |
+| `worlds/my-room/output/<prop>/0-<prop>.glb` | 23 separate props in real-world meters, each with 3 impact sounds in `sfx/` |
+| `worlds/my-room/scene.json` | where every prop stands (matches the photos), with physics type |
+| `worlds/my-room/output/sfx/0-ambient-loop.mp3` | 10 s seamless room tone (fridge hum) |
+| `worlds/my-room/source/` + `image.json` | the 10 photos and the literal scene analysis everything was built from |
+| `free-pipeline/` | the scripts that build all of the above; `./free-pipeline/rebuild.sh` regenerates it |
 
-## Run the rest
+Units are meters, Y is up, the floor's center is the origin, and the room is 3 m × 3 m × 2.6 m.
+
+## Walk around it in image-blaster
 
 ```bash
 cd room-3d
-./setup.sh                      # clones image-blaster into room-3d/image-blaster and copies the world in
-cd image-blaster
-# put your keys in .env: WORLD_LABS_API_KEY (https://platform.worldlabs.ai/) and FAL_KEY (https://fal.ai/)
-node blast-my-room.mjs          # plate -> world -> 25 props -> sfx
-bun install && bun run dev      # open the viewer, pick "My Room"
+./setup.sh                    # clones image-blaster into room-3d/image-blaster and copies worlds/my-room in
+cd image-blaster && bun install && bun run dev
+# open http://localhost:5173/my-room  (WASD to walk, right-drag to look)
 ```
 
-Steps can run one at a time: `node blast-my-room.mjs plate|world|objects|sfx`, and `--only office-chair,single-bed` limits objects/sfx to specific props. Re-running resumes or skips work that already finished.
-
-Or use image-blaster's own Claude skills: run `claude` inside `image-blaster/` and say *"blast my-room — analysis and objects are done, do the plate, world, 3d and sfx"*.
-
-## The room (top-down, from the photos)
+## The room (top view)
 
 ```
-            WINDOW (roller shutter)
-   +-----------------------------------+
-   | desk   | piano on X stand  | fridge|
-   | (step  |                   +-------+
-   |  under)|                   |       |   posters: anime (desk wall),
- D |                            |  bed  |   MEMENTO (bed wall),
- O | shelves w/ figures         | (navy)|   Evangelion (door wall)
- O | + poster                   |       |
- R |                            +-------+
-   |  [door]  clothes/mat/dumbbells  fan  chair  bench  TV stand
-   +-----------------------------------+
+              window (roller shutter)
+   +------------------------------------------+
+   | desk + monitor,  | piano on X stand |fridge|
+   | laptop, pads...  |                  +------+
+   |                                     |      |
+ d | shelf photo +                       | bed  |
+ o | film poster                         |      |
+ o |                                     +------+
+ r |  dumbbells, mat, blocks  chair  fan  bench  TV |
+   +------------------------------------------+
 ```
 
-About 3 m x 3 m, white walls, beige ceramic floor tiles, overhead light.
+## How each part was made
 
-The world is generated from `source/0-desk-window-wide.jpg` (desk wall + window + fridge + bed), the widest single view. Marble generates the parts of the room that photo doesn't show, guided by the text prompt in `blast.mjs`, so the door wall and posters are approximate. All 10 photos are used as multi-view references when extracting each prop, so the meshes match the real items.
+- **Room shell**: modeled to measurements read off the photos. The posters, figure shelves and laptop and monitor screens are perspective-corrected crops of the photos. The floor tile and wall colors are sampled from them.
+- **Props**: the boxy and simple ones (desk, bed, fridge, piano and stand, TV and stand, monitor, laptop, keyboard, mouse, gamepads, headphones, speaker, fan, step, yoga block, dumbbell) are modeled to their real sizes and colored from the photos. The exercise mat carries its real print.
+- **TripoSR (local, free)**: the keyboard bench, the pillow, and the office chair's backrest and seat (on a modeled five-star base). TripoSR also ran on the small desk items, but their photo crops are only about 100 px, so those results were replaced by the modeled versions.
+- **Splat**: the empty room mesh, sampled into Gaussians and written as SPZ, so the viewer renders it like a World Labs world (`flip_y: false`, since the data is already Y-up).
+- **Sounds**: synthesized with ffmpeg: room-tone loop, plus wood, plastic, metal, soft and heavy impacts matched to each prop.
 
-## Props that become separate 3D models (25)
+Physics in `scene.json`: floor-standing props (chair, bench, fan, mat, blocks, dumbbells) are rigid bodies you can push and grab. Things resting on other props are static, because the viewer loads models asynchronously and a dynamic monitor would fall before the desk's collider exists. Furniture is static.
 
-office chair, keyboard bench, digital piano keyboard, keyboard X stand, computer desk, curved monitor, gaming laptop, mechanical keyboard, gaming mouse, white/black gamepad, white gamepad, over-ear headphones, portable speaker, aerobic step platform, mini fridge, single bed, pillow, flat-screen TV, wooden TV stand, pedestal fan, rolled exercise mat, yoga block, hex dumbbell, collectible vinyl figure, anime figure statue.
+## Limits
 
-Left as candidates only (in `image.json`, `generate_as_3d_object: false`): floating wall shelf, cordless telephone, power strip, power adapter, slide sandal. To add one, create `worlds/my-room/output/<id>/object.json` (same shape as the others) and run `node blast-my-room.mjs objects --only <id>`. To drop a prop, delete its folder.
+- Accuracy is "same room, same layout", not a scan. Positions and sizes are estimated from 10 phone photos, to within about 10–20 cm.
+- The figure collection is too small in the photos (40–70 px per figure) for 3D, so it's a photo on the wall. `collectible-vinyl-figure` and `anime-figure-statue` have no models.
+- The clothes pile, sandals, cables, phone and power strip were left out.
+- The splat is generated from the rebuilt mesh, not trained from the photos, so it looks clean and slightly "CG" rather than photoreal.
 
-## Using it in a game
+## Optional: the paid image-blaster route
 
-- **Room**: `output/world/N-world-*.spz` is the Gaussian splat. Render it in Three.js with Spark (`@sparkjsdev/spark`, which the image-blaster viewer uses), or in Unity, Unreal or Godot with a Gaussian-splat plugin.
-- **Collision**: `output/world/N-world.glb` is the room's collider mesh. Use it as a static mesh collider (invisible) so the player walks on the floor and stops at walls.
-- **Props**: each `output/<object>/N-<object>.glb` is a PBR-textured mesh (~50k faces). Use them as rigid bodies (chair, gamepads, dumbbells, figures) or static colliders (desk, bed, fridge). For lighter meshes run `node blast-my-room.mjs objects --generate-type LowPoly`.
-- **Audio**: loop `output/sfx/ambient-loop-*.mp3` as room tone, and play `output/<object>/sfx/impact-*.mp3` on physics collisions.
-- **Placement**: in the image-blaster viewer, drag the props into place on top of the splat and save. That writes `worlds/my-room/scene.json` with the position, rotation and scale of every prop, which you can import into your engine.
+`blast.mjs` / `setup.sh` still run image-blaster's paid generators (World Labs Marble world, FAL Hunyuan3D props, ElevenLabs SFX) once `WORLD_LABS_API_KEY` and `FAL_KEY` are in `image-blaster/.env`. Existing outputs are skipped, so with the free build in place this only generates the two figure props. Pass `--regenerate` to the underlying scripts to replace the free assets.
+
+## Rebuild
+
+```bash
+./free-pipeline/rebuild.sh              # ~2 min, CPU only, reuses free-pipeline/triposr/*.glb
+./free-pipeline/rebuild.sh --triposr    # also re-runs TripoSR locally (downloads ~2.5 GB of models)
+```
+
+Tweak layouts in `free-pipeline/make_world.py` (`LAYOUT`), prop shapes in `free-pipeline/build_room.py` (`props()`), and crop boxes in `free-pipeline/crops.json`.

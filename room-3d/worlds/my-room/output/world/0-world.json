@@ -1,0 +1,33 @@
+{
+  "world_id": "local-my-room-0",
+  "display_name": "my-room",
+  "model": "local-procedural (free, built from the source photos)",
+  "assets": {
+    "mesh": {
+      "collider_mesh_url": "0-world.glb"
+    },
+    "imagery": {
+      "pano_url": ""
+    },
+    "splats": {
+      "spz_urls": {
+        "full_res": "0-world-full_res.spz"
+      },
+      "semantics_metadata": {
+        "metric_scale_factor": 1,
+        "ground_plane_offset": 0,
+        "flip_y": false
+      }
+    },
+    "thumbnail_url": "",
+    "caption": "Empty 3 m x 3 m bedroom rebuilt from the photos: white walls, beige tile floor, window with roller shutter, door, posters, shelf display."
+  },
+  "world_marble_url": "",
+  "tags": [
+    "local",
+    "free"
+  ],
+  "world_prompt": null,
+  "created_at": "2026-10-20T17:24:03.586965+00:00",
+  "updated_at": "2026-10-20T17:24:03.586965+00:00"
+}
