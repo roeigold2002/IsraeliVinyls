@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "keyboard-bench",
+    "name": "x-frame keyboard bench",
+    "description": "Folding X-frame bench with a square black padded vinyl seat, black tubular steel legs, and black rubber foot caps.",
+    "materials": [
+      "black vinyl padding",
+      "black powder-coated steel",
+      "rubber"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-chair-door-corner.jpg",
+      "worlds/my-room/source/0-door-wall.jpg",
+      "worlds/my-room/source/0-fan-mat-corner.jpg",
+      "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-door-wall.jpg",
+        "location_in_image": "lower left corner, partial"
+      },
+      {
+        "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+        "location_in_image": "center"
+      },
+      {
+        "image": "worlds/my-room/source/0-chair-door-corner.jpg",
+        "location_in_image": "left of the chair"
+      },
+      {
+        "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+        "location_in_image": "left"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/keyboard-bench"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

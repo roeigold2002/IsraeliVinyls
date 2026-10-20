@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "source_images": [
+    "worlds/my-room/source/0-bed-wall-from-door.jpg"
+  ],
+  "scene_name": "Bed Wall From Doorway",
+  "short_caption": "Single navy bed against a white wall beside a TV stand.",
+  "literal_description": "View from the open doorway toward the bed wall. A single bed with a navy fitted cover and a light gray upholstered base on chrome legs runs along the white wall, with a light blue pillow at its left end. Two small posters hang above, one showing an illustrated instant camera with the word MEMENTO. A wall outlet with a plugged cable is at the left above the bed. At the right end of the bed, a small reddish-brown wooden cabinet holds a black flat-screen TV. The office chair frame is at the left edge and the open wood door is at the right edge. A loose black cable lies on the beige tile floor.",
+  "environment": "Small residential bedroom, roughly 3 m by 3 m, with white painted plaster walls, beige square ceramic floor tiles with a matching tile skirting strip, an aluminum-framed casement window with a white roller shutter, and a wood-veneer interior door.",
+  "visual_style": "photorealistic, smartphone photograph, indoor snapshot",
+  "lighting": "Even overhead artificial ceiling light, neutral white color temperature, low contrast, soft short shadows under furniture; no direct sunlight through the window.",
+  "atmosphere": "Clear indoor air with no visible fog, smoke, dust, or haze.",
+  "ambient_sound": "Quiet small-room tone with the low hum of a mini fridge compressor and a soft computer fan whir.",
+  "objects": [
+    {
+      "id": "single-bed",
+      "name": "single bed",
+      "description": "Single bed with a thick mattress in a navy blue fitted cover, resting on a light gray upholstered base with rounded ends and short chrome cylindrical legs.",
+      "materials": [
+        "navy cotton fabric",
+        "gray upholstery",
+        "chrome"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-bed-wall-from-door.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-bed-wall-from-door.jpg",
+          "location_in_image": "center, along the far wall"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "pillow",
+      "name": "light blue pillow",
+      "description": "Rectangular pillow in a crumpled light blue cotton pillowcase.",
+      "materials": [
+        "light blue cotton"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-bed-wall-from-door.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-bed-wall-from-door.jpg",
+          "location_in_image": "left end of the bed"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "wooden-tv-stand",
+      "name": "wooden tv stand",
+      "description": "Small reddish-brown varnished wooden cabinet with an open front shelf compartment and a flat top.",
+      "materials": [
+        "varnished wood"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-bed-wall-from-door.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-bed-wall-from-door.jpg",
+          "location_in_image": "right, at the end of the bed"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "flat-screen-tv",
+      "name": "flat-screen tv",
+      "description": "Black flat-screen television with thin bezels on a low black stand.",
+      "materials": [
+        "black plastic",
+        "glass screen"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-bed-wall-from-door.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-bed-wall-from-door.jpg",
+          "location_in_image": "on the TV stand"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "office-chair",
+      "name": "ergonomic office chair",
+      "description": "Swivel office chair with a black mesh backrest and seat, adjustable black headrest, white plastic frame with looped white armrests and black padded armrest tops, a retractable footrest under the seat, and a white five-star base with black caster wheels.",
+      "materials": [
+        "black mesh fabric",
+        "white plastic",
+        "black plastic",
+        "steel gas lift"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-bed-wall-from-door.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-bed-wall-from-door.jpg",
+          "location_in_image": "left edge, partial"
+        }
+      ],
+      "generate_as_3d_object": true
+    }
+  ]
+}

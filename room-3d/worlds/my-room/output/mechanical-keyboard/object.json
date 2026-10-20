@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "mechanical-keyboard",
+    "name": "mechanical keyboard",
+    "description": "Compact mechanical computer keyboard with white and gray keycaps on a light gray case.",
+    "materials": [
+      "plastic keycaps",
+      "plastic case"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-corner-shelves.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-desk-window-wide.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-window-wide.jpg",
+        "location_in_image": "front of the desk, center"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "front of the desk, center"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "front of the desk, center"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+        "location_in_image": "front of the desk, center"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/mechanical-keyboard"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

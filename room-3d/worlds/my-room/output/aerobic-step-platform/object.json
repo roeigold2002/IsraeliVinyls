@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "aerobic-step-platform",
+    "name": "aerobic step platform",
+    "description": "Rectangular gray plastic aerobic step platform with a textured top and magenta-pink riser blocks under both ends.",
+    "materials": [
+      "gray plastic",
+      "pink plastic"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-corner-shelves.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-desk-window-wide.jpg",
+      "worlds/my-room/source/0-door-wall.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-window-wide.jpg",
+        "location_in_image": "on the floor under the desk, left"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "on the floor under the desk"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "on the floor under the desk"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+        "location_in_image": "on the floor under the desk"
+      },
+      {
+        "image": "worlds/my-room/source/0-door-wall.jpg",
+        "location_in_image": "under the desk"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/aerobic-step-platform"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

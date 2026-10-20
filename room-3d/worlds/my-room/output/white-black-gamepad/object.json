@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "white-black-gamepad",
+    "name": "white and black wireless gamepad",
+    "description": "Wireless game controller with curved white outer grips, a black center face, two analog sticks, face buttons, and a central touchpad.",
+    "materials": [
+      "white plastic",
+      "black plastic"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-corner-shelves.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-door-wall.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "front-left of the desk mat"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "front-left of the desk mat"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+        "location_in_image": "front-left of the desk mat"
+      },
+      {
+        "image": "worlds/my-room/source/0-door-wall.jpg",
+        "location_in_image": "on the desk mat"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/white-black-gamepad"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

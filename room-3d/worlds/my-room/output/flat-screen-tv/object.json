@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "flat-screen-tv",
+    "name": "flat-screen tv",
+    "description": "Black flat-screen television with thin bezels on a low black stand.",
+    "materials": [
+      "black plastic",
+      "glass screen"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-bed-wall-from-door.jpg",
+      "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-bed-wall-from-door.jpg",
+        "location_in_image": "on the TV stand"
+      },
+      {
+        "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+        "location_in_image": "on the TV stand, upper left"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/flat-screen-tv"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "mini-fridge",
+    "name": "white mini fridge",
+    "description": "Small white cube-shaped mini refrigerator with a single front door, a side hinge, and a flat top.",
+    "materials": [
+      "white painted steel",
+      "plastic"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-window-wide.jpg",
+      "worlds/my-room/source/0-window-fridge-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-window-wide.jpg",
+        "location_in_image": "right, in the corner below the window"
+      },
+      {
+        "image": "worlds/my-room/source/0-window-fridge-corner.jpg",
+        "location_in_image": "center, in the corner"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/mini-fridge"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

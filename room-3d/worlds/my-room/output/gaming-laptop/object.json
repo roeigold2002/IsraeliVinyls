@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "gaming-laptop",
+    "name": "black gaming laptop",
+    "description": "Black laptop with the lid open, a dark screen, and a red-backlit keyboard deck.",
+    "materials": [
+      "black plastic",
+      "aluminum",
+      "glass screen"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-corner-shelves.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-desk-window-wide.jpg",
+      "worlds/my-room/source/0-door-wall.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-window-wide.jpg",
+        "location_in_image": "on the desk, left side"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "on the desk, left side"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "on the desk, left side"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+        "location_in_image": "on the desk, left side"
+      },
+      {
+        "image": "worlds/my-room/source/0-door-wall.jpg",
+        "location_in_image": "on the desk"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/gaming-laptop"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

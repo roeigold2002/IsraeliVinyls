@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "over-ear-headphones",
+    "name": "over-ear headphones",
+    "description": "Black over-ear headphones with blue accents on the ear cups and a padded headband.",
+    "materials": [
+      "black plastic",
+      "faux leather padding"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-corner-shelves.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-door-wall.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "left edge of the desk"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+        "location_in_image": "left edge of the desk"
+      },
+      {
+        "image": "worlds/my-room/source/0-door-wall.jpg",
+        "location_in_image": "on the desk, left"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/over-ear-headphones"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "portable-speaker",
+    "name": "cylindrical portable speaker",
+    "description": "Black cylindrical portable speaker with a fabric grille wrapping the body and round passive radiator end caps.",
+    "materials": [
+      "black fabric",
+      "rubber",
+      "plastic"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-corner-shelves.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-desk-window-wide.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-window-wide.jpg",
+        "location_in_image": "on the desk mat"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "on the desk mat, right of the mouse"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "on the desk mat, right of the mouse"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+        "location_in_image": "on the desk mat, right of the mouse"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/portable-speaker"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

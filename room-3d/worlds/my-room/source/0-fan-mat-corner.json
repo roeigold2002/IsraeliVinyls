@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "source_images": [
+    "worlds/my-room/source/0-fan-mat-corner.jpg"
+  ],
+  "scene_name": "Fan And Exercise Corner",
+  "short_caption": "Pedestal fan, bench, rolled mat, and workout gear in a corner.",
+  "literal_description": "Straight view of the white wall opposite the desk. A black padded X-frame bench stands at the left and a white pedestal fan with a round base stands at the center. In the right corner, a rolled blue exercise mat with black slide sandals on top, two purple yoga blocks, a pile of clothes and bags, two black hex dumbbells, and a pair of black slide sandals rest on the floor. The edges of the wooden TV stand and the navy bed are at the far left, with cables on the floor. The floor is beige ceramic tile.",
+  "environment": "Small residential bedroom, roughly 3 m by 3 m, with white painted plaster walls, beige square ceramic floor tiles with a matching tile skirting strip, an aluminum-framed casement window with a white roller shutter, and a wood-veneer interior door.",
+  "visual_style": "photorealistic, smartphone photograph, indoor snapshot",
+  "lighting": "Even overhead artificial ceiling light, neutral white color temperature, low contrast, soft short shadows under furniture; no direct sunlight through the window.",
+  "atmosphere": "Clear indoor air with no visible fog, smoke, dust, or haze.",
+  "ambient_sound": "Quiet small-room tone with the low hum of a mini fridge compressor and a soft computer fan whir.",
+  "objects": [
+    {
+      "id": "keyboard-bench",
+      "name": "x-frame keyboard bench",
+      "description": "Folding X-frame bench with a square black padded vinyl seat, black tubular steel legs, and black rubber foot caps.",
+      "materials": [
+        "black vinyl padding",
+        "black powder-coated steel",
+        "rubber"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-fan-mat-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+          "location_in_image": "left"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "pedestal-fan",
+      "name": "white pedestal fan",
+      "description": "White standing fan with a round wire cage, five white blades, a rear motor housing, a chrome and white telescoping pole with a control panel, and a round white weighted base.",
+      "materials": [
+        "white plastic",
+        "chrome steel",
+        "steel wire"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-fan-mat-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+          "location_in_image": "center"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "rolled-exercise-mat",
+      "name": "rolled exercise mat",
+      "description": "Royal blue foam exercise mat rolled into an upright cylinder, printed with white lettering reading ENERGYM sport.",
+      "materials": [
+        "blue foam"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-fan-mat-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+          "location_in_image": "right"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "yoga-block",
+      "name": "purple yoga block",
+      "description": "Purple rectangular foam yoga block.",
+      "count_estimate": 2,
+      "materials": [
+        "purple EVA foam"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-fan-mat-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+          "location_in_image": "right corner, stacked"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "hex-dumbbell",
+      "name": "hex dumbbell",
+      "description": "Black rubber hexagonal dumbbell with a chrome knurled steel handle.",
+      "count_estimate": 2,
+      "materials": [
+        "black rubber",
+        "chrome steel"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-fan-mat-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+          "location_in_image": "right corner, on the floor"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "slide-sandal",
+      "name": "slide sandal",
+      "description": "Black molded rubber slide sandal with a single wide strap.",
+      "count_estimate": 4,
+      "materials": [
+        "black rubber"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-fan-mat-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+          "location_in_image": "on top of the mat and on the floor"
+        }
+      ],
+      "generate_as_3d_object": false
+    },
+    {
+      "id": "wooden-tv-stand",
+      "name": "wooden tv stand",
+      "description": "Small reddish-brown varnished wooden cabinet with an open front shelf compartment and a flat top.",
+      "materials": [
+        "varnished wood"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-fan-mat-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+          "location_in_image": "far left edge, partial"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "single-bed",
+      "name": "single bed",
+      "description": "Single bed with a thick mattress in a navy blue fitted cover, resting on a light gray upholstered base with rounded ends and short chrome cylindrical legs.",
+      "materials": [
+        "navy cotton fabric",
+        "gray upholstery",
+        "chrome"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-fan-mat-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+          "location_in_image": "far left edge, partial"
+        }
+      ],
+      "generate_as_3d_object": true
+    }
+  ]
+}

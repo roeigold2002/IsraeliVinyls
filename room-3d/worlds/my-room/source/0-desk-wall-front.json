@@ -1,0 +1,323 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "source_images": [
+    "worlds/my-room/source/0-desk-wall-front.jpg"
+  ],
+  "scene_name": "Desk Wall Front View",
+  "short_caption": "Gaming desk and white digital piano under two anime posters.",
+  "literal_description": "Front view of a white wall. A large hand-painted poster of a yellow-haired anime character with an open mouth and Hebrew lettering is taped high on the wall, with a smaller poster of a white-haired anime fighter surrounded by flames to its right. Below, a light laminate desk with one metal leg holds a black laptop, a curved monitor showing a game, a mechanical keyboard, a glowing mouse, two white gamepads, black headphones, and a black speaker on a patterned desk mat. A white digital piano keyboard with a music rest sits on a black X stand to the right. The edge of a window with a roller shutter is at the right. A gray step platform sits under the desk, cables and adapters lie on the beige tile floor, and a navy bed edge is at the lower right.",
+  "environment": "Small residential bedroom, roughly 3 m by 3 m, with white painted plaster walls, beige square ceramic floor tiles with a matching tile skirting strip, an aluminum-framed casement window with a white roller shutter, and a wood-veneer interior door.",
+  "visual_style": "photorealistic, smartphone photograph, indoor snapshot",
+  "lighting": "Even overhead artificial ceiling light, neutral white color temperature, low contrast, soft short shadows under furniture; no direct sunlight through the window.",
+  "atmosphere": "Clear indoor air with no visible fog, smoke, dust, or haze.",
+  "ambient_sound": "Quiet small-room tone with the low hum of a mini fridge compressor and a soft computer fan whir.",
+  "objects": [
+    {
+      "id": "computer-desk",
+      "name": "laminate computer desk",
+      "description": "Rectangular desk with a light gray-beige wood laminate top, a full-height laminate side panel on the right end, a front modesty panel, and one cylindrical brushed metal leg on the left end.",
+      "materials": [
+        "wood laminate",
+        "brushed steel"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "left of center, against the wall"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "curved-monitor",
+      "name": "curved computer monitor",
+      "description": "Black curved widescreen computer monitor on a black stand with a flat rectangular base.",
+      "materials": [
+        "black plastic",
+        "glass screen"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "on the desk, right of center"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "gaming-laptop",
+      "name": "black gaming laptop",
+      "description": "Black laptop with the lid open, a dark screen, and a red-backlit keyboard deck.",
+      "materials": [
+        "black plastic",
+        "aluminum",
+        "glass screen"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "on the desk, left side"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "mechanical-keyboard",
+      "name": "mechanical keyboard",
+      "description": "Compact mechanical computer keyboard with white and gray keycaps on a light gray case.",
+      "materials": [
+        "plastic keycaps",
+        "plastic case"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "front of the desk, center"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "gaming-mouse",
+      "name": "rgb gaming mouse",
+      "description": "Black computer mouse with blue and white RGB light strips on the top shell.",
+      "materials": [
+        "black plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "on the desk mat, right of the keyboard"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "white-black-gamepad",
+      "name": "white and black wireless gamepad",
+      "description": "Wireless game controller with curved white outer grips, a black center face, two analog sticks, face buttons, and a central touchpad.",
+      "materials": [
+        "white plastic",
+        "black plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "front-left of the desk mat"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "white-gamepad",
+      "name": "white wireless gamepad",
+      "description": "All-white wireless game controller with two analog sticks, a directional pad, face buttons, and a central touchpad.",
+      "count_estimate": 1,
+      "materials": [
+        "white plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "right rear corner of the desk"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "over-ear-headphones",
+      "name": "over-ear headphones",
+      "description": "Black over-ear headphones with blue accents on the ear cups and a padded headband.",
+      "materials": [
+        "black plastic",
+        "faux leather padding"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "left edge of the desk"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "portable-speaker",
+      "name": "cylindrical portable speaker",
+      "description": "Black cylindrical portable speaker with a fabric grille wrapping the body and round passive radiator end caps.",
+      "materials": [
+        "black fabric",
+        "rubber",
+        "plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "on the desk mat, right of the mouse"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "aerobic-step-platform",
+      "name": "aerobic step platform",
+      "description": "Rectangular gray plastic aerobic step platform with a textured top and magenta-pink riser blocks under both ends.",
+      "materials": [
+        "gray plastic",
+        "pink plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "on the floor under the desk"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "digital-piano-keyboard",
+      "name": "white digital piano keyboard",
+      "description": "Slim white digital piano keyboard with a full row of black and white keys and a white rectangular music rest with two square cutouts standing at the back edge.",
+      "materials": [
+        "white plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "right of the desk on the X stand"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "keyboard-x-stand",
+      "name": "x-shaped keyboard stand",
+      "description": "Black single-braced X-shaped tubular steel keyboard stand with two horizontal support arms ending in black rubber caps and a central pivot knob.",
+      "materials": [
+        "black powder-coated steel",
+        "rubber"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "right of the desk"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "power-strip",
+      "name": "power strip",
+      "description": "Teal-blue plastic multi-outlet power strip with several plugs inserted.",
+      "materials": [
+        "teal plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "floor below the keyboard stand"
+        }
+      ],
+      "generate_as_3d_object": false
+    },
+    {
+      "id": "power-adapter",
+      "name": "power adapter brick",
+      "description": "Black rectangular power adapter brick with attached cables.",
+      "count_estimate": 3,
+      "materials": [
+        "black plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "floor between desk and stand"
+        }
+      ],
+      "generate_as_3d_object": false
+    },
+    {
+      "id": "single-bed",
+      "name": "single bed",
+      "description": "Single bed with a thick mattress in a navy blue fitted cover, resting on a light gray upholstered base with rounded ends and short chrome cylindrical legs.",
+      "materials": [
+        "navy cotton fabric",
+        "gray upholstery",
+        "chrome"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "lower right edge"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "office-chair",
+      "name": "ergonomic office chair",
+      "description": "Swivel office chair with a black mesh backrest and seat, adjustable black headrest, white plastic frame with looped white armrests and black padded armrest tops, a retractable footrest under the seat, and a white five-star base with black caster wheels.",
+      "materials": [
+        "black mesh fabric",
+        "white plastic",
+        "black plastic",
+        "steel gas lift"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-wall-front.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+          "location_in_image": "lower left corner, armrest only"
+        }
+      ],
+      "generate_as_3d_object": true
+    }
+  ]
+}

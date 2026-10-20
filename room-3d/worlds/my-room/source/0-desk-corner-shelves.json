@@ -1,0 +1,320 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "source_images": [
+    "worlds/my-room/source/0-desk-corner-shelves.jpg"
+  ],
+  "scene_name": "Desk Corner And Figure Shelves",
+  "short_caption": "Corner desk beside wall shelves of collectible figures and posters.",
+  "literal_description": "High-angle view into the room corner where the desk sits. On the left wall, two thin black floating shelves hold small vinyl collectible figures and an anime figure with spiky orange-red hair, next to a poster for an anime film showing a pale face and blue sky. On the right wall is part of a large hand-painted poster of a yellow-haired anime character. The desk holds a laptop, a curved monitor, headphones, a white-and-black gamepad, a mechanical keyboard, a glowing mouse, a black speaker, and a white gamepad on a patterned mat; a game disc rests on the front edge. A gray step platform is under the desk and cables and adapters lie on the beige tile floor at the bottom right.",
+  "environment": "Small residential bedroom, roughly 3 m by 3 m, with white painted plaster walls, beige square ceramic floor tiles with a matching tile skirting strip, an aluminum-framed casement window with a white roller shutter, and a wood-veneer interior door.",
+  "visual_style": "photorealistic, smartphone photograph, indoor snapshot",
+  "lighting": "Even overhead artificial ceiling light, neutral white color temperature, low contrast, soft short shadows under furniture; no direct sunlight through the window.",
+  "atmosphere": "Clear indoor air with no visible fog, smoke, dust, or haze.",
+  "ambient_sound": "Quiet small-room tone with the low hum of a mini fridge compressor and a soft computer fan whir.",
+  "objects": [
+    {
+      "id": "computer-desk",
+      "name": "laminate computer desk",
+      "description": "Rectangular desk with a light gray-beige wood laminate top, a full-height laminate side panel on the right end, a front modesty panel, and one cylindrical brushed metal leg on the left end.",
+      "materials": [
+        "wood laminate",
+        "brushed steel"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "right side, in the corner, against the wall"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "curved-monitor",
+      "name": "curved computer monitor",
+      "description": "Black curved widescreen computer monitor on a black stand with a flat rectangular base.",
+      "materials": [
+        "black plastic",
+        "glass screen"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "on the desk, right of center"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "gaming-laptop",
+      "name": "black gaming laptop",
+      "description": "Black laptop with the lid open, a dark screen, and a red-backlit keyboard deck.",
+      "materials": [
+        "black plastic",
+        "aluminum",
+        "glass screen"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "on the desk, left side"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "mechanical-keyboard",
+      "name": "mechanical keyboard",
+      "description": "Compact mechanical computer keyboard with white and gray keycaps on a light gray case.",
+      "materials": [
+        "plastic keycaps",
+        "plastic case"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "front of the desk, center"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "gaming-mouse",
+      "name": "rgb gaming mouse",
+      "description": "Black computer mouse with blue and white RGB light strips on the top shell.",
+      "materials": [
+        "black plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "on the desk mat, right of the keyboard"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "white-black-gamepad",
+      "name": "white and black wireless gamepad",
+      "description": "Wireless game controller with curved white outer grips, a black center face, two analog sticks, face buttons, and a central touchpad.",
+      "materials": [
+        "white plastic",
+        "black plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "front-left of the desk mat"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "white-gamepad",
+      "name": "white wireless gamepad",
+      "description": "All-white wireless game controller with two analog sticks, a directional pad, face buttons, and a central touchpad.",
+      "count_estimate": 1,
+      "materials": [
+        "white plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "right rear corner of the desk"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "over-ear-headphones",
+      "name": "over-ear headphones",
+      "description": "Black over-ear headphones with blue accents on the ear cups and a padded headband.",
+      "materials": [
+        "black plastic",
+        "faux leather padding"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "left edge of the desk"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "portable-speaker",
+      "name": "cylindrical portable speaker",
+      "description": "Black cylindrical portable speaker with a fabric grille wrapping the body and round passive radiator end caps.",
+      "materials": [
+        "black fabric",
+        "rubber",
+        "plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "on the desk mat, right of the mouse"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "aerobic-step-platform",
+      "name": "aerobic step platform",
+      "description": "Rectangular gray plastic aerobic step platform with a textured top and magenta-pink riser blocks under both ends.",
+      "materials": [
+        "gray plastic",
+        "pink plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "on the floor under the desk"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "floating-wall-shelf",
+      "name": "floating wall shelf",
+      "description": "Thin black metal L-profile floating wall shelf about 40 cm wide.",
+      "count_estimate": 2,
+      "materials": [
+        "black powder-coated steel"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "upper left wall, two stacked"
+        }
+      ],
+      "generate_as_3d_object": false
+    },
+    {
+      "id": "collectible-vinyl-figure",
+      "name": "collectible vinyl figure",
+      "description": "Small stylized vinyl collectible figure with an oversized head and a small body, painted in character colors, about 10 cm tall.",
+      "count_estimate": 8,
+      "materials": [
+        "painted vinyl"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "on the floating shelves"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "anime-figure-statue",
+      "name": "anime figure statue",
+      "description": "Anime character statue with spiky orange-red hair and a purple and white outfit, standing in a dynamic pose on a sculpted base.",
+      "materials": [
+        "painted PVC"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "top shelf, right end"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "power-adapter",
+      "name": "power adapter brick",
+      "description": "Black rectangular power adapter brick with attached cables.",
+      "count_estimate": 3,
+      "materials": [
+        "black plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "floor at bottom right"
+        }
+      ],
+      "generate_as_3d_object": false
+    },
+    {
+      "id": "keyboard-x-stand",
+      "name": "x-shaped keyboard stand",
+      "description": "Black single-braced X-shaped tubular steel keyboard stand with two horizontal support arms ending in black rubber caps and a central pivot knob.",
+      "materials": [
+        "black powder-coated steel",
+        "rubber"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "right edge, partial"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "digital-piano-keyboard",
+      "name": "white digital piano keyboard",
+      "description": "Slim white digital piano keyboard with a full row of black and white keys and a white rectangular music rest with two square cutouts standing at the back edge.",
+      "materials": [
+        "white plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-desk-corner-shelves.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+          "location_in_image": "right edge, partial"
+        }
+      ],
+      "generate_as_3d_object": true
+    }
+  ]
+}

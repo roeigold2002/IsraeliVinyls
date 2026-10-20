@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "single-bed",
+    "name": "single bed",
+    "description": "Single bed with a thick mattress in a navy blue fitted cover, resting on a light gray upholstered base with rounded ends and short chrome cylindrical legs.",
+    "materials": [
+      "navy cotton fabric",
+      "gray upholstery",
+      "chrome"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-bed-wall-from-door.jpg",
+      "worlds/my-room/source/0-chair-door-corner.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-desk-window-wide.jpg",
+      "worlds/my-room/source/0-door-wall.jpg",
+      "worlds/my-room/source/0-fan-mat-corner.jpg",
+      "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+      "worlds/my-room/source/0-window-fridge-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-window-wide.jpg",
+        "location_in_image": "right edge, along the side wall"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "lower right edge"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "right edge, full height"
+      },
+      {
+        "image": "worlds/my-room/source/0-door-wall.jpg",
+        "location_in_image": "lower right foreground"
+      },
+      {
+        "image": "worlds/my-room/source/0-window-fridge-corner.jpg",
+        "location_in_image": "right side, along the wall"
+      },
+      {
+        "image": "worlds/my-room/source/0-bed-wall-from-door.jpg",
+        "location_in_image": "center, along the far wall"
+      },
+      {
+        "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+        "location_in_image": "left half, foreground"
+      },
+      {
+        "image": "worlds/my-room/source/0-chair-door-corner.jpg",
+        "location_in_image": "lower left foreground"
+      },
+      {
+        "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+        "location_in_image": "far left edge, partial"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/single-bed"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

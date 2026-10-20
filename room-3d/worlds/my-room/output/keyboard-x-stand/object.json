@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "keyboard-x-stand",
+    "name": "x-shaped keyboard stand",
+    "description": "Black single-braced X-shaped tubular steel keyboard stand with two horizontal support arms ending in black rubber caps and a central pivot knob.",
+    "materials": [
+      "black powder-coated steel",
+      "rubber"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-corner-shelves.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-desk-window-wide.jpg",
+      "worlds/my-room/source/0-window-fridge-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-window-wide.jpg",
+        "location_in_image": "center, under the piano keyboard"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "right of the desk"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "upper right"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+        "location_in_image": "right edge, partial"
+      },
+      {
+        "image": "worlds/my-room/source/0-window-fridge-corner.jpg",
+        "location_in_image": "left foreground"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/keyboard-x-stand"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

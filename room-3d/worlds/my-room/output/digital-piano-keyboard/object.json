@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "digital-piano-keyboard",
+    "name": "white digital piano keyboard",
+    "description": "Slim white digital piano keyboard with a full row of black and white keys and a white rectangular music rest with two square cutouts standing at the back edge.",
+    "materials": [
+      "white plastic"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-corner-shelves.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-desk-window-wide.jpg",
+      "worlds/my-room/source/0-window-fridge-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-window-wide.jpg",
+        "location_in_image": "center, on the X stand in front of the wall"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "right of the desk on the X stand"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "upper right on the X stand"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+        "location_in_image": "right edge, partial"
+      },
+      {
+        "image": "worlds/my-room/source/0-window-fridge-corner.jpg",
+        "location_in_image": "left foreground, partial"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/digital-piano-keyboard"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

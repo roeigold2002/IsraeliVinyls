@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "pedestal-fan",
+    "name": "white pedestal fan",
+    "description": "White standing fan with a round wire cage, five white blades, a rear motor housing, a chrome and white telescoping pole with a control panel, and a round white weighted base.",
+    "materials": [
+      "white plastic",
+      "chrome steel",
+      "steel wire"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-chair-door-corner.jpg",
+      "worlds/my-room/source/0-fan-mat-corner.jpg",
+      "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+        "location_in_image": "behind the chair, upper right"
+      },
+      {
+        "image": "worlds/my-room/source/0-chair-door-corner.jpg",
+        "location_in_image": "behind the chair"
+      },
+      {
+        "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+        "location_in_image": "center"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/pedestal-fan"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

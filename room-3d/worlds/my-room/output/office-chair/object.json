@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "office-chair",
+    "name": "ergonomic office chair",
+    "description": "Swivel office chair with a black mesh backrest and seat, adjustable black headrest, white plastic frame with looped white armrests and black padded armrest tops, a retractable footrest under the seat, and a white five-star base with black caster wheels.",
+    "materials": [
+      "black mesh fabric",
+      "white plastic",
+      "black plastic",
+      "steel gas lift"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-bed-wall-from-door.jpg",
+      "worlds/my-room/source/0-chair-door-corner.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-door-wall.jpg",
+      "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "lower left corner, armrest only"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "lower left corner"
+      },
+      {
+        "image": "worlds/my-room/source/0-door-wall.jpg",
+        "location_in_image": "lower left, facing right"
+      },
+      {
+        "image": "worlds/my-room/source/0-bed-wall-from-door.jpg",
+        "location_in_image": "left edge, partial"
+      },
+      {
+        "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+        "location_in_image": "right"
+      },
+      {
+        "image": "worlds/my-room/source/0-chair-door-corner.jpg",
+        "location_in_image": "center"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/office-chair"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

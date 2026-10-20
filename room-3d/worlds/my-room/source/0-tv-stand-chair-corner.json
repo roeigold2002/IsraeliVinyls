@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "source_images": [
+    "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+  ],
+  "scene_name": "TV Stand And Chair Corner",
+  "short_caption": "Bed end, wooden TV stand, office chair, and keyboard bench.",
+  "literal_description": "View along the foot of the navy bed toward the wall opposite the desk. A small reddish-brown wooden cabinet with a black flat-screen TV on top stands in the corner at the left. To the right, a black padded X-frame bench and an office chair with a black mesh back, headrest, white frame, and extended footrest stand against the white wall, with a white pedestal fan behind the chair. The floor is beige ceramic tile.",
+  "environment": "Small residential bedroom, roughly 3 m by 3 m, with white painted plaster walls, beige square ceramic floor tiles with a matching tile skirting strip, an aluminum-framed casement window with a white roller shutter, and a wood-veneer interior door.",
+  "visual_style": "photorealistic, smartphone photograph, indoor snapshot",
+  "lighting": "Even overhead artificial ceiling light, neutral white color temperature, low contrast, soft short shadows under furniture; no direct sunlight through the window.",
+  "atmosphere": "Clear indoor air with no visible fog, smoke, dust, or haze.",
+  "ambient_sound": "Quiet small-room tone with the low hum of a mini fridge compressor and a soft computer fan whir.",
+  "objects": [
+    {
+      "id": "single-bed",
+      "name": "single bed",
+      "description": "Single bed with a thick mattress in a navy blue fitted cover, resting on a light gray upholstered base with rounded ends and short chrome cylindrical legs.",
+      "materials": [
+        "navy cotton fabric",
+        "gray upholstery",
+        "chrome"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+          "location_in_image": "left half, foreground"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "wooden-tv-stand",
+      "name": "wooden tv stand",
+      "description": "Small reddish-brown varnished wooden cabinet with an open front shelf compartment and a flat top.",
+      "materials": [
+        "varnished wood"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+          "location_in_image": "upper left corner"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "flat-screen-tv",
+      "name": "flat-screen tv",
+      "description": "Black flat-screen television with thin bezels on a low black stand.",
+      "materials": [
+        "black plastic",
+        "glass screen"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+          "location_in_image": "on the TV stand, upper left"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "keyboard-bench",
+      "name": "x-frame keyboard bench",
+      "description": "Folding X-frame bench with a square black padded vinyl seat, black tubular steel legs, and black rubber foot caps.",
+      "materials": [
+        "black vinyl padding",
+        "black powder-coated steel",
+        "rubber"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+          "location_in_image": "center"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "office-chair",
+      "name": "ergonomic office chair",
+      "description": "Swivel office chair with a black mesh backrest and seat, adjustable black headrest, white plastic frame with looped white armrests and black padded armrest tops, a retractable footrest under the seat, and a white five-star base with black caster wheels.",
+      "materials": [
+        "black mesh fabric",
+        "white plastic",
+        "black plastic",
+        "steel gas lift"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+          "location_in_image": "right"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "pedestal-fan",
+      "name": "white pedestal fan",
+      "description": "White standing fan with a round wire cage, five white blades, a rear motor housing, a chrome and white telescoping pole with a control panel, and a round white weighted base.",
+      "materials": [
+        "white plastic",
+        "chrome steel",
+        "steel wire"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+          "location_in_image": "behind the chair, upper right"
+        }
+      ],
+      "generate_as_3d_object": true
+    }
+  ]
+}

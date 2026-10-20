@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "source_images": [
+    "worlds/my-room/source/0-door-wall.jpg"
+  ],
+  "scene_name": "Door Wall",
+  "short_caption": "Wood door, figure shelves, film poster, and corner desk.",
+  "literal_description": "View of the wall containing the room door. A wood-veneer door with a metal lever handle is on the left, with a white light switch to its right. Two black floating shelves hold vinyl collectible figures and an orange-haired anime figure, beside a film poster with a pale face and blue sky. The desk sits in the right corner with a laptop, monitor, headphones, gamepads, and a glowing mouse; a gray step platform is under it. An office chair with a white frame and a black keyboard bench stand at the lower left, and a navy bed edge crosses the lower right. The floor is beige ceramic tile.",
+  "environment": "Small residential bedroom, roughly 3 m by 3 m, with white painted plaster walls, beige square ceramic floor tiles with a matching tile skirting strip, an aluminum-framed casement window with a white roller shutter, and a wood-veneer interior door.",
+  "visual_style": "photorealistic, smartphone photograph, indoor snapshot",
+  "lighting": "Even overhead artificial ceiling light, neutral white color temperature, low contrast, soft short shadows under furniture; no direct sunlight through the window.",
+  "atmosphere": "Clear indoor air with no visible fog, smoke, dust, or haze.",
+  "ambient_sound": "Quiet small-room tone with the low hum of a mini fridge compressor and a soft computer fan whir.",
+  "objects": [
+    {
+      "id": "office-chair",
+      "name": "ergonomic office chair",
+      "description": "Swivel office chair with a black mesh backrest and seat, adjustable black headrest, white plastic frame with looped white armrests and black padded armrest tops, a retractable footrest under the seat, and a white five-star base with black caster wheels.",
+      "materials": [
+        "black mesh fabric",
+        "white plastic",
+        "black plastic",
+        "steel gas lift"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "lower left, facing right"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "keyboard-bench",
+      "name": "x-frame keyboard bench",
+      "description": "Folding X-frame bench with a square black padded vinyl seat, black tubular steel legs, and black rubber foot caps.",
+      "materials": [
+        "black vinyl padding",
+        "black powder-coated steel",
+        "rubber"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "lower left corner, partial"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "floating-wall-shelf",
+      "name": "floating wall shelf",
+      "description": "Thin black metal L-profile floating wall shelf about 40 cm wide.",
+      "count_estimate": 2,
+      "materials": [
+        "black powder-coated steel"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "upper center wall"
+        }
+      ],
+      "generate_as_3d_object": false
+    },
+    {
+      "id": "collectible-vinyl-figure",
+      "name": "collectible vinyl figure",
+      "description": "Small stylized vinyl collectible figure with an oversized head and a small body, painted in character colors, about 10 cm tall.",
+      "count_estimate": 8,
+      "materials": [
+        "painted vinyl"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "on the shelves"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "anime-figure-statue",
+      "name": "anime figure statue",
+      "description": "Anime character statue with spiky orange-red hair and a purple and white outfit, standing in a dynamic pose on a sculpted base.",
+      "materials": [
+        "painted PVC"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "top shelf, right"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "computer-desk",
+      "name": "laminate computer desk",
+      "description": "Rectangular desk with a light gray-beige wood laminate top, a full-height laminate side panel on the right end, a front modesty panel, and one cylindrical brushed metal leg on the left end.",
+      "materials": [
+        "wood laminate",
+        "brushed steel"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "right side, in the corner"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "gaming-laptop",
+      "name": "black gaming laptop",
+      "description": "Black laptop with the lid open, a dark screen, and a red-backlit keyboard deck.",
+      "materials": [
+        "black plastic",
+        "aluminum",
+        "glass screen"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "on the desk"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "curved-monitor",
+      "name": "curved computer monitor",
+      "description": "Black curved widescreen computer monitor on a black stand with a flat rectangular base.",
+      "materials": [
+        "black plastic",
+        "glass screen"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "on the desk, right edge"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "over-ear-headphones",
+      "name": "over-ear headphones",
+      "description": "Black over-ear headphones with blue accents on the ear cups and a padded headband.",
+      "materials": [
+        "black plastic",
+        "faux leather padding"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "on the desk, left"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "white-black-gamepad",
+      "name": "white and black wireless gamepad",
+      "description": "Wireless game controller with curved white outer grips, a black center face, two analog sticks, face buttons, and a central touchpad.",
+      "materials": [
+        "white plastic",
+        "black plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "on the desk mat"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "gaming-mouse",
+      "name": "rgb gaming mouse",
+      "description": "Black computer mouse with blue and white RGB light strips on the top shell.",
+      "materials": [
+        "black plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "on the desk mat"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "aerobic-step-platform",
+      "name": "aerobic step platform",
+      "description": "Rectangular gray plastic aerobic step platform with a textured top and magenta-pink riser blocks under both ends.",
+      "materials": [
+        "gray plastic",
+        "pink plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "under the desk"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "single-bed",
+      "name": "single bed",
+      "description": "Single bed with a thick mattress in a navy blue fitted cover, resting on a light gray upholstered base with rounded ends and short chrome cylindrical legs.",
+      "materials": [
+        "navy cotton fabric",
+        "gray upholstery",
+        "chrome"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-door-wall.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-door-wall.jpg",
+          "location_in_image": "lower right foreground"
+        }
+      ],
+      "generate_as_3d_object": true
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "hex-dumbbell",
+    "name": "hex dumbbell",
+    "description": "Black rubber hexagonal dumbbell with a chrome knurled steel handle.",
+    "materials": [
+      "black rubber",
+      "chrome steel"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-fan-mat-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+        "location_in_image": "right corner, on the floor"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/hex-dumbbell"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "computer-desk",
+    "name": "laminate computer desk",
+    "description": "Rectangular desk with a light gray-beige wood laminate top, a full-height laminate side panel on the right end, a front modesty panel, and one cylindrical brushed metal leg on the left end.",
+    "materials": [
+      "wood laminate",
+      "brushed steel"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-corner-shelves.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-desk-window-wide.jpg",
+      "worlds/my-room/source/0-door-wall.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-window-wide.jpg",
+        "location_in_image": "{} against the wall"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "left of center, against the wall"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "upper left, against the wall"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+        "location_in_image": "right side, in the corner, against the wall"
+      },
+      {
+        "image": "worlds/my-room/source/0-door-wall.jpg",
+        "location_in_image": "right side, in the corner"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/computer-desk"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

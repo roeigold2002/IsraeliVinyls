@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "wooden-tv-stand",
+    "name": "wooden tv stand",
+    "description": "Small reddish-brown varnished wooden cabinet with an open front shelf compartment and a flat top.",
+    "materials": [
+      "varnished wood"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-bed-wall-from-door.jpg",
+      "worlds/my-room/source/0-fan-mat-corner.jpg",
+      "worlds/my-room/source/0-tv-stand-chair-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-bed-wall-from-door.jpg",
+        "location_in_image": "right, at the end of the bed"
+      },
+      {
+        "image": "worlds/my-room/source/0-tv-stand-chair-corner.jpg",
+        "location_in_image": "upper left corner"
+      },
+      {
+        "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+        "location_in_image": "far left edge, partial"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/wooden-tv-stand"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

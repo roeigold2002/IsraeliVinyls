@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "rolled-exercise-mat",
+    "name": "rolled exercise mat",
+    "description": "Royal blue foam exercise mat rolled into an upright cylinder, printed with white lettering reading ENERGYM sport.",
+    "materials": [
+      "blue foam"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-chair-door-corner.jpg",
+      "worlds/my-room/source/0-fan-mat-corner.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-chair-door-corner.jpg",
+        "location_in_image": "behind the chair, right"
+      },
+      {
+        "image": "worlds/my-room/source/0-fan-mat-corner.jpg",
+        "location_in_image": "right"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/rolled-exercise-mat"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

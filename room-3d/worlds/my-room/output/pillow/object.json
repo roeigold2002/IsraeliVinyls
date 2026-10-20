@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "pillow",
+    "name": "light blue pillow",
+    "description": "Rectangular pillow in a crumpled light blue cotton pillowcase.",
+    "materials": [
+      "light blue cotton"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-bed-wall-from-door.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-bed-wall-from-door.jpg",
+        "location_in_image": "left end of the bed"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/pillow"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

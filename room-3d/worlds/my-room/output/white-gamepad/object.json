@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "object": {
+    "id": "white-gamepad",
+    "name": "white wireless gamepad",
+    "description": "All-white wireless game controller with two analog sticks, a directional pad, face buttons, and a central touchpad.",
+    "materials": [
+      "white plastic"
+    ],
+    "source_images": [
+      "worlds/my-room/source/0-desk-corner-shelves.jpg",
+      "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+      "worlds/my-room/source/0-desk-wall-front.jpg",
+      "worlds/my-room/source/0-desk-window-wide.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/my-room/source/0-desk-window-wide.jpg",
+        "location_in_image": "right rear corner of the desk"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-front.jpg",
+        "location_in_image": "right rear corner of the desk"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-wall-from-chair.jpg",
+        "location_in_image": "right rear corner of the desk"
+      },
+      {
+        "image": "worlds/my-room/source/0-desk-corner-shelves.jpg",
+        "location_in_image": "right rear corner of the desk"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/my-room/output/white-gamepad"
+  },
+  "updated_at": "2026-10-20T15:54:44.161017+00:00"
+}

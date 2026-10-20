@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "world": "my-room",
+  "source_images": [
+    "worlds/my-room/source/0-window-fridge-corner.jpg"
+  ],
+  "scene_name": "Window And Fridge Corner",
+  "short_caption": "Open casement window over a mini fridge beside the bed.",
+  "literal_description": "Corner view below an open aluminum casement window; the swung-open sash and a white roller shutter are in the upper left. A small white mini fridge stands in the corner with a white cordless phone and a small round item on top; its power cable runs to a wall outlet on the right wall. The end of a white digital piano keyboard and the black arm of its stand are in the left foreground. A navy-covered single bed runs along the right wall. Black cables and a teal power strip lie on the beige tile floor.",
+  "environment": "Small residential bedroom, roughly 3 m by 3 m, with white painted plaster walls, beige square ceramic floor tiles with a matching tile skirting strip, an aluminum-framed casement window with a white roller shutter, and a wood-veneer interior door.",
+  "visual_style": "photorealistic, smartphone photograph, indoor snapshot",
+  "lighting": "Even overhead artificial ceiling light, neutral white color temperature, low contrast, soft short shadows under furniture; no direct sunlight through the window.",
+  "atmosphere": "Clear indoor air with no visible fog, smoke, dust, or haze.",
+  "ambient_sound": "Quiet small-room tone with the low hum of a mini fridge compressor and a soft computer fan whir.",
+  "objects": [
+    {
+      "id": "mini-fridge",
+      "name": "white mini fridge",
+      "description": "Small white cube-shaped mini refrigerator with a single front door, a side hinge, and a flat top.",
+      "materials": [
+        "white painted steel",
+        "plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-window-fridge-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-window-fridge-corner.jpg",
+          "location_in_image": "center, in the corner"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "cordless-telephone",
+      "name": "cordless telephone",
+      "description": "White cordless telephone handset lying on a white base station.",
+      "materials": [
+        "white plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-window-fridge-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-window-fridge-corner.jpg",
+          "location_in_image": "on top of the fridge"
+        }
+      ],
+      "generate_as_3d_object": false
+    },
+    {
+      "id": "digital-piano-keyboard",
+      "name": "white digital piano keyboard",
+      "description": "Slim white digital piano keyboard with a full row of black and white keys and a white rectangular music rest with two square cutouts standing at the back edge.",
+      "materials": [
+        "white plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-window-fridge-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-window-fridge-corner.jpg",
+          "location_in_image": "left foreground, partial"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "keyboard-x-stand",
+      "name": "x-shaped keyboard stand",
+      "description": "Black single-braced X-shaped tubular steel keyboard stand with two horizontal support arms ending in black rubber caps and a central pivot knob.",
+      "materials": [
+        "black powder-coated steel",
+        "rubber"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-window-fridge-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-window-fridge-corner.jpg",
+          "location_in_image": "left foreground"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "single-bed",
+      "name": "single bed",
+      "description": "Single bed with a thick mattress in a navy blue fitted cover, resting on a light gray upholstered base with rounded ends and short chrome cylindrical legs.",
+      "materials": [
+        "navy cotton fabric",
+        "gray upholstery",
+        "chrome"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-window-fridge-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-window-fridge-corner.jpg",
+          "location_in_image": "right side, along the wall"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "power-strip",
+      "name": "power strip",
+      "description": "Teal-blue plastic multi-outlet power strip with several plugs inserted.",
+      "materials": [
+        "teal plastic"
+      ],
+      "source_images": [
+        "worlds/my-room/source/0-window-fridge-corner.jpg"
+      ],
+      "evidence": [
+        {
+          "image": "worlds/my-room/source/0-window-fridge-corner.jpg",
+          "location_in_image": "bottom center floor"
+        }
+      ],
+      "generate_as_3d_object": false
+    }
+  ]
+}
