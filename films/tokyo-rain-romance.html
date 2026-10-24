@@ -78,8 +78,8 @@ function lens(c,x1,y1,x2,y2,w){const mx=(x1+x2)/2,my=(y1+y2)/2,dx=x2-x1,dy=y2-y1
 const paperC=mk();paperC.width=1024;paperC.height=576;
 {const g=paperC.getContext('2d'),r=rng(7);
  for(let i=0;i<80;i++){g.beginPath();let y=r()*576;g.moveTo(0,y);for(let x=0;x<=1024;x+=24){y+=(r()-0.5)*2.4;g.lineTo(x,y+Math.sin(x*0.008+i)*5)}g.strokeStyle=`rgba(240,234,220,${0.010+r()*0.02})`;g.lineWidth=0.5+r()*1.8;g.stroke()}
- for(let i=0;i<300;i++){g.fillStyle=`rgba(0,0,0,${0.03+r()*0.07})`;g.beginPath();g.ellipse(r()*1024,r()*576,3+r()*44,2+r()*20,r()*3,0,7);g.fill()}
- for(let i=0;i<1100;i++){g.fillStyle=`rgba(240,234,220,${0.02+r()*0.07})`;g.fillRect(r()*1024,r()*576,r()*1.6+0.4,r()*1.6+0.4)}
+ for(let i=0;i<90;i++){g.fillStyle=`rgba(0,0,0,${0.012+r()*0.025})`;g.beginPath();g.ellipse(r()*1024,r()*576,3+r()*44,2+r()*20,r()*3,0,7);g.fill()}
+ for(let i=0;i<220;i++){g.fillStyle=`rgba(240,234,220,${0.01+r()*0.03})`;g.fillRect(r()*1024,r()*576,r()*1.6+0.4,r()*1.6+0.4)}
  for(let i=0;i<140;i++){g.strokeStyle=`rgba(240,234,220,${0.02+r()*0.04})`;g.lineWidth=0.5;g.beginPath();const x=r()*1024,y=r()*576;g.moveTo(x,y);g.quadraticCurveTo(x+(r()-.5)*24,y+(r()-.5)*24,x+(r()-.5)*36,y+(r()-.5)*36);g.stroke()}
 }
 /* carved gouge marks for skies */
@@ -998,12 +998,11 @@ function post(t){
   if(!finishReady){const g=finishC.getContext('2d');g.clearRect(0,0,PW,PH);g.drawImage(paperC,0,0,PW,PH);g.drawImage(vigC,0,0,PW,PH);finishReady=true}
   c.setTransform(1,0,0,1,0,0);c.drawImage(finishC,0,0);
   if(!grainPat)grainPat=c.createPattern(grainC,'repeat');
-  const ox=Math.floor(hash(Math.floor(t*24))*256),oy=Math.floor(hash(Math.floor(t*24),3)*256);
-  c.translate(-ox,-oy);c.fillStyle=grainPat;c.globalAlpha=0.55;c.fillRect(ox,oy,PW,PH);c.translate(ox,oy);
+  const ox=Math.floor(hash(Math.floor(t*12))*256),oy=Math.floor(hash(Math.floor(t*12),3)*256);
+  c.translate(-ox,-oy);c.fillStyle=grainPat;c.globalAlpha=0.14;c.fillRect(ox,oy,PW,PH);c.translate(ox,oy);
   c.globalAlpha=1;c.setTransform(S,0,0,S,0,0);
-  const fl=noise1(t*18)*0.025+0.02;c.fillStyle=rgba(INK,fl);c.fillRect(0,0,W,H);
+  const fl=noise1(t*6)*0.006+0.008;c.fillStyle=rgba(INK,fl);c.fillRect(0,0,W,H);
   // a stray scratch now and then
-  const sc=Math.floor(t*6);if(hash(sc,9)>0.82){const x=hash(sc,10)*W;c.fillStyle=rgba(WHITE,0.12);c.fillRect(x,0,1.2,H)}
   // breathe across the loop seam
   const dip=0.4*(1-ss(0,0.7,t))+0.4*ss(19.3,20,t);if(dip>0.002){c.fillStyle=rgba(INK,dip);c.fillRect(0,0,W,H)}
   c.fillStyle='#000';c.fillRect(0,0,W,BAR);c.fillRect(0,H-BAR,W,BAR);
