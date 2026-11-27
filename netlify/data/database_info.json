@@ -43,10 +43,10 @@
     "coverage_percent_genres": 11.5,
     "records_with_year": 8651,
     "coverage_percent_years": 7.3,
-    "records_in_stock": 17232,
-    "records_out_of_stock": 35338,
-    "records_stock_unknown": 65308,
-    "records_with_known_stock": 52570,
+    "records_in_stock": 17226,
+    "records_out_of_stock": 35348,
+    "records_stock_unknown": 65304,
+    "records_with_known_stock": 52574,
     "coverage_percent_stock_known": 44.6
   },
   "pricing_integrity": {
@@ -105,5 +105,5 @@
       "25"
     ]
   },
-  "rebuilt_at": "2026-11-26T10:31:20.142Z"
+  "rebuilt_at": "2026-11-27T10:23:53.548Z"
 }
